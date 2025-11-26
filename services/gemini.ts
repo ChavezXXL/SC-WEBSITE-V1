@@ -1,10 +1,6 @@
 
 import { GoogleGenAI } from "@google/genai";
 
-// Initialize Gemini
-// NOTE: In a real environment, ensure process.env.API_KEY is set.
-const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
-
 // Default instruction if none provided
 export const DEFAULT_SYSTEM_INSTRUCTION = `
 You are the "Precision AI Consultant" for SC Precision Deburring. 
@@ -26,6 +22,13 @@ export const sendChatMessage = async (
   systemInstruction: string = DEFAULT_SYSTEM_INSTRUCTION
 ) => {
   try {
+    // SAFELY ACCESS KEY: We check if process exists to avoid crashing the browser
+    const apiKey = (typeof process !== 'undefined' && process.env) ? process.env.API_KEY : '';
+    
+    // Initialize AI Client lazily (only when a message is sent)
+    // This prevents the "White/Black Screen of Death" on deployment
+    const ai = new GoogleGenAI({ apiKey: apiKey });
+    
     const model = 'gemini-2.5-flash'; 
     
     // Construct the chat history for the API
@@ -45,6 +48,7 @@ export const sendChatMessage = async (
 
   } catch (error) {
     console.error("Gemini API Error:", error);
-    throw error;
+    // Return a friendly error so the UI doesn't break
+    return "I am currently offline or the API Key is missing. Please contact the admin.";
   }
 };
