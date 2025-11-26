@@ -4,6 +4,11 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>SC Precision Deburring | Advanced Metal Finishing</title>
+    <script>
+      // CRITICAL FIX FOR NETLIFY/DEPLOYMENT
+      // This prevents "ReferenceError: process is not defined" which causes the white/black screen crash
+      window.process = { env: { NODE_ENV: 'production' } };
+    </script>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
