@@ -52,16 +52,16 @@ const DataContext = createContext<DataContextType | undefined>(undefined);
 
 export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [galleryItems, setGalleryItems] = useState<GalleryItem[]>(INITIAL_GALLERY_ITEMS);
-  const [aiInstruction, setAiInstruction] = useState<string>(DEFAULT_SYSTEM_INSTRUCTION);
   const [comparisonLeft, setComparisonLeft] = useState<string>(INITIAL_COMPARISON_LEFT);
   const [comparisonRight, setComparisonRight] = useState<string>(INITIAL_COMPARISON_RIGHT);
+  const [aiInstruction, setAiInstruction] = useState<string>(DEFAULT_SYSTEM_INSTRUCTION);
 
   // Load from local storage on mount
   useEffect(() => {
     const savedGallery = localStorage.getItem('sc_gallery');
-    const savedAi = localStorage.getItem('sc_ai_prompt');
     const savedLeft = localStorage.getItem('sc_comp_left');
     const savedRight = localStorage.getItem('sc_comp_right');
+    const savedAiInst = localStorage.getItem('sc_ai_instruction');
 
     if (savedGallery) {
       try {
@@ -71,9 +71,9 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
       }
     }
 
-    if (savedAi) setAiInstruction(savedAi);
     if (savedLeft) setComparisonLeft(savedLeft);
     if (savedRight) setComparisonRight(savedRight);
+    if (savedAiInst) setAiInstruction(savedAiInst);
   }, []);
 
   const addGalleryItem = (item: Omit<GalleryItem, 'id'>) => {
@@ -89,11 +89,6 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
     localStorage.setItem('sc_gallery', JSON.stringify(updated));
   };
 
-  const updateAiInstruction = (instruction: string) => {
-    setAiInstruction(instruction);
-    localStorage.setItem('sc_ai_prompt', instruction);
-  };
-
   const updateComparisonImages = (left: string, right: string) => {
     setComparisonLeft(left);
     setComparisonRight(right);
@@ -101,16 +96,21 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
     localStorage.setItem('sc_comp_right', right);
   };
 
+  const updateAiInstruction = (instruction: string) => {
+    setAiInstruction(instruction);
+    localStorage.setItem('sc_ai_instruction', instruction);
+  };
+
   const resetToDefaults = () => {
     setGalleryItems(INITIAL_GALLERY_ITEMS);
-    setAiInstruction(DEFAULT_SYSTEM_INSTRUCTION);
     setComparisonLeft(INITIAL_COMPARISON_LEFT);
     setComparisonRight(INITIAL_COMPARISON_RIGHT);
+    setAiInstruction(DEFAULT_SYSTEM_INSTRUCTION);
     
     localStorage.removeItem('sc_gallery');
-    localStorage.removeItem('sc_ai_prompt');
     localStorage.removeItem('sc_comp_left');
     localStorage.removeItem('sc_comp_right');
+    localStorage.removeItem('sc_ai_instruction');
   };
 
   return (
@@ -118,12 +118,12 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
       galleryItems,
       addGalleryItem,
       removeGalleryItem,
-      aiInstruction,
-      updateAiInstruction,
       comparisonLeft,
       comparisonRight,
       updateComparisonImages,
-      resetToDefaults
+      resetToDefaults,
+      aiInstruction,
+      updateAiInstruction
     }}>
       {children}
     </DataContext.Provider>

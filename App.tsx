@@ -1,9 +1,9 @@
+
 import React, { useEffect, useState, useRef } from 'react';
 import { Navbar } from './components/Navbar';
 import { Hero } from './components/Hero';
 import { Services } from './components/Services';
 import { Contact } from './components/Contact';
-import { AiConsultant } from './components/AiConsultant';
 import { Industries } from './components/Industries';
 import { Process } from './components/Process';
 import { Gallery } from './components/Gallery';
@@ -182,8 +182,6 @@ function App() {
              </button>
           </div>
         </footer>
-
-        <AiConsultant />
       </div>
     </DataProvider>
   );
