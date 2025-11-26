@@ -16,17 +16,50 @@ Tone: Professional, Technical, Helpful, Concise. Like a SpaceX engineer explaini
 If asked about pricing, suggest they use the "Request Quote" form as it depends on volume and part complexity.
 `;
 
+// Helper to safely get env vars in any environment (Vite, CRA, Next, plain browser)
+const getApiKey = (): string => {
+  // 1. Check Vite standard (import.meta.env) - Most likely for Netlify
+  try {
+    // @ts-ignore
+    if (typeof import.meta !== 'undefined' && import.meta.env && import.meta.env.VITE_API_KEY) {
+      // @ts-ignore
+      return import.meta.env.VITE_API_KEY;
+    }
+  } catch (e) {}
+
+  // 2. Check Standard Node/CRA (process.env)
+  try {
+    if (typeof process !== 'undefined' && process.env && process.env.API_KEY) {
+      return process.env.API_KEY;
+    }
+  } catch (e) {}
+  
+  // 3. Check for the global polyfill we added in index.html
+  try {
+    // @ts-ignore
+    if (typeof window !== 'undefined' && window.process && window.process.env && window.process.env.API_KEY) {
+      // @ts-ignore
+      return window.process.env.API_KEY;
+    }
+  } catch (e) {}
+
+  return '';
+};
+
 export const sendChatMessage = async (
   history: {role: string, text: string}[], 
   newMessage: string,
   systemInstruction: string = DEFAULT_SYSTEM_INSTRUCTION
 ) => {
   try {
-    // SAFELY ACCESS KEY: We check if process exists to avoid crashing the browser
-    const apiKey = (typeof process !== 'undefined' && process.env) ? process.env.API_KEY : '';
+    const apiKey = getApiKey();
+
+    if (!apiKey) {
+      console.warn("API Key is missing. AI Chat will likely fail.");
+      return "System Error: API Key not configured. Please contact SC Deburring support.";
+    }
     
     // Initialize AI Client lazily (only when a message is sent)
-    // This prevents the "White/Black Screen of Death" on deployment
     const ai = new GoogleGenAI({ apiKey: apiKey });
     
     const model = 'gemini-2.5-flash'; 
@@ -49,6 +82,6 @@ export const sendChatMessage = async (
   } catch (error) {
     console.error("Gemini API Error:", error);
     // Return a friendly error so the UI doesn't break
-    return "I am currently offline or the API Key is missing. Please contact the admin.";
+    return "I am currently optimizing my connection. Please try again in a moment.";
   }
 };
