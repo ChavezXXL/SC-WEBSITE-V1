@@ -1,7 +1,12 @@
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { GalleryItem, DataContextType } from '../types';
-import { DEFAULT_SYSTEM_INSTRUCTION } from '../services/gemini';
+
+// MOVED DEFAULT INSTRUCTION HERE TO REMOVE DEPENDENCY ON GEMINI.TS
+const DEFAULT_SYSTEM_INSTRUCTION = `
+You are the "Precision AI Consultant" for SC Precision Deburring. 
+Your goal is to help potential customers understand metal finishing processes and guide them to the right service.
+`;
 
 // Initial Hardcoded Data
 const INITIAL_GALLERY_ITEMS: GalleryItem[] = [
