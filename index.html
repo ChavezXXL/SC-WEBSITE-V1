@@ -4,6 +4,19 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>SC Precision Deburring | Advanced Metal Finishing</title>
+    
+    <!-- Fix Gemini SDK: define process.env with an API_KEY so it doesn't crash -->
+    <script>
+      window.process = window.process || {};
+      window.process.env = {
+        ...(window.process.env || {}),
+        NODE_ENV: 'production',
+        // This placeholder prevents the app from crashing on load.
+        // The AI Chat will only work if you replace this with a real Gemini API Key.
+        API_KEY: 'dummy-key-to-allow-render'
+      };
+    </script>
+
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
