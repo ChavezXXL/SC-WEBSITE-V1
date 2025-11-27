@@ -3,7 +3,8 @@ import { GoogleGenAI } from "@google/genai";
 
 // Initialize Gemini
 // NOTE: In a real environment, ensure process.env.API_KEY is set.
-const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+// We provide a fallback 'dummy-key' so the app renders even if the key is missing.
+const ai = new GoogleGenAI({ apiKey: process.env.API_KEY || "dummy-key" });
 
 // Default instruction if none provided
 export const DEFAULT_SYSTEM_INSTRUCTION = `
@@ -45,6 +46,7 @@ export const sendChatMessage = async (
 
   } catch (error) {
     console.error("Gemini API Error:", error);
-    throw error;
+    // Return a friendly error message instead of throwing, so the UI handles it gracefully
+    return "I am currently running in demo mode (no API key detected). Please configure the API Key to enable live AI responses.";
   }
 };
