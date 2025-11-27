@@ -9,7 +9,7 @@ interface GalleryProps {
   onBack: () => void;
 }
 
-const GalleryCard: React.FC<{ item: GalleryItem, index: number, onClick: () => void }> = ({ item, index, onClick }) => {
+const GalleryCard = ({ item, index, onClick }: { item: GalleryItem, index: number, onClick: () => void }) => {
   const [loaded, setLoaded] = useState(false);
 
   return (

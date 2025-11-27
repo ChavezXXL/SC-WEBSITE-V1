@@ -4,6 +4,7 @@ import { Navbar } from './components/Navbar';
 import { Hero } from './components/Hero';
 import { Services } from './components/Services';
 import { Contact } from './components/Contact';
+import { AiConsultant } from './components/AiConsultant';
 import { Industries } from './components/Industries';
 import { Process } from './components/Process';
 import { Gallery } from './components/Gallery';
@@ -63,10 +64,7 @@ function App() {
     <DataProvider>
       <Preloader />
       <div className="min-h-screen bg-[#030305] text-white selection:bg-blue-500/30 selection:text-blue-200 font-sans">
-        <Navbar 
-          currentView={view === 'gallery' ? 'gallery' : 'home'} 
-          onChangeView={(v) => setView(v)} 
-        />
+        <Navbar currentView={view} onChangeView={(v) => setView(v)} />
         
         <main>
           {view === 'home' ? (
@@ -182,6 +180,8 @@ function App() {
              </button>
           </div>
         </footer>
+
+        <AiConsultant />
       </div>
     </DataProvider>
   );

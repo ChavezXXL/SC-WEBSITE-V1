@@ -36,7 +36,7 @@ const services: ServiceItem[] = [
 ];
 
 // Spotlight Card Component
-const SpotlightCard: React.FC<{ service: ServiceItem; index: number }> = ({ service, index }) => {
+const SpotlightCard = ({ service, index }: { service: ServiceItem; index: number }) => {
   const divRef = useRef<HTMLDivElement>(null);
   const [isFocused, setIsFocused] = useState(false);
   const [position, setPosition] = useState({ x: 0, y: 0 });

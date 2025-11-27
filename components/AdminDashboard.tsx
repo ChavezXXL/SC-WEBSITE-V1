@@ -1,7 +1,7 @@
 
 import React, { useState, useRef } from 'react';
 import { useData } from './DataContext';
-import { Trash2, Plus, Save, RotateCcw, Image, Lock, Layout, Upload, Loader2, X } from 'lucide-react';
+import { Trash2, Plus, Save, RotateCcw, Image, Bot, Lock, Layout, Upload, Loader2, X } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 interface AdminDashboardProps {
@@ -11,16 +11,19 @@ interface AdminDashboardProps {
 export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onExit }) => {
   const { 
     galleryItems, addGalleryItem, removeGalleryItem, 
+    aiInstruction, updateAiInstruction, 
     comparisonLeft, comparisonRight, updateComparisonImages,
     resetToDefaults 
   } = useData();
   
-  const [activeTab, setActiveTab] = useState<'gallery' | 'home'>('gallery');
+  const [activeTab, setActiveTab] = useState<'gallery' | 'ai' | 'home'>('gallery');
 
   // Form States
   const [newImageUrl, setNewImageUrl] = useState('');
   const [newImageTitle, setNewImageTitle] = useState('');
   const [isProcessing, setIsProcessing] = useState(false);
+  
+  const [tempAiInstruction, setTempAiInstruction] = useState(aiInstruction);
   
   // Home Editor States
   // Initialize with current context values (which are now the updated defaults if not overridden)
@@ -109,6 +112,11 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onExit }) => {
     alert('Home Page Images Updated Successfully!');
   };
 
+  const handleSaveAi = () => {
+    updateAiInstruction(tempAiInstruction);
+    alert('AI System Instruction Updated Successfully!');
+  };
+
   return (
     <div className="min-h-screen bg-[#050505] text-white flex flex-col font-sans">
       {/* Admin Header */}
@@ -156,6 +164,17 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onExit }) => {
               <Layout className="w-5 h-5" />
               <span className="font-medium">Home Editor</span>
             </button>
+            <button
+              onClick={() => setActiveTab('ai')}
+              className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all ${
+                activeTab === 'ai' 
+                  ? 'bg-purple-600/10 text-purple-400 border border-purple-600/20' 
+                  : 'text-zinc-400 hover:bg-zinc-900 hover:text-white'
+              }`}
+            >
+              <Bot className="w-5 h-5" />
+              <span className="font-medium">AI Configuration</span>
+            </button>
           </nav>
 
           <div className="absolute bottom-6 left-6">
@@ -197,6 +216,12 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onExit }) => {
                 className={`flex-1 py-2 text-sm font-medium rounded-md ${activeTab === 'home' ? 'bg-zinc-800 text-white' : 'text-zinc-500'}`}
             >
                 Home
+            </button>
+            <button 
+                onClick={() => setActiveTab('ai')}
+                className={`flex-1 py-2 text-sm font-medium rounded-md ${activeTab === 'ai' ? 'bg-zinc-800 text-white' : 'text-zinc-500'}`}
+            >
+                AI
             </button>
           </div>
 
@@ -397,6 +422,35 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onExit }) => {
                         </div>
                     </div>
                  </div>
+              </div>
+            )}
+
+            {activeTab === 'ai' && (
+              <div className="space-y-6">
+                <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-6">
+                    <div className="flex justify-between items-start mb-4">
+                        <div>
+                            <h2 className="text-lg font-bold flex items-center gap-2">
+                                <Bot className="w-5 h-5 text-purple-400" /> System Instruction
+                            </h2>
+                            <p className="text-sm text-zinc-400 mt-1">
+                                This defines the personality, knowledge, and behavior of the AI Consultant.
+                            </p>
+                        </div>
+                        <button 
+                            onClick={handleSaveAi}
+                            className="flex items-center gap-2 bg-green-600 hover:bg-green-500 text-white px-4 py-2 rounded-lg font-medium transition-colors"
+                        >
+                            <Save className="w-4 h-4" /> Save Changes
+                        </button>
+                    </div>
+                    
+                    <textarea 
+                        value={tempAiInstruction}
+                        onChange={(e) => setTempAiInstruction(e.target.value)}
+                        className="w-full h-[500px] bg-zinc-950 border border-zinc-700 rounded-lg p-4 font-mono text-sm text-zinc-300 focus:outline-none focus:border-purple-500 leading-relaxed"
+                    />
+                </div>
               </div>
             )}
           </motion.div>
