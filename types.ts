@@ -1,3 +1,4 @@
+
 import React from 'react';
 
 export interface ServiceItem {
@@ -21,25 +22,25 @@ export enum LoadingState {
   ERROR = 'ERROR'
 }
 
-export interface ChatMessage {
-  role: 'user' | 'model';
-  text: string;
-}
-
 export interface GalleryItem {
   id: number;
   url: string;
   title: string;
 }
 
+export interface ChatMessage {
+  role: 'user' | 'model';
+  text: string;
+}
+
 export interface DataContextType {
   galleryItems: GalleryItem[];
   addGalleryItem: (item: Omit<GalleryItem, 'id'>) => void;
   removeGalleryItem: (id: number) => void;
-  aiInstruction: string;
-  updateAiInstruction: (instruction: string) => void;
   comparisonLeft: string;
   comparisonRight: string;
   updateComparisonImages: (left: string, right: string) => void;
   resetToDefaults: () => void;
+  aiInstruction: string;
+  updateAiInstruction: (instruction: string) => void;
 }

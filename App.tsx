@@ -63,7 +63,10 @@ function App() {
     <DataProvider>
       <Preloader />
       <div className="min-h-screen bg-[#030305] text-white selection:bg-blue-500/30 selection:text-blue-200 font-sans">
-        <Navbar currentView={view} onChangeView={(v) => setView(v)} />
+        <Navbar 
+          currentView={view === 'gallery' ? 'gallery' : 'home'} 
+          onChangeView={(v) => setView(v)} 
+        />
         
         <main>
           {view === 'home' ? (

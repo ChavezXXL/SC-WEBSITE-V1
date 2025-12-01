@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Maximize2, X, Loader2 } from 'lucide-react';
+import { ArrowLeft, Maximize2, X, Loader2 } from 'lucide-react';
 import { useData } from './DataContext';
 import { GalleryItem } from '../types';
 
@@ -9,7 +9,7 @@ interface GalleryProps {
   onBack: () => void;
 }
 
-const GalleryCard = ({ item, index, onClick }: { item: GalleryItem, index: number, onClick: () => void }) => {
+const GalleryCard: React.FC<{ item: GalleryItem, index: number, onClick: () => void }> = ({ item, index, onClick }) => {
   const [loaded, setLoaded] = useState(false);
 
   return (
@@ -61,9 +61,6 @@ export const Gallery: React.FC<GalleryProps> = ({ onBack }) => {
   const [selectedImage, setSelectedImage] = useState<GalleryItem | null>(null);
 
   useEffect(() => {
-    // Scroll to top when gallery opens
-    window.scrollTo(0, 0);
-
     const handleEsc = (e: KeyboardEvent) => {
       if (e.key === 'Escape') setSelectedImage(null);
     };
@@ -74,6 +71,16 @@ export const Gallery: React.FC<GalleryProps> = ({ onBack }) => {
   return (
     <div className="min-h-screen bg-[#050505] text-white animate-in fade-in duration-700 font-sans">
       
+      <div className="fixed top-0 left-0 w-full z-40 p-6 bg-gradient-to-b from-black/80 to-transparent pointer-events-none">
+         <button 
+            onClick={onBack}
+            className="pointer-events-auto flex items-center gap-2 text-white/70 hover:text-white transition-colors group px-5 py-2.5 rounded-full border border-white/10 bg-black/40 backdrop-blur-md hover:bg-white/10"
+         >
+            <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
+            <span className="text-xs uppercase tracking-widest font-medium">Return Home</span>
+         </button>
+      </div>
+
       <div className="pt-32 pb-16 px-6 text-center">
         <motion.h2 
           initial={{ opacity: 0, y: 20 }}

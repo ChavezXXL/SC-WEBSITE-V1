@@ -113,12 +113,11 @@ export const ComparisonSection: React.FC = () => {
                   alt="Raw Machined Part" 
                   className="w-full h-full object-cover"
                   style={{ 
-                      // If specific photos are provided, we don't need heavy filters.
                       filter: isSimulation ? 'contrast(1.1) brightness(0.7) sepia(0.2) grayscale(0.2)' : undefined 
                   }}
                 />
                 
-                {/* SCRATCH TEXTURE OVERLAY - Keeps industrial feel */}
+                {/* SCRATCH TEXTURE OVERLAY */}
                 <div 
                     className="absolute inset-0 opacity-30 mix-blend-overlay pointer-events-none"
                     style={{
@@ -126,15 +125,19 @@ export const ComparisonSection: React.FC = () => {
                     }}
                 ></div>
                 
-                {/* Label */}
-                <div className="absolute bottom-6 right-6 z-10 px-4 py-2 bg-black/60 backdrop-blur-md border border-white/10 rounded-lg">
-                  <span className="text-xs font-mono text-zinc-400 uppercase tracking-widest">Machined (Raw)</span>
+                {/* Label - RAW */}
+                {/* Fixed: Fades out sooner (at 85%) so it doesn't bleed through */}
+                <div 
+                    className="absolute bottom-4 right-4 md:bottom-6 md:right-6 z-10 px-3 py-1.5 md:px-4 md:py-2 bg-black/60 backdrop-blur-md border border-white/10 rounded-lg transition-opacity duration-300 pointer-events-none"
+                    style={{ opacity: sliderPosition > 85 ? 0 : 1 }}
+                >
+                  <span className="text-[10px] md:text-xs font-mono text-zinc-400 uppercase tracking-widest whitespace-nowrap">Machined (Raw)</span>
                 </div>
               </div>
 
               {/* IMAGE: FOREGROUND (LEFT SIDE - FINISHED) - CLIPPED */}
               <div 
-                className="absolute inset-0 overflow-hidden bg-[#080808]"
+                className="absolute inset-0 overflow-hidden bg-[#080808] z-20"
                 style={{ width: `${sliderPosition}%` }}
               >
                 <img 
@@ -142,8 +145,6 @@ export const ComparisonSection: React.FC = () => {
                   alt="Deburred Finished Part" 
                   className="h-full object-cover max-w-none"
                   style={{ 
-                      // Logic: If containerWidth is available, use it. 
-                      // Fallback to 100vw to ensure image is never 0 width (which makes it invisible)
                       width: containerWidth ? `${containerWidth}px` : '100vw', 
                       minWidth: '100%',
                       filter: isSimulation ? 'contrast(1.25) brightness(1.15) saturate(1.1) hue-rotate(-5deg)' : undefined
@@ -156,9 +157,12 @@ export const ComparisonSection: React.FC = () => {
                 {/* Cut Line */}
                 <div className="absolute right-0 top-0 bottom-0 w-[2px] bg-white/80 shadow-[0_0_20px_rgba(255,255,255,0.8)] z-20"></div>
 
-                {/* Label */}
-                <div className="absolute bottom-6 left-6 z-10 px-4 py-2 bg-[#00FFBD]/10 backdrop-blur-md border border-[#00FFBD]/30 rounded-lg">
-                  <span className="text-xs font-mono text-[#00FFBD] uppercase tracking-widest flex items-center gap-2">
+                {/* Label - FINISH */}
+                <div 
+                    className="absolute bottom-4 left-4 md:bottom-6 md:left-6 z-10 px-3 py-1.5 md:px-4 md:py-2 bg-[#00FFBD]/10 backdrop-blur-md border border-[#00FFBD]/30 rounded-lg transition-opacity duration-300 pointer-events-none"
+                    style={{ opacity: sliderPosition < 15 ? 0 : 1 }}
+                >
+                  <span className="text-[10px] md:text-xs font-mono text-[#00FFBD] uppercase tracking-widest flex items-center gap-2 whitespace-nowrap">
                     <CheckCircle2 className="w-3 h-3" />
                     Deburred (Finish)
                   </span>
@@ -189,15 +193,15 @@ export const ComparisonSection: React.FC = () => {
                <span className="text-[#00FFBD] text-xs font-bold uppercase tracking-widest">Edge Retention Technology</span>
             </div>
 
-            <h2 className="text-4xl md:text-5xl font-bold text-white mb-6 font-space leading-[1.1]">
-              Preserve Critical <br />
+            <h2 className="text-3xl md:text-5xl font-bold text-white mb-6 font-space leading-tight">
+              Protect Your Critical <br />
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-white to-zinc-600">
                 Dimensions.
               </span>
             </h2>
 
             <p className="text-lg text-zinc-400 mb-8 leading-relaxed font-light">
-              Aggressive finishing often degrades part tolerances. Our proprietary process removes burrs with surgical precision, maintaining corner radii within <span className="text-white font-medium">0.002"</span>. We target the imperfection, preserving the integrity of your design.
+              Deburring should never change your tolerances. Our process removes burrs with controlled precision while holding corner radii to within <span className="text-white font-medium">0.002"</span>, keeping your part true to its design.
             </p>
 
             <div className="space-y-8">
@@ -206,9 +210,12 @@ export const ComparisonSection: React.FC = () => {
                   <span className="text-white font-mono text-lg font-bold">01</span>
                 </div>
                 <div>
-                  <h4 className="text-white font-bold text-lg mb-2 group-hover:text-[#00FFBD] transition-colors">Micro-Precision Removal</h4>
+                  <h4 className="text-white font-bold text-lg mb-2 group-hover:text-[#00FFBD] transition-colors leading-tight">
+                    Controlled Burr Removal <br className="hidden md:block"/>
+                    <span className="text-sm font-normal text-zinc-500 inline-block mt-1">(Microscope-Verified)</span>
+                  </h4>
                   <p className="text-zinc-500 text-sm leading-relaxed">
-                    Advanced abrasion technology targets the burr at a microscopic level, ensuring the base geometry remains untouched.
+                    We remove the burr only. Each critical edge is inspected under a microscope to ensure no surrounding material is disturbed.
                   </p>
                 </div>
               </div>
@@ -218,9 +225,11 @@ export const ComparisonSection: React.FC = () => {
                   <span className="text-white font-mono text-lg font-bold">02</span>
                 </div>
                 <div>
-                  <h4 className="text-white font-bold text-lg mb-2 group-hover:text-[#00FFBD] transition-colors">Absolute Repeatability</h4>
+                  <h4 className="text-white font-bold text-lg mb-2 group-hover:text-[#00FFBD] transition-colors leading-tight">
+                    Consistent, Repeatable Quality
+                  </h4>
                   <p className="text-zinc-500 text-sm leading-relaxed">
-                    Identical results from the first part to the millionth. We eliminate the unpredictability of manual finishing.
+                    From small batches to runs in the thousands, every part receives the same precise finish with no variation.
                   </p>
                 </div>
               </div>
