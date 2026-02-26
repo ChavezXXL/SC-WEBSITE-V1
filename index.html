@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en" class="scroll-smooth">
   <head>
@@ -71,6 +72,7 @@
   }
 }
 </script>
+<link rel="stylesheet" href="/index.css">
 </head>
   <body>
     <div id="root"></div>
@@ -78,8 +80,8 @@
 
     <!-- NETLIFY FORMS CONFIGURATION -->
     <!-- This hidden form tells Netlify to expect these fields -->
-    <!-- It must be in the HTML for the build bots to see it -->
-    <form name="contact" data-netlify="true" hidden>
+    <!-- ADDED: enctype="multipart/form-data" for file support -->
+    <form name="contact" data-netlify="true" enctype="multipart/form-data" hidden>
       <input type="text" name="name" />
       <input type="email" name="email" />
       <input type="text" name="service" />

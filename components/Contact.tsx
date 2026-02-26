@@ -1,13 +1,14 @@
+
 import React, { useState, useRef } from 'react';
-import { Mail, Phone, MapPin, Check, Send, Loader2, UploadCloud, FileText, X } from 'lucide-react';
+import { Mail, Phone, MapPin, Check, UploadCloud, FileText, X, ArrowRight } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 
 export const Contact: React.FC = () => {
   const [copiedPhone, setCopiedPhone] = useState(false);
   const [copiedEmail, setCopiedEmail] = useState(false);
   const [copiedAddress, setCopiedAddress] = useState(false);
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle');
   const [fileName, setFileName] = useState<string | null>(null);
+  const [showFileReminder, setShowFileReminder] = useState(false);
 
   // Form State
   const [formData, setFormData] = useState({
@@ -43,46 +44,44 @@ export const Contact: React.FC = () => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  // --- NETLIFY FORM SUBMISSION LOGIC ---
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setIsSubmitting(true);
-    setSubmitStatus('idle');
+  const openEmailDraft = () => {
+    const subject = encodeURIComponent(`Project Inquiry: ${formData.service} - ${formData.name}`);
+    
+    let rawBody = `Name: ${formData.name}\n`;
+    rawBody += `Email: ${formData.email}\n`;
+    rawBody += `Service: ${formData.service}\n\n`;
+    rawBody += `Project Details:\n${formData.details}\n\n`;
+    
+    if (fileName) {
+        rawBody += `\n[ATTACHMENT REMINDER: Please attach the file "${fileName}" manually to this email]`;
+    }
 
-    try {
-      const form = e.currentTarget;
-      // Create FormData from the form element (automatically includes file inputs)
-      const data = new FormData(form);
-      
-      // Essential for Netlify to route this correctly
-      data.set('form-name', 'contact'); 
-
-      const response = await fetch('/', {
-        method: 'POST',
-        body: data,
-      });
-
-      if (response.ok) {
-        setSubmitStatus('success');
-        // Reset form
+    const body = encodeURIComponent(rawBody);
+    window.location.href = `mailto:SCPRECISIONDEBURRING@GMAIL.COM?subject=${subject}&body=${body}`;
+    setShowFileReminder(false);
+    
+    // Reset form after a brief delay to allow the mailto to fire
+    setTimeout(() => {
         setFormData({ name: '', email: '', service: 'Microscope Deburring', details: '' });
         setFileName(null);
         if (fileInputRef.current) fileInputRef.current.value = '';
-      } else {
-        throw new Error('Form submission failed');
-      }
-    } catch (error) {
-      console.error('Submission error:', error);
-      setSubmitStatus('error');
-    } finally {
-      setIsSubmitting(false);
+    }, 1000);
+  };
+
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (fileName) {
+        setShowFileReminder(true);
+    } else {
+        openEmailDraft();
     }
   };
 
   return (
-    <section id="contact" className="py-24 bg-zinc-950 border-t border-zinc-900">
+    <section id="contact" className="py-24 bg-zinc-950 border-t border-zinc-900 relative">
       <div className="container mx-auto px-6">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16">
+          {/* Left Column - Contact Info */}
           <div>
             <h2 className="text-4xl font-bold text-white mb-6">Let's discuss your project.</h2>
             <p className="text-zinc-400 mb-10 text-lg">
@@ -146,16 +145,12 @@ export const Contact: React.FC = () => {
             </div>
           </div>
 
+          {/* Right Column - Form */}
           <div className="glass-panel p-8 rounded-2xl border border-white/5">
               <form 
-                name="contact" 
-                method="POST" 
                 onSubmit={handleSubmit}
                 className="space-y-6" 
               >
-                {/* Netlify Hidden Input */}
-                <input type="hidden" name="form-name" value="contact" />
-
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="space-y-2">
                     <label className="text-xs font-semibold text-zinc-500 uppercase tracking-wider">Full Name</label>
@@ -259,38 +254,74 @@ export const Contact: React.FC = () => {
                     </div>
                 </div>
 
-                {/* Feedback Messages */}
-                {submitStatus === 'success' && (
-                    <div className="bg-green-500/10 border border-green-500/20 text-green-400 px-4 py-3 rounded-lg text-sm flex items-center gap-2 animate-in fade-in">
-                        <Check className="w-4 h-4" /> Message Sent Successfully! We will reply shortly.
-                    </div>
-                )}
-                {submitStatus === 'error' && (
-                    <div className="bg-red-500/10 border border-red-500/20 text-red-400 px-4 py-3 rounded-lg text-sm animate-in fade-in">
-                        Something went wrong. Please email us directly at SCPRECISIONDEBURRING@GMAIL.COM
-                    </div>
-                )}
-
+                {/* Submit Button */}
                 <button 
                   type="submit" 
-                  disabled={isSubmitting}
-                  className="w-full bg-blue-600 hover:bg-blue-500 disabled:bg-blue-600/50 disabled:cursor-not-allowed text-white font-bold py-4 rounded-lg transition-all transform active:scale-[0.98] shadow-lg shadow-blue-900/20 flex items-center justify-center gap-2"
+                  className="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-4 rounded-lg transition-all transform active:scale-[0.98] shadow-lg shadow-blue-900/20 flex items-center justify-center gap-2 group"
                 >
-                  {isSubmitting ? (
-                      <>
-                          <Loader2 className="w-5 h-5 animate-spin" />
-                          Sending Securely...
-                      </>
-                  ) : (
-                      <>
-                          Submit Request <Send className="w-4 h-4" />
-                      </>
-                  )}
+                  <Mail className="w-5 h-5" />
+                  Compose Email Request
+                  <ArrowRight className="w-4 h-4 opacity-50 group-hover:translate-x-1 transition-transform" />
                 </button>
+                <p className="text-center text-xs text-zinc-500">
+                    Opens your default email client with your details pre-filled.
+                </p>
               </form>
           </div>
         </div>
       </div>
+
+      {/* Attachment Reminder Modal */}
+      <AnimatePresence>
+        {showFileReminder && (
+          <motion.div
+             initial={{ opacity: 0 }}
+             animate={{ opacity: 1 }}
+             exit={{ opacity: 0 }}
+             className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm"
+             onClick={() => setShowFileReminder(false)}
+          >
+             <motion.div
+                initial={{ scale: 0.9, y: 20 }}
+                animate={{ scale: 1, y: 0 }}
+                exit={{ scale: 0.9, y: 20 }}
+                className="bg-zinc-900 border border-amber-500/30 p-8 rounded-2xl max-w-md w-full shadow-2xl relative overflow-hidden"
+                onClick={(e) => e.stopPropagation()}
+             >
+                <div className="absolute top-0 left-0 w-full h-1 bg-amber-500"></div>
+                
+                <div className="flex flex-col items-center text-center">
+                    <div className="w-16 h-16 bg-amber-500/10 rounded-full flex items-center justify-center mb-4">
+                        <UploadCloud className="w-8 h-8 text-amber-500" />
+                    </div>
+                    
+                    <h3 className="text-xl font-bold text-white mb-2">Manual Attachment Required</h3>
+                    
+                    <p className="text-zinc-400 text-sm leading-relaxed mb-6">
+                        Due to browser security policies, we cannot automatically attach files to your email draft.
+                        <br/><br/>
+                        Please remember to manually attach <span className="text-white font-bold bg-zinc-800 px-2 py-0.5 rounded">{fileName}</span> once your email app opens.
+                    </p>
+
+                    <div className="flex gap-3 w-full">
+                        <button 
+                            onClick={() => setShowFileReminder(false)}
+                            className="flex-1 py-3 bg-zinc-800 text-zinc-300 hover:text-white rounded-lg font-medium transition-colors"
+                        >
+                            Cancel
+                        </button>
+                        <button 
+                            onClick={openEmailDraft}
+                            className="flex-1 py-3 bg-amber-500 hover:bg-amber-600 text-black font-bold rounded-lg transition-colors flex items-center justify-center gap-2"
+                        >
+                            I Understand, Open Email
+                        </button>
+                    </div>
+                </div>
+             </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </section>
   );
 };
