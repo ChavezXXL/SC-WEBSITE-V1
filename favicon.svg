@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <defs>
+    <radialGradient id="bg" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#0a1628"/>
+      <stop offset="100%" stop-color="#000000"/>
+    </radialGradient>
+  </defs>
+  <rect width="64" height="64" rx="14" fill="url(#bg)"/>
+  <g transform="translate(32,32)">
+    <!-- Globe circle -->
+    <circle cx="0" cy="0" r="20" fill="none" stroke="#2196F3" stroke-width="2.5" opacity="0.8"/>
+    <!-- Globe horizontal line -->
+    <ellipse cx="0" cy="0" rx="20" ry="8" fill="none" stroke="#2196F3" stroke-width="1.5" opacity="0.5"/>
+    <!-- Globe vertical line -->
+    <ellipse cx="0" cy="0" rx="8" ry="20" fill="none" stroke="#2196F3" stroke-width="1.5" opacity="0.5"/>
+    <!-- Arrow swoosh -->
+    <path d="M-14,12 Q-2,20 16,-8" fill="none" stroke="#2196F3" stroke-width="2.5" stroke-linecap="round"/>
+    <polygon points="16,-8 12,-2 18,-3" fill="#2196F3"/>
+    <!-- SC Text -->
+    <text x="0" y="4" text-anchor="middle" font-family="Arial Black,Arial,sans-serif" font-weight="900" font-size="16" fill="white" letter-spacing="1">SC</text>
+  </g>
+</svg>

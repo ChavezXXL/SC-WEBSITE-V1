@@ -33,13 +33,13 @@ const features = [
 export const Process: React.FC = () => {
   return (
     <section id="process" className="relative min-h-screen py-24 bg-[#030305] overflow-hidden flex items-center justify-center">
-      
+
       {/* Background Tech Grid Pattern */}
-      <div 
-        className="absolute inset-0 opacity-[0.03] pointer-events-none" 
-        style={{ 
-          backgroundImage: `linear-gradient(#fff 1px, transparent 1px), linear-gradient(90deg, #fff 1px, transparent 1px)`, 
-          backgroundSize: '40px 40px' 
+      <div
+        className="absolute inset-0 opacity-[0.03] pointer-events-none"
+        style={{
+          backgroundImage: `linear-gradient(#fff 1px, transparent 1px), linear-gradient(90deg, #fff 1px, transparent 1px)`,
+          backgroundSize: '40px 40px'
         }}
       />
 
@@ -48,7 +48,7 @@ export const Process: React.FC = () => {
 
       <div className="container mx-auto px-6 relative z-10">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-          
+
           {/* Left Column: Text Content */}
           <div className="flex flex-col justify-center text-left">
             <motion.div
@@ -57,11 +57,11 @@ export const Process: React.FC = () => {
               viewport={{ once: true }}
               className="inline-flex items-center gap-2 mb-4"
             >
-                <div className="w-2 h-2 rounded-full bg-[#00FFBD] animate-pulse"></div>
-                <span className="text-[#00FFBD] font-mono text-xs tracking-widest uppercase">Process Capability</span>
+              <div className="w-2 h-2 rounded-full bg-[#00FFBD] animate-pulse"></div>
+              <span className="text-[#00FFBD] font-mono text-xs tracking-widest uppercase">Process Capability</span>
             </motion.div>
 
-            <motion.h2 
+            <motion.h2
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
@@ -73,8 +73,8 @@ export const Process: React.FC = () => {
                 Every Single Part.
               </span>
             </motion.h2>
-            
-            <motion.p 
+
+            <motion.p
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
@@ -83,16 +83,16 @@ export const Process: React.FC = () => {
             >
               From aerospace components to medical devices, we engineer the finish that defines performance.
             </motion.p>
-            
+
             <div className="space-y-8 border-l border-zinc-800 pl-8 relative">
               <div className="absolute left-0 top-0 w-[1px] h-16 bg-gradient-to-b from-[#00FFBD] to-transparent"></div>
-              
+
               {[
                 { label: "Expert Craftsmanship", text: "Synergizing advanced tooling with skilled hands to achieve finishes machines cannot duplicate." },
                 { label: "Quality Assurance", text: "From prototype to full-scale production, every part undergoes rigorous inspection." },
                 { label: "Mission-Critical", text: "When failure is not an option, we are the final step in ensuring operational integrity." }
               ].map((point, idx) => (
-                <motion.div 
+                <motion.div
                   key={idx}
                   initial={{ opacity: 0, x: -20 }}
                   whileInView={{ opacity: 1, x: 0 }}
@@ -109,8 +109,8 @@ export const Process: React.FC = () => {
 
           {/* Right Column: Card Grid */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 relative">
-             {/* Decorative Corner */}
-             <div className="absolute -top-4 -right-4 w-24 h-24 bg-gradient-to-bl from-[#00FFBD]/20 to-transparent rounded-bl-3xl blur-2xl pointer-events-none"></div>
+            {/* Decorative Corner */}
+            <div className="absolute -top-4 -right-4 w-24 h-24 bg-gradient-to-bl from-[#00FFBD]/20 to-transparent rounded-bl-3xl blur-2xl pointer-events-none"></div>
 
             {features.map((feature, idx) => (
               <motion.div

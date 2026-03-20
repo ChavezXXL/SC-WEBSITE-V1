@@ -1,6 +1,6 @@
 
 import React, { useState, useRef } from 'react';
-import { Mail, Phone, MapPin, Check, UploadCloud, FileText, X, ArrowRight } from 'lucide-react';
+import { Mail, Phone, MapPin, Check, UploadCloud, FileText, X, ArrowRight, Send, CheckCircle } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 export const Contact: React.FC = () => {
@@ -8,7 +8,8 @@ export const Contact: React.FC = () => {
   const [copiedEmail, setCopiedEmail] = useState(false);
   const [copiedAddress, setCopiedAddress] = useState(false);
   const [fileName, setFileName] = useState<string | null>(null);
-  const [showFileReminder, setShowFileReminder] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle');
 
   // Form State
   const [formData, setFormData] = useState({
@@ -19,6 +20,7 @@ export const Contact: React.FC = () => {
   });
 
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const formRef = useRef<HTMLFormElement>(null);
 
   const handleCopy = (text: string, type: 'phone' | 'email' | 'address') => {
     navigator.clipboard.writeText(text);
@@ -44,36 +46,52 @@ export const Contact: React.FC = () => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const openEmailDraft = () => {
-    const subject = encodeURIComponent(`Project Inquiry: ${formData.service} - ${formData.name}`);
-    
-    let rawBody = `Name: ${formData.name}\n`;
-    rawBody += `Email: ${formData.email}\n`;
-    rawBody += `Service: ${formData.service}\n\n`;
-    rawBody += `Project Details:\n${formData.details}\n\n`;
-    
-    if (fileName) {
-        rawBody += `\n[ATTACHMENT REMINDER: Please attach the file "${fileName}" manually to this email]`;
-    }
-
-    const body = encodeURIComponent(rawBody);
-    window.location.href = `mailto:SCPRECISIONDEBURRING@GMAIL.COM?subject=${subject}&body=${body}`;
-    setShowFileReminder(false);
-    
-    // Reset form after a brief delay to allow the mailto to fire
-    setTimeout(() => {
-        setFormData({ name: '', email: '', service: 'Microscope Deburring', details: '' });
-        setFileName(null);
-        if (fileInputRef.current) fileInputRef.current.value = '';
-    }, 1000);
-  };
-
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (fileName) {
-        setShowFileReminder(true);
-    } else {
-        openEmailDraft();
+    setIsSubmitting(true);
+    setSubmitStatus('idle');
+
+    const resetForm = () => {
+      setFormData({ name: '', email: '', service: 'Microscope Deburring', details: '' });
+      setFileName(null);
+      if (fileInputRef.current) fileInputRef.current.value = '';
+    };
+
+    try {
+      const form = formRef.current;
+      if (!form) return;
+
+      const data = new FormData(form);
+      data.set('form-name', 'contact');
+
+      const response = await fetch('/', {
+        method: 'POST',
+        body: data,
+      });
+
+      // In production (Netlify), a successful submission returns 200
+      // In local dev, Vite may return an error status — that's expected
+      const isLocalDev = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+
+      if (response.ok || isLocalDev) {
+        setSubmitStatus('success');
+        resetForm();
+        setTimeout(() => setSubmitStatus('idle'), 5000);
+      } else {
+        setSubmitStatus('error');
+      }
+    } catch {
+      // Network error — show success in dev, error in prod
+      const isLocalDev = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+      if (isLocalDev) {
+        setSubmitStatus('success');
+        resetForm();
+        setTimeout(() => setSubmitStatus('idle'), 5000);
+      } else {
+        setSubmitStatus('error');
+      }
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -89,11 +107,18 @@ export const Contact: React.FC = () => {
             </p>
 
             <div className="space-y-6">
-              {/* Phone */}
-              <div 
-                className="flex items-start gap-4 cursor-pointer group"
-                onClick={() => handleCopy('(818) 389-4234', 'phone')}
-                title="Click to copy phone number"
+              {/* Phone - tap to call on mobile, click to copy on desktop */}
+              <a
+                href="tel:+18183894234"
+                className="flex items-start gap-4 cursor-pointer group no-underline"
+                onClick={(e) => {
+                  // On desktop, copy instead of calling
+                  if (window.innerWidth > 768) {
+                    e.preventDefault();
+                    handleCopy('(818) 389-4234', 'phone');
+                  }
+                }}
+                title="Tap to call or click to copy"
               >
                 <div className="w-10 h-10 rounded-full bg-zinc-900 flex items-center justify-center border border-zinc-800 text-blue-400 group-hover:border-blue-500 transition-colors">
                   <Phone className="w-5 h-5" />
@@ -105,10 +130,10 @@ export const Contact: React.FC = () => {
                   </h4>
                   <p className="text-zinc-500 group-hover:text-blue-400 transition-colors">(818) 389-4234</p>
                 </div>
-              </div>
-              
+              </a>
+
               {/* Email */}
-              <div 
+              <div
                 className="flex items-start gap-4 cursor-pointer group"
                 onClick={() => handleCopy('SCPRECISIONDEBURRING@GMAIL.COM', 'email')}
                 title="Click to copy email address"
@@ -126,7 +151,7 @@ export const Contact: React.FC = () => {
               </div>
 
               {/* Address */}
-              <div 
+              <div
                 className="flex items-start gap-4 cursor-pointer group"
                  onClick={() => handleCopy('12734 Branford Street Unit #17', 'address')}
                  title="Click to copy address"
@@ -147,18 +172,25 @@ export const Contact: React.FC = () => {
 
           {/* Right Column - Form */}
           <div className="glass-panel p-8 rounded-2xl border border-white/5">
-              <form 
+              <form
+                ref={formRef}
+                name="contact"
+                method="POST"
+                data-netlify="true"
+                encType="multipart/form-data"
                 onSubmit={handleSubmit}
-                className="space-y-6" 
+                className="space-y-6"
               >
+                <input type="hidden" name="form-name" value="contact" />
+
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="space-y-2">
                     <label className="text-xs font-semibold text-zinc-500 uppercase tracking-wider">Full Name</label>
-                    <input 
-                      name="name" 
+                    <input
+                      name="name"
                       value={formData.name}
                       onChange={handleChange}
-                      type="text" 
+                      type="text"
                       required
                       className="w-full bg-zinc-900/50 border border-zinc-700 rounded-lg px-4 py-3 text-white focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 transition-all placeholder-zinc-600"
                       placeholder="John Doe"
@@ -166,11 +198,11 @@ export const Contact: React.FC = () => {
                   </div>
                   <div className="space-y-2">
                     <label className="text-xs font-semibold text-zinc-500 uppercase tracking-wider">Email Address</label>
-                    <input 
+                    <input
                       name="email"
                       value={formData.email}
                       onChange={handleChange}
-                      type="email" 
+                      type="email"
                       required
                       className="w-full bg-zinc-900/50 border border-zinc-700 rounded-lg px-4 py-3 text-white focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 transition-all placeholder-zinc-600"
                       placeholder="john@company.com"
@@ -181,7 +213,7 @@ export const Contact: React.FC = () => {
                 <div className="space-y-2">
                   <label className="text-xs font-semibold text-zinc-500 uppercase tracking-wider">Service Interest</label>
                   <div className="relative">
-                      <select 
+                      <select
                           name="service"
                           value={formData.service}
                           onChange={handleChange}
@@ -201,13 +233,13 @@ export const Contact: React.FC = () => {
 
                 <div className="space-y-2">
                   <label className="text-xs font-semibold text-zinc-500 uppercase tracking-wider">Project Details</label>
-                  <textarea 
+                  <textarea
                       name="details"
                       value={formData.details}
                       onChange={handleChange}
-                      rows={4} 
+                      rows={4}
                       required
-                      className="w-full bg-zinc-900/50 border border-zinc-700 rounded-lg px-4 py-3 text-white focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 transition-all placeholder-zinc-600 resize-none" 
+                      className="w-full bg-zinc-900/50 border border-zinc-700 rounded-lg px-4 py-3 text-white focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 transition-all placeholder-zinc-600 resize-none"
                       placeholder="Tell us about part materials, volumes, and requirements..."
                   ></textarea>
                 </div>
@@ -215,22 +247,22 @@ export const Contact: React.FC = () => {
                 {/* File Upload Section */}
                 <div className="space-y-2">
                     <label className="text-xs font-semibold text-zinc-500 uppercase tracking-wider">Attach Drawings/Prints</label>
-                    <div 
+                    <div
                         onClick={() => fileInputRef.current?.click()}
                         className="border-2 border-dashed border-zinc-700 rounded-lg p-6 flex flex-col items-center justify-center cursor-pointer hover:border-[#00FFBD]/50 hover:bg-zinc-900/50 transition-all group"
                     >
-                        <input 
-                            type="file" 
-                            name="attachment" 
-                            ref={fileInputRef} 
-                            className="hidden" 
+                        <input
+                            type="file"
+                            name="attachment"
+                            ref={fileInputRef}
+                            className="hidden"
                             onChange={handleFileChange}
                         />
                         {fileName ? (
                             <div className="flex items-center gap-3 bg-[#00FFBD]/10 px-4 py-2 rounded-full border border-[#00FFBD]/20">
                                 <FileText className="w-4 h-4 text-[#00FFBD]" />
                                 <span className="text-sm text-[#00FFBD] font-medium">{fileName}</span>
-                                <button 
+                                <button
                                     type="button"
                                     onClick={(e) => {
                                         e.stopPropagation();
@@ -254,74 +286,58 @@ export const Contact: React.FC = () => {
                     </div>
                 </div>
 
+                {/* Success Message */}
+                <AnimatePresence>
+                  {submitStatus === 'success' && (
+                    <motion.div
+                      initial={{ opacity: 0, y: -10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -10 }}
+                      className="flex items-center gap-3 bg-green-500/10 border border-green-500/20 rounded-lg px-4 py-3"
+                    >
+                      <CheckCircle className="w-5 h-5 text-green-400 flex-shrink-0" />
+                      <p className="text-sm text-green-300">Your inquiry has been sent successfully! We'll get back to you within 24 hours.</p>
+                    </motion.div>
+                  )}
+                  {submitStatus === 'error' && (
+                    <motion.div
+                      initial={{ opacity: 0, y: -10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -10 }}
+                      className="flex items-center gap-3 bg-red-500/10 border border-red-500/20 rounded-lg px-4 py-3"
+                    >
+                      <X className="w-5 h-5 text-red-400 flex-shrink-0" />
+                      <p className="text-sm text-red-300">Something went wrong. Please email us directly at SCPRECISIONDEBURRING@GMAIL.COM</p>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+
                 {/* Submit Button */}
-                <button 
-                  type="submit" 
-                  className="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-4 rounded-lg transition-all transform active:scale-[0.98] shadow-lg shadow-blue-900/20 flex items-center justify-center gap-2 group"
+                <button
+                  type="submit"
+                  disabled={isSubmitting}
+                  className="w-full bg-blue-600 hover:bg-blue-500 disabled:bg-blue-800 disabled:cursor-not-allowed text-white font-bold py-4 rounded-lg transition-all transform active:scale-[0.98] shadow-lg shadow-blue-900/20 flex items-center justify-center gap-2 group"
                 >
-                  <Mail className="w-5 h-5" />
-                  Compose Email Request
-                  <ArrowRight className="w-4 h-4 opacity-50 group-hover:translate-x-1 transition-transform" />
+                  {isSubmitting ? (
+                    <>
+                      <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                      Sending...
+                    </>
+                  ) : (
+                    <>
+                      <Send className="w-5 h-5" />
+                      Send Inquiry
+                      <ArrowRight className="w-4 h-4 opacity-50 group-hover:translate-x-1 transition-transform" />
+                    </>
+                  )}
                 </button>
                 <p className="text-center text-xs text-zinc-500">
-                    Opens your default email client with your details pre-filled.
+                    Your message is sent directly to our team. We respond within 24 hours.
                 </p>
               </form>
           </div>
         </div>
       </div>
-
-      {/* Attachment Reminder Modal */}
-      <AnimatePresence>
-        {showFileReminder && (
-          <motion.div
-             initial={{ opacity: 0 }}
-             animate={{ opacity: 1 }}
-             exit={{ opacity: 0 }}
-             className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm"
-             onClick={() => setShowFileReminder(false)}
-          >
-             <motion.div
-                initial={{ scale: 0.9, y: 20 }}
-                animate={{ scale: 1, y: 0 }}
-                exit={{ scale: 0.9, y: 20 }}
-                className="bg-zinc-900 border border-amber-500/30 p-8 rounded-2xl max-w-md w-full shadow-2xl relative overflow-hidden"
-                onClick={(e) => e.stopPropagation()}
-             >
-                <div className="absolute top-0 left-0 w-full h-1 bg-amber-500"></div>
-                
-                <div className="flex flex-col items-center text-center">
-                    <div className="w-16 h-16 bg-amber-500/10 rounded-full flex items-center justify-center mb-4">
-                        <UploadCloud className="w-8 h-8 text-amber-500" />
-                    </div>
-                    
-                    <h3 className="text-xl font-bold text-white mb-2">Manual Attachment Required</h3>
-                    
-                    <p className="text-zinc-400 text-sm leading-relaxed mb-6">
-                        Due to browser security policies, we cannot automatically attach files to your email draft.
-                        <br/><br/>
-                        Please remember to manually attach <span className="text-white font-bold bg-zinc-800 px-2 py-0.5 rounded">{fileName}</span> once your email app opens.
-                    </p>
-
-                    <div className="flex gap-3 w-full">
-                        <button 
-                            onClick={() => setShowFileReminder(false)}
-                            className="flex-1 py-3 bg-zinc-800 text-zinc-300 hover:text-white rounded-lg font-medium transition-colors"
-                        >
-                            Cancel
-                        </button>
-                        <button 
-                            onClick={openEmailDraft}
-                            className="flex-1 py-3 bg-amber-500 hover:bg-amber-600 text-black font-bold rounded-lg transition-colors flex items-center justify-center gap-2"
-                        >
-                            I Understand, Open Email
-                        </button>
-                    </div>
-                </div>
-             </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
     </section>
   );
 };

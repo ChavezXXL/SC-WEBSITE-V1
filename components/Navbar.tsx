@@ -90,7 +90,7 @@ export const Navbar: React.FC<NavbarProps> = ({ currentView, onChangeView }) => 
               {[
                 { name: 'Process', id: 'process', view: 'home' },
                 { name: 'Industries', id: 'industries', view: 'home' },
-                { name: 'Capabilities', id: 'services', view: 'home' },
+                { name: 'Services', id: 'services', view: 'home' },
                 { name: 'Gallery', id: undefined, view: 'gallery' },
               ].map((item) => (
                 <button 
