@@ -2,7 +2,6 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { Navbar } from './components/Navbar';
 import { Hero } from './components/Hero';
-import { Services } from './components/Services';
 import { Contact } from './components/Contact';
 import { Industries } from './components/Industries';
 import { Process } from './components/Process';
@@ -11,6 +10,10 @@ import { AdminDashboard } from './components/AdminDashboard';
 import { Preloader } from './components/Preloader';
 import { ComparisonSection } from './components/ComparisonSection';
 import { FAQ } from './components/FAQ';
+import { MicroscopeSection } from './components/MicroscopeSection';
+import { ManualSection } from './components/ManualSection';
+import { BlendingSection } from './components/BlendingSection';
+import { ServicesIntro } from './components/ServicesIntro';
 import { DataProvider } from './components/DataContext';
 import { Facebook, Instagram, Youtube, Lock, ArrowRight } from 'lucide-react';
 import { motion, useInView, animate } from 'framer-motion';
@@ -37,6 +40,13 @@ const Counter = ({ from, to, duration = 2, suffix = "" }: { from: number; to: nu
 
   return <div ref={nodeRef} className="text-4xl md:text-5xl font-bold text-white tracking-tighter tabular-nums" />;
 };
+
+// Visual breath between scroll-driven service sections
+const SectionGap: React.FC = () => (
+  <div className="relative h-32 md:h-40 bg-[#030305] flex items-center justify-center">
+    <div className="absolute left-1/2 -translate-x-1/2 top-0 bottom-0 w-px bg-gradient-to-b from-transparent via-[#00FFBD]/30 to-transparent" />
+  </div>
+);
 
 function App() {
   const [view, setView] = useState<'home' | 'gallery' | 'admin'>('home');
@@ -108,11 +118,16 @@ function App() {
                 <Industries />
               </div>
 
-              {/* Services Section with ID for navigation */}
+              {/* Services — intro + scroll-driven breakdowns (anchor for nav) */}
               <div id="services">
-                <Services />
+                <ServicesIntro />
+                <MicroscopeSection />
+                <SectionGap />
+                <ManualSection />
+                <SectionGap />
+                <BlendingSection />
               </div>
-              
+
               {/* Call to Action Strip */}
               <section className="py-32 md:py-44 relative overflow-hidden bg-gradient-to-b from-[#030305] via-[#0a1628] to-[#030305]">
                  <div className="container mx-auto px-6 relative z-10 flex flex-col items-center text-center">

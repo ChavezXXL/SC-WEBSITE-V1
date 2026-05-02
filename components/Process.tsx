@@ -1,141 +1,267 @@
 
-import React from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
-import { Zap, Target, Layers, Users } from 'lucide-react';
 
-const features = [
+type Feature = {
+  id: number;
+  ref: string;       // drawing reference, e.g. "DRG-01/04"
+  glyph: string;     // engineering glyph
+  glyphLabel: string;// what the glyph means (subtle caption)
+  stat: string;
+  statSuffix: string;
+  statLabel: string;
+  title: string;
+  description: string;
+};
+
+const features: Feature[] = [
   {
     id: 1,
+    ref: "DRG-01 / 04",
+    glyph: "▽",
+    glyphLabel: "Surface Finish",
+    stat: "24",
+    statSuffix: "HR",
+    statLabel: "Quote Turnaround",
     title: "Rapid Processing",
     description: "Fast turnaround times without sacrificing quality. We maintain your supply chain velocity.",
-    icon: <Zap className="w-8 h-8 text-[#00FFBD]" />
   },
   {
     id: 2,
+    ref: "DRG-02 / 04",
+    glyph: "±",
+    glyphLabel: "Tolerance",
+    stat: "100",
+    statSuffix: "%",
+    statLabel: "Inspection Rate",
     title: "Precision Focus",
     description: "Zero defects. Every edge is inspected to ensure compliance with your print specifications.",
-    icon: <Target className="w-8 h-8 text-[#00FFBD]" />
   },
   {
     id: 3,
+    ref: "DRG-03 / 04",
+    glyph: "Ø",
+    glyphLabel: "Diameter",
+    stat: "1—50K",
+    statSuffix: "",
+    statLabel: "Volume Range",
     title: "Adaptive Solutions",
     description: "Tailored processes for unique specifications, material types, and production volumes.",
-    icon: <Layers className="w-8 h-8 text-[#00FFBD]" />
   },
   {
     id: 4,
+    ref: "DRG-04 / 04",
+    glyph: "⌖",
+    glyphLabel: "True Position",
+    stat: "45",
+    statSuffix: "+",
+    statLabel: "Industry Years",
     title: "Decades of Expertise",
     description: "Built on deep industry knowledge. We deliver verified results and reliable service.",
-    icon: <Users className="w-8 h-8 text-[#00FFBD]" />
-  }
+  },
 ];
 
-export const Process: React.FC = () => {
+const VIDEO_SRC = "/videos/process-bg.mp4";
+const CROSSFADE_SECONDS = 1.2;
+
+const SpecCard: React.FC<{ feature: Feature; index: number }> = ({ feature, index }) => {
   return (
-    <section id="process" className="relative min-h-screen py-24 bg-[#030305] overflow-hidden flex items-center justify-center">
+    <motion.div
+      initial={{ opacity: 0, y: 30 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      transition={{ duration: 0.6, delay: index * 0.08 }}
+      className="group relative h-full"
+    >
+      {/* Hairline frame */}
+      <div className="relative h-full p-7 md:p-8 bg-[#06080a]/55 backdrop-blur-2xl border border-white/[0.09] group-hover:border-[#00FFBD]/40 transition-colors duration-500 overflow-hidden">
 
-      {/* Background Tech Grid Pattern */}
-      <div
-        className="absolute inset-0 opacity-[0.03] pointer-events-none"
-        style={{
-          backgroundImage: `linear-gradient(#fff 1px, transparent 1px), linear-gradient(90deg, #fff 1px, transparent 1px)`,
-          backgroundSize: '40px 40px'
-        }}
-      />
+        {/* Drafting corner ticks */}
+        <span aria-hidden className="absolute top-0 left-0 w-3 h-px bg-[#00FFBD]/50 group-hover:bg-[#00FFBD] transition-colors duration-500" />
+        <span aria-hidden className="absolute top-0 left-0 w-px h-3 bg-[#00FFBD]/50 group-hover:bg-[#00FFBD] transition-colors duration-500" />
+        <span aria-hidden className="absolute top-0 right-0 w-3 h-px bg-[#00FFBD]/50 group-hover:bg-[#00FFBD] transition-colors duration-500" />
+        <span aria-hidden className="absolute top-0 right-0 w-px h-3 bg-[#00FFBD]/50 group-hover:bg-[#00FFBD] transition-colors duration-500" />
+        <span aria-hidden className="absolute bottom-0 left-0 w-3 h-px bg-[#00FFBD]/50 group-hover:bg-[#00FFBD] transition-colors duration-500" />
+        <span aria-hidden className="absolute bottom-0 left-0 w-px h-3 bg-[#00FFBD]/50 group-hover:bg-[#00FFBD] transition-colors duration-500" />
+        <span aria-hidden className="absolute bottom-0 right-0 w-3 h-px bg-[#00FFBD]/50 group-hover:bg-[#00FFBD] transition-colors duration-500" />
+        <span aria-hidden className="absolute bottom-0 right-0 w-px h-3 bg-[#00FFBD]/50 group-hover:bg-[#00FFBD] transition-colors duration-500" />
 
-      {/* Background Glow */}
-      <div className="absolute top-[30%] left-[-10%] w-[600px] h-[600px] bg-[#00FFBD]/10 blur-[120px] rounded-full animate-pulse opacity-40 pointer-events-none" />
+        {/* Faint registration grid behind content */}
+        <div
+          aria-hidden
+          className="absolute inset-0 pointer-events-none opacity-[0.025]"
+          style={{
+            backgroundImage: `linear-gradient(#fff 1px, transparent 1px), linear-gradient(90deg, #fff 1px, transparent 1px)`,
+            backgroundSize: '20px 20px',
+          }}
+        />
+
+        {/* Top row: glyph + drawing ref */}
+        <div className="flex items-start justify-between mb-8 relative">
+          <div className="flex flex-col items-start">
+            <span className="font-serif text-5xl md:text-6xl text-[#00FFBD] leading-none select-none" style={{ fontFeatureSettings: '"ss01"' }}>
+              {feature.glyph}
+            </span>
+            <span className="mt-2 font-mono text-[9px] uppercase tracking-[0.3em] text-zinc-600">
+              {feature.glyphLabel}
+            </span>
+          </div>
+          <span className="font-mono text-[10px] uppercase tracking-[0.25em] text-zinc-600">
+            {feature.ref}
+          </span>
+        </div>
+
+        {/* Stat block */}
+        <div className="mb-6">
+          <div className="flex items-baseline gap-1">
+            <span className="text-[3.25rem] md:text-[3.75rem] font-black text-white tracking-tighter leading-none tabular-nums font-sans">
+              {feature.stat}
+            </span>
+            <span className="text-2xl md:text-3xl font-bold text-[#00FFBD] tracking-tight">
+              {feature.statSuffix}
+            </span>
+          </div>
+          <div className="mt-3 flex items-center gap-2">
+            <span className="block w-6 h-px bg-[#00FFBD]/60 group-hover:w-12 transition-all duration-500" />
+            <span className="font-mono text-[10px] uppercase tracking-[0.3em] text-zinc-500">
+              {feature.statLabel}
+            </span>
+          </div>
+        </div>
+
+        {/* Title + description */}
+        <div className="space-y-2.5">
+          <h3 className="text-base font-bold text-white uppercase tracking-[0.15em] group-hover:text-[#00FFBD] transition-colors duration-300">
+            {feature.title}
+          </h3>
+          <p className="text-sm text-zinc-400 leading-relaxed font-light group-hover:text-zinc-300 transition-colors">
+            {feature.description}
+          </p>
+        </div>
+
+        {/* Title-block divider line at very top — like a real drafting sheet */}
+        <div className="absolute top-12 left-7 right-7 h-px bg-white/[0.06] group-hover:bg-[#00FFBD]/20 transition-colors duration-500 pointer-events-none" />
+      </div>
+    </motion.div>
+  );
+};
+
+export const Process: React.FC = () => {
+  const videoARef = useRef<HTMLVideoElement>(null);
+  const videoBRef = useRef<HTMLVideoElement>(null);
+  const [activeVideo, setActiveVideo] = useState<'a' | 'b'>('a');
+
+  useEffect(() => {
+    const a = videoARef.current;
+    const b = videoBRef.current;
+    if (!a || !b) return;
+
+    a.play().catch(() => {});
+
+    const handleTimeUpdate = (which: 'a' | 'b') => () => {
+      const me = which === 'a' ? a : b;
+      const other = which === 'a' ? b : a;
+      if (!me.duration || isNaN(me.duration)) return;
+      if (me.currentTime >= me.duration - CROSSFADE_SECONDS) {
+        if (other.paused) {
+          other.currentTime = 0;
+          other.play().catch(() => {});
+          setActiveVideo(which === 'a' ? 'b' : 'a');
+        }
+      }
+    };
+
+    const aHandler = handleTimeUpdate('a');
+    const bHandler = handleTimeUpdate('b');
+    a.addEventListener('timeupdate', aHandler);
+    b.addEventListener('timeupdate', bHandler);
+
+    return () => {
+      a.removeEventListener('timeupdate', aHandler);
+      b.removeEventListener('timeupdate', bHandler);
+    };
+  }, []);
+
+  return (
+    <section id="process" className="relative min-h-screen py-32 md:py-40 bg-[#030305] overflow-hidden flex items-center justify-center scroll-mt-32">
+
+      {/* Video Background — dual elements crossfade for seamless infinite loop */}
+      <div className="absolute inset-0 pointer-events-none">
+        <video
+          ref={videoARef}
+          src={VIDEO_SRC}
+          muted
+          playsInline
+          preload="auto"
+          className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-[1200ms] ease-linear ${activeVideo === 'a' ? 'opacity-100' : 'opacity-0'}`}
+        />
+        <video
+          ref={videoBRef}
+          src={VIDEO_SRC}
+          muted
+          playsInline
+          preload="auto"
+          className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-[1200ms] ease-linear ${activeVideo === 'b' ? 'opacity-100' : 'opacity-0'}`}
+        />
+
+        {/* Vignette + brand-tint overlay */}
+        <div className="absolute inset-0 bg-[#030305]/55" />
+        <div className="absolute inset-0 bg-gradient-to-b from-[#030305] via-[#030305]/40 to-[#030305]" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_transparent_0%,_rgba(3,3,5,0.6)_70%,_#030305_100%)]" />
+        <div className="absolute inset-0 bg-gradient-to-r from-[#00FFBD]/[0.04] via-transparent to-[#00FFBD]/[0.04] mix-blend-screen" />
+
+        {/* Subtle tech grid */}
+        <div
+          className="absolute inset-0 opacity-[0.04]"
+          style={{
+            backgroundImage: `linear-gradient(#fff 1px, transparent 1px), linear-gradient(90deg, #fff 1px, transparent 1px)`,
+            backgroundSize: '48px 48px'
+          }}
+        />
+
+        {/* Brand glow */}
+        <div className="absolute top-[20%] left-[-15%] w-[600px] h-[600px] bg-[#00FFBD]/10 blur-[140px] rounded-full" />
+        <div className="absolute bottom-[10%] right-[-15%] w-[500px] h-[500px] bg-[#00FFBD]/8 blur-[140px] rounded-full" />
+      </div>
 
       <div className="container mx-auto px-6 relative z-10">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
 
-          {/* Left Column: Text Content */}
-          <div className="flex flex-col justify-center text-left">
-            <motion.div
-              initial={{ opacity: 0, x: -20 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              className="inline-flex items-center gap-2 mb-4"
-            >
-              <div className="w-2 h-2 rounded-full bg-[#00FFBD] animate-pulse"></div>
-              <span className="text-[#00FFBD] font-mono text-xs tracking-widest uppercase">Process Capability</span>
-            </motion.div>
+        {/* Centered Header (no pill) */}
+        <div className="max-w-4xl mx-auto text-center mb-20 md:mb-24">
+          <motion.h2
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8 }}
+            className="text-5xl md:text-7xl lg:text-8xl font-black text-white leading-[0.95] uppercase tracking-tight font-sans mb-6"
+          >
+            Precision and Reliability.<br />
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-white via-[#9affde] to-[#00FFBD]">
+              Every Single Part.
+            </span>
+          </motion.h2>
 
-            <motion.h2
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.8 }}
-              className="text-4xl md:text-6xl font-black text-white mb-6 leading-tight uppercase tracking-tight font-sans"
-            >
-              Precision and Reliability.<br/>
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-white to-[#00FFBD]">
-                Every Single Part.
-              </span>
-            </motion.h2>
+          <motion.p
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8, delay: 0.1 }}
+            className="text-lg md:text-xl text-zinc-300/90 font-light leading-relaxed max-w-2xl mx-auto"
+          >
+            From aerospace components to medical devices, we engineer the finish that defines performance.
+          </motion.p>
+        </div>
 
-            <motion.p
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.8, delay: 0.1 }}
-              className="text-xl text-zinc-300 font-light mb-10 max-w-lg leading-relaxed"
-            >
-              From aerospace components to medical devices, we engineer the finish that defines performance.
-            </motion.p>
-
-            <div className="space-y-8 border-l border-zinc-800 pl-8 relative">
-              <div className="absolute left-0 top-0 w-[1px] h-16 bg-gradient-to-b from-[#00FFBD] to-transparent"></div>
-
-              {[
-                { label: "Expert Craftsmanship", text: "Synergizing advanced tooling with skilled hands to achieve finishes machines cannot duplicate." },
-                { label: "Quality Assurance", text: "From prototype to full-scale production, every part undergoes rigorous inspection." },
-                { label: "Mission-Critical", text: "When failure is not an option, we are the final step in ensuring operational integrity." }
-              ].map((point, idx) => (
-                <motion.div
-                  key={idx}
-                  initial={{ opacity: 0, x: -20 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.6, delay: 0.2 + (idx * 0.1) }}
-                  className="group"
-                >
-                  <span className="block text-white font-bold text-lg uppercase mb-1 group-hover:text-[#00FFBD] transition-colors">{point.label}</span>
-                  <p className="text-zinc-500 text-base leading-relaxed group-hover:text-zinc-400 transition-colors">{point.text}</p>
-                </motion.div>
-              ))}
-            </div>
-          </div>
-
-          {/* Right Column: Card Grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 relative">
-            {/* Decorative Corner */}
-            <div className="absolute -top-4 -right-4 w-24 h-24 bg-gradient-to-bl from-[#00FFBD]/20 to-transparent rounded-bl-3xl blur-2xl pointer-events-none"></div>
-
-            {features.map((feature, idx) => (
-              <motion.div
-                key={feature.id}
-                initial={{ opacity: 0, scale: 0.95 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: idx * 0.1 }}
-                className="bg-[#0a0a0c] border border-zinc-800/50 hover:border-[#00FFBD]/50 p-8 rounded-xl hover:bg-zinc-900 transition-all duration-300 hover:shadow-[0_0_30px_rgba(0,255,189,0.1)] group"
-              >
-                <div className="mb-6 p-3 bg-zinc-900 w-fit rounded-lg group-hover:bg-[#00FFBD]/10 transition-colors">
-                  {feature.icon}
-                </div>
-                <h3 className="text-xl font-bold text-white mb-3 uppercase tracking-wide group-hover:text-[#00FFBD] transition-colors">
-                  {feature.title}
-                </h3>
-                <p className="text-zinc-500 leading-relaxed text-sm font-medium">
-                  {feature.description}
-                </p>
-              </motion.div>
-            ))}
-          </div>
-
+        {/* Engineering Spec Cards */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 md:gap-6 max-w-7xl mx-auto">
+          {features.map((feature, idx) => (
+            <SpecCard key={feature.id} feature={feature} index={idx} />
+          ))}
         </div>
       </div>
+
+      {/* Edge fade so cards transition smoothly into next section */}
+      <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-[#030305] to-transparent pointer-events-none" />
     </section>
   );
 };
