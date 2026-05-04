@@ -7,28 +7,28 @@ const overlays: Overlay[] = [
     position: 'left',
     enter: 0.06,
     exit: 0.26,
-    kicker: '01 / 03 — UNDER THE SCOPE',
-    title: 'Microscopic precision.',
-    body: 'Critical edges inspected and finished under 40× magnification — the kind of detail you can\'t see with the naked eye.',
-    stat: '40× MAGNIFICATION',
+    kicker: '01 / 03 — COMPLEX GEOMETRY',
+    title: 'Cross-drilled. Cross-bored. Done right.',
+    body: 'Manifolds, valve bodies, hydraulic fittings — parts with intersections where multiple bores meet. We remove the burrs at every intersection, without touching the bore itself.',
+    stat: 'INTERSECTING BORES',
   },
   {
     position: 'right',
     enter: 0.36,
     exit: 0.60,
-    kicker: '02 / 03 — TOLERANCE HELD',
-    title: 'Burr-free to ± 0.001"',
-    body: 'Controlled edge break, chamfer, and blend. We remove the burr only — your dimensions stay exactly as drawn.',
-    stat: '± 0.001 IN',
+    kicker: '02 / 03 — TIGHT TOLERANCE',
+    title: 'Burr off. Nothing else.',
+    body: 'Every burr removed, every dimension intact. The print stays as drawn — we don\'t break edges that aren\'t called out, and we don\'t round what was meant to stay sharp.',
+    stat: 'NO TOLERANCE LOSS',
   },
   {
     position: 'left',
     enter: 0.70,
     exit: 0.94,
-    kicker: '03 / 03 — VERIFIED',
-    title: 'Aerospace.',
-    body: 'Every critical edge verified, documented, and signed off before it leaves the bench. Inspection-ready, every job, every part.',
-    stat: 'INSPECTION-READY',
+    kicker: '03 / 03 — FOR FLIGHT-CRITICAL',
+    title: 'FOD doesn\'t fly.',
+    body: 'On aerospace fuel and hydraulic systems, a missed burr becomes a loose particle — and Foreign Object Debris inside a system ends a flight. Every cross-drill verified before pass-off.',
+    stat: 'FOD-FREE INSPECTION',
   },
 ];
 
@@ -36,9 +36,9 @@ const hud: Hud = {
   vignette: 'scope',
   reticle: false,
   live: true,
-  topLeft: 'MAG 40×',
-  topRight: 'OBJECTIVE 4.0× / NA 0.10',
-  bottomRight: 'OPERATOR · MICROSCOPE BENCH',
+  topLeft: 'BENCH 01 — SCOPE',
+  topRight: 'INSPECTION · UNDER MAGNIFICATION',
+  bottomRight: 'OPERATOR · SC-PRECISION',
   frameCounter: true,
 };
 
@@ -46,14 +46,14 @@ export const MicroscopeSection: React.FC = () => {
   return (
     <ServiceBreakdown
       id="service-microscope"
-      ref="SVC-01 / 04 — MICROSCOPE DEBURRING"
-      introKicker="SVC-01 / 04"
+      ref="SVC-01 / 03 — MICROSCOPE DEBURRING"
+      introKicker="SVC-01 / 03"
       introTitle="Microscope Deburring"
-      introBody="Finishing under magnification — for parts where details matter."
+      introBody="Complicated parts. Tight tolerances. Verified under magnification."
       framePath="/frames/microscope"
-      frameCount={298}
+      frameCount={303}
       frameExt=".jpg"
-      scrollVH={5}
+      scrollVH={4}
       overlays={overlays}
       hud={hud}
     />

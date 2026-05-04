@@ -7,28 +7,28 @@ const overlays: Overlay[] = [
     position: 'left',
     enter: 0.06,
     exit: 0.26,
-    kicker: '01 / 03 — SURFACE WORK',
-    title: 'Seamless transitions.',
-    body: 'Welds, tool marks, and parting lines blended into a continuous surface. The seam disappears, the part looks intentional.',
-    stat: 'NO VISIBLE TRANSITIONS',
+    kicker: '01 / 03 — TOOL MARKS GONE',
+    title: 'Machined marks, blended out.',
+    body: 'Machining lines, weld passes, parting witnesses — blended until the surface reads as one continuous piece. Tooling disappears. The part looks intentional.',
+    stat: 'SEAMLESS SURFACE',
   },
   {
     position: 'right',
     enter: 0.36,
     exit: 0.60,
-    kicker: '02 / 03 — MULTI-STAGE',
-    title: 'Coarse to mirror.',
-    body: 'Step-graded abrasives — each pass cleans up the marks left by the last. We finish to your spec, from satin to mirror.',
-    stat: 'SATIN → MIRROR',
+    kicker: '02 / 03 — WHY IT MATTERS',
+    title: 'Surface drives performance.',
+    body: 'In aerospace, a clean surface isn\'t cosmetic. Sharp edges concentrate stress and start fatigue cracks. Tool marks disrupt boundary-layer flow on airfoils. Burrs and ridges in fluid passages turn into FOD.',
+    stat: 'FATIGUE / FLOW / FOD',
   },
   {
     position: 'left',
     enter: 0.70,
     exit: 0.94,
-    kicker: '03 / 03 — APPLICATION',
-    title: 'Cosmetic & functional.',
-    body: 'Show parts that need to look engineered. Flow surfaces that need to perform. Aerospace, medical, and automotive — show finish.',
-    stat: 'READY TO SHIP',
+    kicker: '03 / 03 — FINISH TO SPEC',
+    title: 'Satin to mirror.',
+    body: 'Step-graded abrasive media — coarse through fine — matched to the finish your engineering print calls out. Cosmetic show parts and flow-critical surfaces both come off looking right.',
+    stat: 'MULTI-STAGE ABRASIVE',
   },
 ];
 
@@ -36,9 +36,9 @@ const hud: Hud = {
   vignette: 'soft',
   reticle: false,
   live: true,
-  topLeft: 'BENCH 03',
+  topLeft: 'BENCH 03 — BLEND',
   topRight: 'TECHNIQUE · SURFACE BLEND',
-  bottomRight: 'OPERATOR · BLENDING BENCH',
+  bottomRight: 'OPERATOR · SC-PRECISION',
   frameCounter: true,
 };
 
@@ -46,14 +46,14 @@ export const BlendingSection: React.FC = () => {
   return (
     <ServiceBreakdown
       id="service-blending"
-      ref="SVC-03 / 04 — BLENDING"
-      introKicker="SVC-03 / 04"
+      ref="SVC-03 / 03 — BLENDING"
+      introKicker="SVC-03 / 03"
       introTitle="Blending"
-      introBody="Seamless surface transitions — cosmetic and functional finishes."
+      introBody="Tool marks erased. Surface continuous. Built for the parts where it matters."
       framePath="/frames/blending"
-      frameCount={478}
+      frameCount={483}
       frameExt=".jpg"
-      scrollVH={5}
+      scrollVH={6}
       overlays={overlays}
       hud={hud}
     />

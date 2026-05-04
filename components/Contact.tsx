@@ -96,15 +96,35 @@ export const Contact: React.FC = () => {
   };
 
   return (
-    <section id="contact" className="py-24 bg-zinc-950 border-t border-zinc-900 relative">
+    <section id="contact" className="py-24 md:py-32 bg-zinc-950 border-t border-zinc-900 relative scroll-mt-32">
       <div className="container mx-auto px-6">
+
+        {/* Centered hero heading */}
+        <div className="max-w-4xl mx-auto text-center mb-20 md:mb-24">
+          <div className="flex items-center justify-center gap-3 mb-6">
+            <span className="block w-8 h-px bg-[#00FFBD]" />
+            <span className="font-mono text-[10px] uppercase tracking-[0.4em] text-[#00FFBD]">
+              Get In Touch
+            </span>
+            <span className="block w-8 h-px bg-[#00FFBD]" />
+          </div>
+          <h2
+            className="font-black text-white uppercase tracking-tight leading-[0.9] mb-6"
+            style={{ fontSize: 'clamp(2.75rem, 7vw, 6rem)' }}
+          >
+            Let's discuss your{' '}
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-white via-[#9affde] to-[#00FFBD]">
+              project.
+            </span>
+          </h2>
+          <p className="text-lg md:text-xl text-zinc-400 max-w-2xl mx-auto font-light leading-relaxed">
+            Reach out to our team for technical specs, lead times, or a custom quote. Most quotes back within 24 hours.
+          </p>
+        </div>
+
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16">
           {/* Left Column - Contact Info */}
           <div>
-            <h2 className="text-4xl font-bold text-white mb-6">Let's discuss your project.</h2>
-            <p className="text-zinc-400 mb-10 text-lg">
-              Reach out to our engineering team for technical specs, lead times, or a custom quote.
-            </p>
 
             <div className="space-y-6">
               {/* Phone - tap to call on mobile, click to copy on desktop */}

@@ -49,13 +49,13 @@ export type ServiceBreakdownProps = {
 };
 
 const positionClasses: Record<Overlay['position'], string> = {
-  center: 'top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 max-w-md',
-  left: 'top-1/2 left-[5%] -translate-y-1/2 max-w-xs',
-  right: 'top-1/2 right-[5%] -translate-y-1/2 max-w-xs',
-  'top-left': 'top-[14%] left-[5%] max-w-xs',
-  'top-right': 'top-[14%] right-[5%] max-w-xs',
-  'bottom-left': 'bottom-[10%] left-[5%] max-w-xs',
-  'bottom-right': 'bottom-[10%] right-[5%] max-w-xs',
+  center: 'top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[90vw] max-w-md',
+  left: 'top-1/2 left-[5%] right-[5%] md:right-auto -translate-y-1/2 md:max-w-xs',
+  right: 'top-1/2 left-[5%] right-[5%] md:left-auto -translate-y-1/2 md:max-w-xs',
+  'top-left': 'top-[18%] left-[5%] right-[5%] md:right-auto md:max-w-xs',
+  'top-right': 'top-[18%] left-[5%] right-[5%] md:left-auto md:max-w-xs',
+  'bottom-left': 'bottom-[14%] left-[5%] right-[5%] md:right-auto md:max-w-xs',
+  'bottom-right': 'bottom-[14%] left-[5%] right-[5%] md:left-auto md:max-w-xs',
 };
 
 export const ServiceBreakdown: React.FC<ServiceBreakdownProps> = ({
@@ -96,13 +96,14 @@ export const ServiceBreakdown: React.FC<ServiceBreakdownProps> = ({
     let cancelled = false;
     let n = 0;
 
+    const failedIdx: number[] = [];
+
     const loadOne = (idx: number) =>
       new Promise<void>((resolve) => {
         const img = new Image();
         img.decoding = 'async';
         img.onload = () => {
           if (cancelled) return resolve();
-          // Force decode upfront so first paint never stalls
           const finish = () => {
             if (cancelled) return resolve();
             imagesRef.current[idx] = img;
@@ -117,7 +118,11 @@ export const ServiceBreakdown: React.FC<ServiceBreakdownProps> = ({
             finish();
           }
         };
-        img.onerror = () => { n++; setLoadedCount(n); resolve(); };
+        img.onerror = () => {
+          // Track 404s for retry later (handles in-progress frame extraction)
+          if (!imagesRef.current[idx]) failedIdx.push(idx);
+          resolve();
+        };
         img.src = `${framePath}/frame_${String(idx + 1).padStart(4, '0')}${frameExt}`;
       });
 
@@ -129,7 +134,19 @@ export const ServiceBreakdown: React.FC<ServiceBreakdownProps> = ({
       }
     })();
 
-    return () => { cancelled = true; };
+    // Retry-loop: every 4s try any frames that 404'd. Self-heals when extraction completes.
+    const retryTimer = setInterval(() => {
+      if (cancelled || failedIdx.length === 0) return;
+      const batch = failedIdx.splice(0, 24);
+      batch.forEach((idx) => {
+        if (!imagesRef.current[idx]) loadOne(idx);
+      });
+    }, 4000);
+
+    return () => {
+      cancelled = true;
+      clearInterval(retryTimer);
+    };
   }, [framePath, frameCount, frameExt]);
 
   // ---- Scroll tracking + canvas drawing (with LERP smoothing) ----
@@ -160,6 +177,21 @@ export const ServiceBreakdown: React.FC<ServiceBreakdownProps> = ({
       ctx.drawImage(img, dx, dy, dw, dh);
     };
 
+    // Find the nearest loaded frame to a target index — graceful fallback
+    // when frames are still loading or have failed to fetch.
+    const nearestLoaded = (target: number): HTMLImageElement | null => {
+      const last = frameCount - 1;
+      if (imagesRef.current[target]) return imagesRef.current[target];
+      // Search outward — alternating before/after — for the nearest available frame
+      for (let d = 1; d <= last; d++) {
+        const before = target - d;
+        const after = target + d;
+        if (before >= 0 && imagesRef.current[before]) return imagesRef.current[before];
+        if (after <= last && imagesRef.current[after]) return imagesRef.current[after];
+      }
+      return null;
+    };
+
     const drawFrame = (frameFloat: number) => {
       const last = frameCount - 1;
       const f = Math.max(0, Math.min(last, frameFloat));
@@ -168,9 +200,10 @@ export const ServiceBreakdown: React.FC<ServiceBreakdownProps> = ({
       const t = f - a;
       const sig = `${a}_${(t * 100) | 0}`;
       if (sig === lastDrawSig) return;
-      const imgA = imagesRef.current[a];
-      const imgB = imagesRef.current[b];
-      if (!imgA && !imgB) return;
+      // Graceful fallback: if exact frame missing, snap to nearest loaded
+      const imgA = imagesRef.current[a] || nearestLoaded(a);
+      const imgB = imagesRef.current[b] || imgA; // if next is missing, just use A (no blend)
+      if (!imgA) return; // truly nothing loaded yet
       lastDrawSig = sig;
       currentFrameRef.current = a;
       const w = window.innerWidth;
@@ -309,12 +342,12 @@ export const ServiceBreakdown: React.FC<ServiceBreakdownProps> = ({
 
         {/* HUD: top-left status */}
         {(hud?.topLeft || hud?.live || hud?.frameCounter) && (
-          <div className="absolute top-6 left-6 z-10 flex items-center gap-3 font-mono text-[10px] uppercase tracking-[0.25em] text-[#00FFBD]/85">
+          <div className="absolute top-5 left-12 z-10 flex items-center gap-2.5 font-mono text-[9px] uppercase tracking-[0.3em] text-[#00FFBD]/55">
             {hud?.live && (
               <span className="flex items-center gap-1.5">
-                <span className="relative flex h-1.5 w-1.5">
-                  <span className="absolute inset-0 inline-flex h-full w-full rounded-full bg-[#00FFBD] opacity-75 animate-ping" />
-                  <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-[#00FFBD]" />
+                <span className="relative flex h-1 w-1">
+                  <span className="absolute inset-0 inline-flex h-full w-full rounded-full bg-[#00FFBD] opacity-60 animate-ping" />
+                  <span className="relative inline-flex rounded-full h-1 w-1 bg-[#00FFBD]" />
                 </span>
                 LIVE
               </span>
@@ -324,18 +357,18 @@ export const ServiceBreakdown: React.FC<ServiceBreakdownProps> = ({
           </div>
         )}
 
-        {/* HUD: top-right status */}
+        {/* HUD: top-right status — hidden on small screens to avoid clutter */}
         {hud?.topRight && (
-          <div className="absolute top-6 right-12 z-10 px-2.5 py-1 bg-black/70 backdrop-blur-md border border-[#00FFBD]/30">
-            <span className="font-mono text-[10px] uppercase tracking-[0.3em] text-[#00FFBD]">
+          <div className="hidden md:block absolute top-5 right-12 z-10">
+            <span className="font-mono text-[9px] uppercase tracking-[0.3em] text-[#00FFBD]/55">
               {hud.topRight}
             </span>
           </div>
         )}
 
-        {/* HUD: bottom-right status */}
+        {/* HUD: bottom-right status — hidden on small screens */}
         {hud?.bottomRight && (
-          <div className="absolute bottom-6 right-12 z-10 font-mono text-[10px] uppercase tracking-[0.25em] text-[#00FFBD]/70">
+          <div className="hidden md:block absolute bottom-5 right-12 z-10 font-mono text-[9px] uppercase tracking-[0.3em] text-[#00FFBD]/45">
             {hud.bottomRight}
           </div>
         )}
@@ -366,8 +399,8 @@ export const ServiceBreakdown: React.FC<ServiceBreakdownProps> = ({
         <span aria-hidden className="pointer-events-none absolute bottom-6 right-6 w-px h-4 bg-[#00FFBD]" />
 
         {drawingRef && (
-          <div className="absolute bottom-6 left-12 z-10 px-2.5 py-1 bg-black/70 backdrop-blur-md border border-[#00FFBD]/30">
-            <span className="font-mono text-[10px] uppercase tracking-[0.3em] text-[#00FFBD]">
+          <div className="absolute bottom-5 left-12 z-10">
+            <span className="font-mono text-[9px] uppercase tracking-[0.3em] text-[#00FFBD]/55">
               {drawingRef}
             </span>
           </div>

@@ -14,6 +14,7 @@ import { MicroscopeSection } from './components/MicroscopeSection';
 import { ManualSection } from './components/ManualSection';
 import { BlendingSection } from './components/BlendingSection';
 import { ServicesIntro } from './components/ServicesIntro';
+import { PrecisionCTA } from './components/PrecisionCTA';
 import { DataProvider } from './components/DataContext';
 import { Facebook, Instagram, Youtube, Lock, ArrowRight } from 'lucide-react';
 import { motion, useInView, animate } from 'framer-motion';
@@ -51,6 +52,11 @@ const SectionGap: React.FC = () => (
 function App() {
   const [view, setView] = useState<'home' | 'gallery' | 'admin'>('home');
   const [isAdminAuthOpen, setIsAdminAuthOpen] = useState(false);
+
+  // Always start at top when switching views
+  useEffect(() => {
+    window.scrollTo({ top: 0, left: 0, behavior: 'instant' as ScrollBehavior });
+  }, [view]);
 
   const handleAdminAccess = () => {
     const password = prompt("Enter Admin Password:");
@@ -129,66 +135,7 @@ function App() {
               </div>
 
               {/* Call to Action Strip */}
-              <section className="py-32 md:py-44 relative overflow-hidden bg-gradient-to-b from-[#030305] via-[#0a1628] to-[#030305]">
-                 <div className="container mx-auto px-6 relative z-10 flex flex-col items-center text-center">
-                   <div className="max-w-5xl">
-                     <motion.div
-                       initial={{ opacity: 0, y: 30 }}
-                       whileInView={{ opacity: 1, y: 0 }}
-                       viewport={{ once: true }}
-                       transition={{ duration: 0.8 }}
-                     >
-                       <p className="text-sm md:text-base uppercase tracking-[0.3em] text-blue-400 font-medium mb-6">The Standard We Set</p>
-                       <h2 className="text-4xl md:text-7xl lg:text-8xl font-bold mb-8 tracking-tight">
-                         <span className="text-white">Precision is </span>
-                         <span className="bg-gradient-to-r from-blue-400 via-cyan-300 to-teal-400 bg-clip-text text-transparent">not an option.</span>
-                       </h2>
-                       <p className="text-lg md:text-2xl text-zinc-400 mb-14 max-w-2xl mx-auto font-light leading-relaxed">
-                         It is the absolute requirement. We handle the finishing touches that ensure safety, performance, and longevity.
-                       </p>
-                     </motion.div>
-                     <motion.div
-                       initial={{ opacity: 0, y: 20 }}
-                       whileInView={{ opacity: 1, y: 0 }}
-                       viewport={{ once: true }}
-                       transition={{ duration: 0.8, delay: 0.2 }}
-                       className="flex flex-wrap justify-center gap-3 md:gap-4 mb-12"
-                     >
-                       {['Aerospace', 'Medical Devices', 'Automotive', 'Hydraulics'].map((tag) => (
-                          <span key={tag} className="px-5 md:px-7 py-2.5 border border-blue-500/20 bg-blue-500/5 rounded-full text-sm font-medium text-blue-200 hover:border-blue-400/50 hover:bg-blue-500/10 transition-all duration-300 cursor-default">
-                            {tag}
-                          </span>
-                       ))}
-                     </motion.div>
-                     <motion.div
-                       initial={{ opacity: 0 }}
-                       whileInView={{ opacity: 1 }}
-                       viewport={{ once: true }}
-                       transition={{ duration: 0.8, delay: 0.4 }}
-                     >
-                       <a
-                         href="#contact"
-                         onClick={(e) => { e.preventDefault(); document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' }); }}
-                         className="inline-flex items-center gap-3 px-8 py-4 bg-white text-black font-bold text-sm uppercase tracking-wider rounded-full hover:bg-blue-50 transition-all shadow-[0_0_30px_rgba(255,255,255,0.15)] hover:shadow-[0_0_50px_rgba(255,255,255,0.25)] transform hover:scale-105"
-                       >
-                         Get a Free Quote
-                         <ArrowRight className="w-4 h-4" />
-                       </a>
-                     </motion.div>
-                   </div>
-                 </div>
-
-                 {/* Animated Background */}
-                 <div className="absolute inset-0 overflow-hidden pointer-events-none">
-                    <div className="absolute top-[-30%] left-[-10%] w-[600px] h-[600px] rounded-full bg-blue-600/8 blur-[120px] animate-pulse"></div>
-                    <div className="absolute bottom-[-30%] right-[-10%] w-[700px] h-[700px] rounded-full bg-cyan-600/8 blur-[150px] animate-pulse" style={{ animationDelay: '1s' }}></div>
-                    <div className="absolute top-[20%] right-[20%] w-[300px] h-[300px] rounded-full bg-teal-500/5 blur-[100px] animate-pulse" style={{ animationDelay: '2s' }}></div>
-                 </div>
-
-                 {/* Decorative lines */}
-                 <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-blue-500/20 to-transparent"></div>
-                 <div className="absolute bottom-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-blue-500/20 to-transparent"></div>
-              </section>
+              <PrecisionCTA />
 
               {/* Contact Section with ID */}
               <div id="contact">
