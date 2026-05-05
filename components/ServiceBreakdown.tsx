@@ -74,11 +74,31 @@ export const ServiceBreakdown: React.FC<ServiceBreakdownProps> = ({
   const currentFrameRef = useRef<number>(-1);
   const [loadedCount, setLoadedCount] = useState(0);
   const [ready, setReady] = useState(false);
+  const [shouldLoad, setShouldLoad] = useState(false); // Lazy gate — only true when section near viewport
 
   const progress = useMotionValue(0);
 
+  // ---- Lazy gate: only start loading frames when section is within ~1.5 viewports ----
+  useEffect(() => {
+    const section = sectionRef.current;
+    if (!section) return;
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setShouldLoad(true);
+          io.disconnect();
+        }
+      },
+      { rootMargin: '150% 0px 150% 0px' },
+    );
+    io.observe(section);
+    return () => io.disconnect();
+  }, []);
+
   // ---- Frame preloading (progressive: first / last / mid then fill) ----
   useEffect(() => {
+    if (!shouldLoad) return;
+
     const order: number[] = [];
     const seen = new Set<number>();
     const push = (i: number) => {
@@ -147,7 +167,7 @@ export const ServiceBreakdown: React.FC<ServiceBreakdownProps> = ({
       cancelled = true;
       clearInterval(retryTimer);
     };
-  }, [framePath, frameCount, frameExt]);
+  }, [framePath, frameCount, frameExt, shouldLoad]);
 
   // ---- Scroll tracking + canvas drawing (with LERP smoothing) ----
   useEffect(() => {

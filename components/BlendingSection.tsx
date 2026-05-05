@@ -25,10 +25,10 @@ const overlays: Overlay[] = [
     position: 'left',
     enter: 0.70,
     exit: 0.94,
-    kicker: '03 / 03 — FINISH TO SPEC',
-    title: 'Satin to mirror.',
-    body: 'Step-graded abrasive media — coarse through fine — matched to the finish your engineering print calls out. Cosmetic show parts and flow-critical surfaces both come off looking right.',
-    stat: 'MULTI-STAGE ABRASIVE',
+    kicker: '03 / 03 — A HARD SKILL',
+    title: 'Mastered by hand.',
+    body: 'Blending is one of the hardest skills in the shop to get right. We\'ve done it long enough to call it ours — every abrasive grade matched to whatever finish your part calls for.',
+    stat: 'CRAFT, NOT MACHINE',
   },
 ];
 

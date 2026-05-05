@@ -216,7 +216,7 @@ export const FAQ: React.FC = () => {
             {/* Scrollable container with backdrop click-to-close. Backdrop & content live here. */}
             <div
               onClick={() => setOpen(false)}
-              className="absolute inset-0 overflow-y-auto overscroll-contain flex items-start md:items-center justify-center p-0 md:p-6"
+              className="absolute inset-0 overflow-y-auto overscroll-contain flex items-start justify-center px-4 py-6 md:px-6 md:py-12"
               style={{ WebkitOverflowScrolling: 'touch' }}
             >
               <motion.div
@@ -224,7 +224,7 @@ export const FAQ: React.FC = () => {
                 animate={{ scale: 1, y: 0, opacity: 1 }}
                 exit={{ scale: 0.97, y: 20, opacity: 0 }}
                 transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
-                className="relative w-full max-w-4xl bg-[#06080a] border border-white/[0.08] my-0 md:my-6 min-h-screen md:min-h-0"
+                className="relative w-full max-w-4xl bg-[#06080a] border border-white/[0.08] mb-12"
                 onClick={(e) => e.stopPropagation()}
               >
 

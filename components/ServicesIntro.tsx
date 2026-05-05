@@ -90,7 +90,7 @@ export const ServicesIntro: React.FC = () => {
         <div className="grid md:grid-cols-12 gap-y-12 md:gap-x-12 mb-20 md:mb-28">
 
           {/* LEFT: stacked title */}
-          <div className="md:col-span-7">
+          <div className="md:col-span-8">
             <motion.div
               initial={{ opacity: 0 }}
               whileInView={{ opacity: 1 }}
@@ -120,8 +120,8 @@ export const ServicesIntro: React.FC = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.7, delay: 0.2 }}
-                className="block text-transparent bg-clip-text bg-gradient-to-r from-white via-[#9affde] to-[#00FFBD]"
-                style={{ fontSize: 'clamp(5.5rem, 14vw, 12rem)' }}
+                className="block text-transparent bg-clip-text bg-gradient-to-r from-white via-[#9affde] to-[#00FFBD] pr-2 pb-2"
+                style={{ fontSize: 'clamp(4rem, 11vw, 9rem)', overflow: 'visible' }}
               >
                 Services.
               </motion.span>
@@ -129,7 +129,7 @@ export const ServicesIntro: React.FC = () => {
           </div>
 
           {/* RIGHT: tagline + lockup */}
-          <div className="md:col-span-5 flex md:items-end">
+          <div className="md:col-span-4 flex md:items-end">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
