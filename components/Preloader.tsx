@@ -14,6 +14,14 @@ export const Preloader = () => {
   const [progress, setProgress] = useState(0);
   const [phaseIdx, setPhaseIdx] = useState(0);
 
+  // Lock background scroll while preloader is up
+  useEffect(() => {
+    if (!isLoading) return;
+    const original = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    return () => { document.body.style.overflow = original; };
+  }, [isLoading]);
+
   useEffect(() => {
     const start = performance.now();
     const total = 1800;

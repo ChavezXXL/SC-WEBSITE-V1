@@ -192,35 +192,41 @@ export const FAQ: React.FC = () => {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.3 }}
-            className="fixed inset-0 z-[120] flex items-start md:items-center justify-center p-0 md:p-6 bg-[#030305]/95 backdrop-blur-2xl overflow-y-auto"
-            onClick={() => setOpen(false)}
+            className="fixed inset-0 z-[120] bg-[#030305]/95 backdrop-blur-2xl"
           >
             {/* Drafting tick corners */}
-            <span aria-hidden className="hidden md:block absolute top-6 left-6 w-4 h-px bg-[#00FFBD]" />
-            <span aria-hidden className="hidden md:block absolute top-6 left-6 w-px h-4 bg-[#00FFBD]" />
-            <span aria-hidden className="hidden md:block absolute top-6 right-6 w-4 h-px bg-[#00FFBD]" />
-            <span aria-hidden className="hidden md:block absolute top-6 right-6 w-px h-4 bg-[#00FFBD]" />
-            <span aria-hidden className="hidden md:block absolute bottom-6 left-6 w-4 h-px bg-[#00FFBD]" />
-            <span aria-hidden className="hidden md:block absolute bottom-6 left-6 w-px h-4 bg-[#00FFBD]" />
-            <span aria-hidden className="hidden md:block absolute bottom-6 right-6 w-4 h-px bg-[#00FFBD]" />
-            <span aria-hidden className="hidden md:block absolute bottom-6 right-6 w-px h-4 bg-[#00FFBD]" />
+            <span aria-hidden className="hidden md:block absolute top-6 left-6 w-4 h-px bg-[#00FFBD] z-10" />
+            <span aria-hidden className="hidden md:block absolute top-6 left-6 w-px h-4 bg-[#00FFBD] z-10" />
+            <span aria-hidden className="hidden md:block absolute top-6 right-6 w-4 h-px bg-[#00FFBD] z-10" />
+            <span aria-hidden className="hidden md:block absolute top-6 right-6 w-px h-4 bg-[#00FFBD] z-10" />
+            <span aria-hidden className="hidden md:block absolute bottom-6 left-6 w-4 h-px bg-[#00FFBD] z-10" />
+            <span aria-hidden className="hidden md:block absolute bottom-6 left-6 w-px h-4 bg-[#00FFBD] z-10" />
+            <span aria-hidden className="hidden md:block absolute bottom-6 right-6 w-4 h-px bg-[#00FFBD] z-10" />
+            <span aria-hidden className="hidden md:block absolute bottom-6 right-6 w-px h-4 bg-[#00FFBD] z-10" />
 
-            <motion.div
-              initial={{ scale: 0.97, y: 20, opacity: 0 }}
-              animate={{ scale: 1, y: 0, opacity: 1 }}
-              exit={{ scale: 0.97, y: 20, opacity: 0 }}
-              transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
-              className="relative w-full max-w-4xl bg-[#06080a] border border-white/[0.08] my-6 md:my-0"
-              onClick={(e) => e.stopPropagation()}
+            {/* Persistent close button — top-right of viewport, always reachable */}
+            <button
+              onClick={() => setOpen(false)}
+              aria-label="Close FAQ"
+              className="fixed top-4 right-4 md:top-5 md:right-5 z-[125] p-3 bg-[#06080a]/80 backdrop-blur-md border border-white/10 hover:border-[#00FFBD]/40 text-zinc-300 hover:text-[#00FFBD] transition-colors rounded-full"
             >
-              {/* Close */}
-              <button
-                onClick={() => setOpen(false)}
-                aria-label="Close FAQ"
-                className="absolute top-5 right-5 z-10 p-2 text-zinc-400 hover:text-[#00FFBD] transition-colors"
+              <X className="w-5 h-5" strokeWidth={1.5} />
+            </button>
+
+            {/* Scrollable container with backdrop click-to-close. Backdrop & content live here. */}
+            <div
+              onClick={() => setOpen(false)}
+              className="absolute inset-0 overflow-y-auto overscroll-contain flex items-start md:items-center justify-center p-0 md:p-6"
+              style={{ WebkitOverflowScrolling: 'touch' }}
+            >
+              <motion.div
+                initial={{ scale: 0.97, y: 20, opacity: 0 }}
+                animate={{ scale: 1, y: 0, opacity: 1 }}
+                exit={{ scale: 0.97, y: 20, opacity: 0 }}
+                transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+                className="relative w-full max-w-4xl bg-[#06080a] border border-white/[0.08] my-0 md:my-6 min-h-screen md:min-h-0"
+                onClick={(e) => e.stopPropagation()}
               >
-                <X className="w-5 h-5" strokeWidth={1.5} />
-              </button>
 
               {/* Modal header */}
               <div className="px-6 md:px-10 pt-12 md:pt-14 pb-8 md:pb-10 border-b border-white/[0.07]">
@@ -275,6 +281,7 @@ export const FAQ: React.FC = () => {
                 </a>
               </div>
             </motion.div>
+            </div>
           </motion.div>
         )}
       </AnimatePresence>
