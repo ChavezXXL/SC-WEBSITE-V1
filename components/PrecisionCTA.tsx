@@ -1,49 +1,19 @@
 
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useRef } from 'react';
 import { motion } from 'framer-motion';
 import { ArrowRight } from 'lucide-react';
+import { useVideoBackgroundPair } from './useVideoBackgroundPair';
 
 const VIDEO_SRC = '/videos/cta-bg.mp4';
-const CROSSFADE_SECONDS = 1.2;
 
 export const PrecisionCTA: React.FC = () => {
+  const sectionRef = useRef<HTMLElement>(null);
   const videoARef = useRef<HTMLVideoElement>(null);
   const videoBRef = useRef<HTMLVideoElement>(null);
-  const [activeVideo, setActiveVideo] = useState<'a' | 'b'>('a');
-
-  useEffect(() => {
-    const a = videoARef.current;
-    const b = videoBRef.current;
-    if (!a || !b) return;
-
-    a.play().catch(() => {});
-
-    const handleTimeUpdate = (which: 'a' | 'b') => () => {
-      const me = which === 'a' ? a : b;
-      const other = which === 'a' ? b : a;
-      if (!me.duration || isNaN(me.duration)) return;
-      if (me.currentTime >= me.duration - CROSSFADE_SECONDS) {
-        if (other.paused) {
-          other.currentTime = 0;
-          other.play().catch(() => {});
-          setActiveVideo(which === 'a' ? 'b' : 'a');
-        }
-      }
-    };
-
-    const aHandler = handleTimeUpdate('a');
-    const bHandler = handleTimeUpdate('b');
-    a.addEventListener('timeupdate', aHandler);
-    b.addEventListener('timeupdate', bHandler);
-
-    return () => {
-      a.removeEventListener('timeupdate', aHandler);
-      b.removeEventListener('timeupdate', bHandler);
-    };
-  }, []);
+  const { activeVideo } = useVideoBackgroundPair(videoARef, videoBRef, sectionRef);
 
   return (
-    <section className="relative py-32 md:py-44 overflow-hidden bg-[#030305]">
+    <section ref={sectionRef} className="relative py-32 md:py-44 overflow-hidden bg-[#030305]">
 
       {/* Video Background — dual-element seamless crossfade */}
       <div className="absolute inset-0 pointer-events-none">

@@ -1,6 +1,7 @@
 
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useRef } from 'react';
 import { motion } from 'framer-motion';
+import { useVideoBackgroundPair } from './useVideoBackgroundPair';
 
 type Feature = {
   id: number;
@@ -62,7 +63,6 @@ const features: Feature[] = [
 ];
 
 const VIDEO_SRC = "/videos/process-bg.mp4";
-const CROSSFADE_SECONDS = 1.2;
 
 const SpecCard: React.FC<{ feature: Feature; index: number }> = ({ feature, index }) => {
   return (
@@ -147,43 +147,13 @@ const SpecCard: React.FC<{ feature: Feature; index: number }> = ({ feature, inde
 };
 
 export const Process: React.FC = () => {
+  const sectionRef = useRef<HTMLElement>(null);
   const videoARef = useRef<HTMLVideoElement>(null);
   const videoBRef = useRef<HTMLVideoElement>(null);
-  const [activeVideo, setActiveVideo] = useState<'a' | 'b'>('a');
-
-  useEffect(() => {
-    const a = videoARef.current;
-    const b = videoBRef.current;
-    if (!a || !b) return;
-
-    a.play().catch(() => {});
-
-    const handleTimeUpdate = (which: 'a' | 'b') => () => {
-      const me = which === 'a' ? a : b;
-      const other = which === 'a' ? b : a;
-      if (!me.duration || isNaN(me.duration)) return;
-      if (me.currentTime >= me.duration - CROSSFADE_SECONDS) {
-        if (other.paused) {
-          other.currentTime = 0;
-          other.play().catch(() => {});
-          setActiveVideo(which === 'a' ? 'b' : 'a');
-        }
-      }
-    };
-
-    const aHandler = handleTimeUpdate('a');
-    const bHandler = handleTimeUpdate('b');
-    a.addEventListener('timeupdate', aHandler);
-    b.addEventListener('timeupdate', bHandler);
-
-    return () => {
-      a.removeEventListener('timeupdate', aHandler);
-      b.removeEventListener('timeupdate', bHandler);
-    };
-  }, []);
+  const { activeVideo } = useVideoBackgroundPair(videoARef, videoBRef, sectionRef);
 
   return (
-    <section id="process" className="relative min-h-screen py-32 md:py-40 bg-[#030305] overflow-hidden flex items-center justify-center scroll-mt-32">
+    <section ref={sectionRef} id="process" className="relative min-h-screen py-32 md:py-40 bg-[#030305] overflow-hidden flex items-center justify-center scroll-mt-32">
 
       {/* Video Background — dual elements crossfade for seamless infinite loop */}
       <div className="absolute inset-0 pointer-events-none">
