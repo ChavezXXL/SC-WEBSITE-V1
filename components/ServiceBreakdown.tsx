@@ -177,14 +177,19 @@ export const ServiceBreakdown: React.FC<ServiceBreakdownProps> = ({
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
-    let dpr = window.devicePixelRatio || 1;
+    // Cap DPR at 1.0 — canvas paint cost scales with pixel count.
+    // Retina (DPR 2-3) was forcing 4-9x more pixels per frame which is the
+    // primary chop cause. At 1.0 the image is upscaled by the display, but
+    // for a fast-moving 90fps animation no one perceives the difference.
+    const DPR_CAP = 1;
+    let dpr = Math.min(DPR_CAP, window.devicePixelRatio || 1);
     let targetProgress = 0;
     let smoothedProgress = 0;
     let rafLoop = 0;
     let running = false;
     let lastDrawSig = '';
 
-    const paintImg = (img: HTMLImageElement, w: number, h: number, alpha: number) => {
+    const paintImg = (img: HTMLImageElement, w: number, h: number) => {
       const imgR = img.naturalWidth / img.naturalHeight;
       const scrR = w / h;
       let dw, dh, dx, dy;
@@ -193,7 +198,6 @@ export const ServiceBreakdown: React.FC<ServiceBreakdownProps> = ({
       } else {
         dh = h; dw = h * imgR; dx = (w - dw) / 2; dy = 0;
       }
-      ctx.globalAlpha = alpha;
       ctx.drawImage(img, dx, dy, dw, dh);
     };
 
@@ -215,24 +219,20 @@ export const ServiceBreakdown: React.FC<ServiceBreakdownProps> = ({
     const drawFrame = (frameFloat: number) => {
       const last = frameCount - 1;
       const f = Math.max(0, Math.min(last, frameFloat));
-      const a = Math.floor(f);
-      const b = Math.min(last, a + 1);
-      const t = f - a;
-      const sig = `${a}_${(t * 100) | 0}`;
+      // Round to the nearest integer frame. With 90fps motion-interp source
+      // there's already real motion data between frames — no need for the
+      // canvas to do sub-frame alpha blending (which doubles paint cost).
+      const idx = Math.round(f);
+      const sig = String(idx);
       if (sig === lastDrawSig) return;
-      // Graceful fallback: if exact frame missing, snap to nearest loaded
-      const imgA = imagesRef.current[a] || nearestLoaded(a);
-      const imgB = imagesRef.current[b] || imgA; // if next is missing, just use A (no blend)
-      if (!imgA) return; // truly nothing loaded yet
+      const img = imagesRef.current[idx] || nearestLoaded(idx);
+      if (!img) return;
       lastDrawSig = sig;
-      currentFrameRef.current = a;
+      currentFrameRef.current = idx;
       const w = window.innerWidth;
       const h = window.innerHeight;
       ctx.clearRect(0, 0, w, h);
-      // Sub-frame blending: paint A at full, then B over top at t
-      if (imgA) paintImg(imgA, w, h, 1);
-      if (imgB && t > 0.001 && b !== a) paintImg(imgB, w, h, t);
-      ctx.globalAlpha = 1;
+      paintImg(img, w, h);
     };
 
     const computeTarget = () => {
@@ -247,8 +247,9 @@ export const ServiceBreakdown: React.FC<ServiceBreakdownProps> = ({
     };
 
     const loop = () => {
-      // LERP smoothed → target. Lower factor = smoother / laggier.
-      const factor = 0.07;
+      // LERP smoothed → target. Higher factor = snappier (less lag), lower = smoother glide.
+      // 0.12 lands in the sweet spot — perceived responsiveness without jitter.
+      const factor = 0.12;
       const diff = targetProgress - smoothedProgress;
       if (Math.abs(diff) < 0.00005) {
         smoothedProgress = targetProgress;
