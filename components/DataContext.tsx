@@ -10,6 +10,7 @@ Your goal is to help potential customers understand metal finishing processes an
 
 // Initial Hardcoded Data
 const INITIAL_GALLERY_ITEMS: GalleryItem[] = [
+  // New Yelp photos (top of gallery)
   {
     id: 200,
     url: '/gallery/yelp-2.jpg',
@@ -29,6 +30,42 @@ const INITIAL_GALLERY_ITEMS: GalleryItem[] = [
     id: 203,
     url: '/gallery/yelp-3.jpg',
     title: 'Finished Stainless Spool'
+  },
+  // Existing portfolio shots
+  {
+    id: 1,
+    url: 'https://img1.wsimg.com/isteam/ip/951b1fa8-8dbe-4e71-b72c-33034345220a/6925DBE8-1DD0-4031-B285-C6D87AE7C34B.jpeg/:/cr=t:0%25,l:0%25,w:100%25,h:100%25/rs=w:1023,h:1531',
+    title: 'Complex Geometry Deburring'
+  },
+  {
+    id: 2,
+    url: 'https://img1.wsimg.com/isteam/ip/951b1fa8-8dbe-4e71-b72c-33034345220a/707F082E-C45A-40A5-9307-387589F36D1A.jpeg/:/rs=w:1023,h:1531',
+    title: 'Precision Surface Finishing'
+  },
+  {
+    id: 3,
+    url: 'https://img1.wsimg.com/isteam/ip/951b1fa8-8dbe-4e71-b72c-33034345220a/IMG_2962.jpeg/:/cr=t:0%25,l:0%25,w:100%25,h:100%25/rs=w:1023,h:767',
+    title: 'Batch Processing'
+  },
+  {
+    id: 4,
+    url: 'https://img1.wsimg.com/isteam/ip/951b1fa8-8dbe-4e71-b72c-33034345220a/5%20part%206%3A23.JPG/:/cr=t:0%25,l:5.57%25,w:88.86%25,h:100%25/rs=w:1023,h:769',
+    title: 'High-Tolerance Components'
+  },
+  {
+    id: 5,
+    url: 'https://img1.wsimg.com/isteam/ip/951b1fa8-8dbe-4e71-b72c-33034345220a/1%20part%206-23.JPG/:/cr=t:0%25,l:5.56%25,w:88.89%25,h:100%25/rs=w:1023,h:769',
+    title: 'Edge Blending & Polishing'
+  },
+  {
+    id: 6,
+    url: 'https://img1.wsimg.com/isteam/ip/951b1fa8-8dbe-4e71-b72c-33034345220a/june%2027%20part%203.JPG/:/cr=t:0%25,l:5.56%25,w:88.89%25,h:100%25/rs=w:1023,h:769',
+    title: 'Final Quality Inspection'
+  },
+  {
+    id: 7,
+    url: 'https://img1.wsimg.com/isteam/ip/951b1fa8-8dbe-4e71-b72c-33034345220a/b%20and%20f%202.JPEG/:/cr=t:0%25,l:0%25,w:100%25,h:100%25/rs=w:1023,h:1023',
+    title: 'Before & After Comparison'
   }
 ];
 
@@ -48,7 +85,7 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   // Load from local storage on mount
   useEffect(() => {
-    const GALLERY_VERSION = '5';
+    const GALLERY_VERSION = '6';
     const storedVersion = localStorage.getItem('sc_gallery_version');
     if (storedVersion !== GALLERY_VERSION) {
       // Outdated cache — clear and use fresh defaults
