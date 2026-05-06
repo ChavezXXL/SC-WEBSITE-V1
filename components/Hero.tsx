@@ -17,7 +17,7 @@ export const Hero: React.FC = () => {
 
   const videoARef = useRef<HTMLVideoElement>(null);
   const videoBRef = useRef<HTMLVideoElement>(null);
-  const { activeVideo } = useVideoBackgroundPair(videoARef, videoBRef, ref);
+  const { activeVideo } = useVideoBackgroundPair(videoARef, videoBRef, ref, VIDEO_SRC);
 
   const scrollToServices = (e: React.MouseEvent) => {
       e.preventDefault();
@@ -33,18 +33,18 @@ export const Hero: React.FC = () => {
       <div className="absolute inset-0 pointer-events-none">
         <video
           ref={videoARef}
-          src={VIDEO_SRC}
           muted
           playsInline
-          preload="auto"
+          loop
+          preload="metadata"
           className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-[1200ms] ease-linear ${activeVideo === 'a' ? 'opacity-100' : 'opacity-0'}`}
         />
         <video
           ref={videoBRef}
-          src={VIDEO_SRC}
           muted
           playsInline
-          preload="auto"
+          loop
+          preload="metadata"
           className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-[1200ms] ease-linear ${activeVideo === 'b' ? 'opacity-100' : 'opacity-0'}`}
         />
 

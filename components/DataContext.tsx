@@ -11,6 +11,16 @@ Your goal is to help potential customers understand metal finishing processes an
 // Initial Hardcoded Data
 const INITIAL_GALLERY_ITEMS: GalleryItem[] = [
   {
+    id: 200,
+    url: '/gallery/yelp-2.jpg',
+    title: 'Multi-Bore Aerospace Manifold'
+  },
+  {
+    id: 201,
+    url: '/gallery/yelp-1.jpg',
+    title: 'Hydraulic Valve Body'
+  },
+  {
     id: 100,
     url: '/img/work/sc-02.jpg',
     title: 'Aerospace Manifold Deburring'
@@ -73,7 +83,7 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   // Load from local storage on mount
   useEffect(() => {
-    const GALLERY_VERSION = '2';
+    const GALLERY_VERSION = '3';
     const storedVersion = localStorage.getItem('sc_gallery_version');
     if (storedVersion !== GALLERY_VERSION) {
       // Outdated cache — clear and use fresh defaults

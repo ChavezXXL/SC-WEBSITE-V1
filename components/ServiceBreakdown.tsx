@@ -154,14 +154,14 @@ export const ServiceBreakdown: React.FC<ServiceBreakdownProps> = ({
       }
     })();
 
-    // Retry-loop: every 4s try any frames that 404'd. Self-heals when extraction completes.
+    // Retry-loop: every 2s try any frames that 404'd. Self-heals when extraction completes.
     const retryTimer = setInterval(() => {
       if (cancelled || failedIdx.length === 0) return;
-      const batch = failedIdx.splice(0, 24);
+      const batch = failedIdx.splice(0, 32);
       batch.forEach((idx) => {
         if (!imagesRef.current[idx]) loadOne(idx);
       });
-    }, 4000);
+    }, 2000);
 
     return () => {
       cancelled = true;
