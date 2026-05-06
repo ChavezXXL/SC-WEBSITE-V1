@@ -11,6 +11,16 @@ Your goal is to help potential customers understand metal finishing processes an
 // Initial Hardcoded Data
 const INITIAL_GALLERY_ITEMS: GalleryItem[] = [
   {
+    id: 100,
+    url: '/img/work/sc-02.jpg',
+    title: 'Aerospace Manifold Deburring'
+  },
+  {
+    id: 101,
+    url: '/img/work/sc-01.jpg',
+    title: 'Cross-Drilled Valve Body'
+  },
+  {
     id: 1,
     url: 'https://img1.wsimg.com/isteam/ip/951b1fa8-8dbe-4e71-b72c-33034345220a/6925DBE8-1DD0-4031-B285-C6D87AE7C34B.jpeg/:/cr=t:0%25,l:0%25,w:100%25,h:100%25/rs=w:1023,h:1531',
     title: 'Complex Geometry Deburring'
@@ -63,6 +73,14 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   // Load from local storage on mount
   useEffect(() => {
+    const GALLERY_VERSION = '2';
+    const storedVersion = localStorage.getItem('sc_gallery_version');
+    if (storedVersion !== GALLERY_VERSION) {
+      // Outdated cache — clear and use fresh defaults
+      localStorage.removeItem('sc_gallery');
+      localStorage.setItem('sc_gallery_version', GALLERY_VERSION);
+    }
+
     const savedGallery = localStorage.getItem('sc_gallery');
     const savedLeft = localStorage.getItem('sc_comp_left');
     const savedRight = localStorage.getItem('sc_comp_right');
