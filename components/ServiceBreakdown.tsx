@@ -90,7 +90,10 @@ export const ServiceBreakdown: React.FC<ServiceBreakdownProps> = ({
           io.disconnect();
         }
       },
-      { rootMargin: '150% 0px 150% 0px' },
+      // 30% buffer — section starts preloading just before it enters view.
+      // Was 150% which caused all 3 service sections to preload simultaneously
+      // when user was on the page — overwhelming CPU + GPU memory.
+      { rootMargin: '30% 0px 30% 0px' },
     );
     io.observe(section);
     return () => io.disconnect();
@@ -119,9 +122,13 @@ export const ServiceBreakdown: React.FC<ServiceBreakdownProps> = ({
 
     const failedIdx: number[] = [];
 
-    // Target bitmap width — covers most desktops, dramatically lighter than 1440px source.
-    // The browser does fast bicubic downsample during createImageBitmap (off main thread).
-    const TARGET_W = Math.min(1280, Math.ceil(window.innerWidth * 1.25));
+    // Target bitmap width — sized to actual viewport (no oversizing).
+    // GPU memory budget = TARGET_W × TARGET_H × 4 bytes × frameCount. At 720px
+    // wide each frame is ~1MB; at 1280px it's ~3.7MB. Across 3 service sections
+    // (1600+ total frames) 1280px hit 6GB → memory thrashing → scroll chop.
+    // 720px keeps total under 1.5GB and is visually indistinguishable during
+    // fast motion (the browser GPU-upscales for free).
+    const TARGET_W = Math.min(900, Math.ceil(window.innerWidth));
     const supportsBitmap = typeof createImageBitmap === 'function';
 
     const loadOne = (idx: number) =>
