@@ -90,10 +90,12 @@ export const ServiceBreakdown: React.FC<ServiceBreakdownProps> = ({
           io.disconnect();
         }
       },
-      // 30% buffer — section starts preloading just before it enters view.
-      // Was 150% which caused all 3 service sections to preload simultaneously
-      // when user was on the page — overwhelming CPU + GPU memory.
-      { rootMargin: '30% 0px 30% 0px' },
+      // 120% top / 60% bottom — gives sections enough lead time to fully
+      // preload BEFORE user scrolls into them. Manual feels smooth because
+      // it's middle (preloads while you're on Microscope). Microscope and
+      // Blending need wider margins to match.
+      // 900px bitmaps mean total memory across all 3 is ~1.5GB — fine.
+      { rootMargin: '120% 0px 60% 0px' },
     );
     io.observe(section);
     return () => io.disconnect();
@@ -186,7 +188,9 @@ export const ServiceBreakdown: React.FC<ServiceBreakdownProps> = ({
       });
 
     (async () => {
-      const batchSize = 12;
+      // Larger batch = more parallel decodes (createImageBitmap runs off main thread).
+      // 24 saturates modern CPUs without blocking the network queue.
+      const batchSize = 24;
       for (let i = 0; i < order.length; i += batchSize) {
         if (cancelled) return;
         await Promise.all(order.slice(i, i + batchSize).map(loadOne));
