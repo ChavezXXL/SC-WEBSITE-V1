@@ -70,7 +70,8 @@ export const ServiceBreakdown: React.FC<ServiceBreakdownProps> = ({
 }) => {
   const sectionRef = useRef<HTMLElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const imagesRef = useRef<HTMLImageElement[]>([]);
+  // Store GPU-ready ImageBitmaps (or HTMLImageElement as fallback for browsers without createImageBitmap)
+  const imagesRef = useRef<Array<ImageBitmap | HTMLImageElement | null>>([]);
   const currentFrameRef = useRef<number>(-1);
   const [loadedCount, setLoadedCount] = useState(0);
   const [ready, setReady] = useState(false);
@@ -118,32 +119,63 @@ export const ServiceBreakdown: React.FC<ServiceBreakdownProps> = ({
 
     const failedIdx: number[] = [];
 
+    // Target bitmap width — covers most desktops, dramatically lighter than 1440px source.
+    // The browser does fast bicubic downsample during createImageBitmap (off main thread).
+    const TARGET_W = Math.min(1280, Math.ceil(window.innerWidth * 1.25));
+    const supportsBitmap = typeof createImageBitmap === 'function';
+
     const loadOne = (idx: number) =>
       new Promise<void>((resolve) => {
-        const img = new Image();
-        img.decoding = 'async';
-        img.onload = () => {
+        const url = `${framePath}/frame_${String(idx + 1).padStart(4, '0')}${frameExt}`;
+        const markDone = () => {
           if (cancelled) return resolve();
-          const finish = () => {
-            if (cancelled) return resolve();
-            imagesRef.current[idx] = img;
-            n++;
-            setLoadedCount(n);
-            if (n === Math.min(8, frameCount)) setReady(true);
-            resolve();
-          };
-          if (typeof img.decode === 'function') {
-            img.decode().then(finish, finish);
-          } else {
-            finish();
-          }
-        };
-        img.onerror = () => {
-          // Track 404s for retry later (handles in-progress frame extraction)
-          if (!imagesRef.current[idx]) failedIdx.push(idx);
+          n++;
+          setLoadedCount(n);
+          if (n === Math.min(8, frameCount)) setReady(true);
           resolve();
         };
-        img.src = `${framePath}/frame_${String(idx + 1).padStart(4, '0')}${frameExt}`;
+
+        if (supportsBitmap) {
+          // Fetch → blob → ImageBitmap (decoded off main thread, GPU-ready)
+          fetch(url)
+            .then((res) => {
+              if (!res.ok) throw new Error(`HTTP ${res.status}`);
+              return res.blob();
+            })
+            .then((blob) =>
+              createImageBitmap(blob, {
+                resizeWidth: TARGET_W,
+                resizeQuality: 'high',
+                imageOrientation: 'from-image',
+              } as ImageBitmapOptions),
+            )
+            .then((bmp) => {
+              if (cancelled) {
+                bmp.close?.();
+                return;
+              }
+              imagesRef.current[idx] = bmp;
+              markDone();
+            })
+            .catch(() => {
+              if (!imagesRef.current[idx]) failedIdx.push(idx);
+              resolve();
+            });
+        } else {
+          // Fallback: HTMLImageElement (older browsers)
+          const img = new Image();
+          img.decoding = 'async';
+          img.onload = () => {
+            if (cancelled) return resolve();
+            imagesRef.current[idx] = img;
+            markDone();
+          };
+          img.onerror = () => {
+            if (!imagesRef.current[idx]) failedIdx.push(idx);
+            resolve();
+          };
+          img.src = url;
+        }
       });
 
     (async () => {
@@ -166,6 +198,13 @@ export const ServiceBreakdown: React.FC<ServiceBreakdownProps> = ({
     return () => {
       cancelled = true;
       clearInterval(retryTimer);
+      // Free GPU memory held by ImageBitmaps
+      for (const item of imagesRef.current) {
+        if (item && 'close' in item && typeof item.close === 'function') {
+          try { item.close(); } catch {}
+        }
+      }
+      imagesRef.current = [];
     };
   }, [framePath, frameCount, frameExt, shouldLoad]);
 
@@ -189,8 +228,12 @@ export const ServiceBreakdown: React.FC<ServiceBreakdownProps> = ({
     let running = false;
     let lastDrawSig = '';
 
-    const paintImg = (img: HTMLImageElement, w: number, h: number) => {
-      const imgR = img.naturalWidth / img.naturalHeight;
+    type DrawSrc = ImageBitmap | HTMLImageElement;
+    const srcW = (img: DrawSrc) => (img as HTMLImageElement).naturalWidth || img.width;
+    const srcH = (img: DrawSrc) => (img as HTMLImageElement).naturalHeight || img.height;
+
+    const paintImg = (img: DrawSrc, w: number, h: number) => {
+      const imgR = srcW(img) / srcH(img);
       const scrR = w / h;
       let dw, dh, dx, dy;
       if (scrR > imgR) {
@@ -203,15 +246,17 @@ export const ServiceBreakdown: React.FC<ServiceBreakdownProps> = ({
 
     // Find the nearest loaded frame to a target index — graceful fallback
     // when frames are still loading or have failed to fetch.
-    const nearestLoaded = (target: number): HTMLImageElement | null => {
+    const nearestLoaded = (target: number): DrawSrc | null => {
       const last = frameCount - 1;
-      if (imagesRef.current[target]) return imagesRef.current[target];
-      // Search outward — alternating before/after — for the nearest available frame
+      const hit = imagesRef.current[target];
+      if (hit) return hit;
       for (let d = 1; d <= last; d++) {
         const before = target - d;
         const after = target + d;
-        if (before >= 0 && imagesRef.current[before]) return imagesRef.current[before];
-        if (after <= last && imagesRef.current[after]) return imagesRef.current[after];
+        const b = before >= 0 ? imagesRef.current[before] : null;
+        if (b) return b;
+        const a = after <= last ? imagesRef.current[after] : null;
+        if (a) return a;
       }
       return null;
     };
