@@ -51,7 +51,7 @@ export const BlendingSection: React.FC = () => {
       introTitle="Blending"
       introBody="Tool marks erased. Surface continuous. Built for the parts where it matters."
       framePath="/frames/blending"
-      frameCount={717}
+      frameCount={956}
       frameExt=".jpg"
       scrollVH={8}
       overlays={overlays}

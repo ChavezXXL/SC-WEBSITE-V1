@@ -51,7 +51,7 @@ export const MicroscopeSection: React.FC = () => {
       introTitle="Microscope Deburring"
       introBody="Complicated parts. Tight tolerances. Verified under magnification."
       framePath="/frames/microscope"
-      frameCount={447}
+      frameCount={596}
       frameExt=".jpg"
       scrollVH={5}
       overlays={overlays}
