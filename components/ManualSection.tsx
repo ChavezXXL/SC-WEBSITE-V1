@@ -50,9 +50,8 @@ export const ManualSection: React.FC = () => {
       introKicker="SVC-02 / 03"
       introTitle="Manual Deburring"
       introBody="Cut, radius, buff, inspect — every tool, every part, by hand."
-      framePath="/frames/manual"
-      frameCount={447}
-      frameExt=".jpg"
+      videoSrc="/videos/scroll/manual.mp4"
+      virtualFrames={447}
       scrollVH={5}
       overlays={overlays}
       hud={hud}

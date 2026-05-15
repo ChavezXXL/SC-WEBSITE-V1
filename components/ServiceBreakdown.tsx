@@ -15,21 +15,13 @@ export type Overlay = {
 };
 
 export type Hud = {
-  /** Top-left status, e.g. "MAG 40×" */
   topLeft?: string;
-  /** Top-right status, e.g. "OBJECTIVE 4.0×" */
   topRight?: string;
-  /** Bottom-right status, e.g. "OPERATOR · J. CHAVEZ" */
   bottomRight?: string;
-  /** Show pulsing "● LIVE" indicator on top-left */
   live?: boolean;
-  /** Show animated frame counter "FRAME nnn / total" */
   frameCounter?: boolean;
-  /** Show measurement scale bar bottom-left, with this label e.g. "0.5 MM" */
   scaleBar?: string;
-  /** Show center reticle / crosshair */
   reticle?: boolean;
-  /** Vignette intensity */
   vignette?: 'soft' | 'scope';
 };
 
@@ -39,10 +31,11 @@ export type ServiceBreakdownProps = {
   introKicker: string;
   introTitle: string;
   introBody?: string;
-  framePath: string;
-  frameCount: number;
-  frameExt?: string;
-  /** Pinned scroll length in viewport heights, default 4 */
+  /** Path to the scroll video (e.g. /videos/scroll/microscope.mp4) */
+  videoSrc: string;
+  /** Optional: total "virtual frames" for HUD frame counter display */
+  virtualFrames?: number;
+  /** Pinned scroll length in viewport heights, default 5 */
   scrollVH?: number;
   overlays: Overlay[];
   hud?: Hud;
@@ -61,25 +54,20 @@ const positionClasses: Record<Overlay['position'], string> = {
 export const ServiceBreakdown: React.FC<ServiceBreakdownProps> = ({
   id,
   ref: drawingRef,
-  framePath,
-  frameCount,
-  frameExt = '.jpg',
-  scrollVH = 4,
+  videoSrc,
+  virtualFrames = 100,
+  scrollVH = 5,
   overlays,
   hud,
 }) => {
   const sectionRef = useRef<HTMLElement>(null);
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-  // Store GPU-ready ImageBitmaps (or HTMLImageElement as fallback for browsers without createImageBitmap)
-  const imagesRef = useRef<Array<ImageBitmap | HTMLImageElement | null>>([]);
-  const currentFrameRef = useRef<number>(-1);
-  const [loadedCount, setLoadedCount] = useState(0);
+  const videoRef = useRef<HTMLVideoElement>(null);
   const [ready, setReady] = useState(false);
-  const [shouldLoad, setShouldLoad] = useState(false); // Lazy gate — only true when section near viewport
+  const [shouldLoad, setShouldLoad] = useState(false);
 
   const progress = useMotionValue(0);
 
-  // ---- Lazy gate: only start loading frames when section is within ~1.5 viewports ----
+  // ---- Lazy gate: only attach src when section is within ~60% of viewport ----
   useEffect(() => {
     const section = sectionRef.current;
     if (!section) return;
@@ -90,206 +78,44 @@ export const ServiceBreakdown: React.FC<ServiceBreakdownProps> = ({
           io.disconnect();
         }
       },
-      // 120% top / 60% bottom — gives sections enough lead time to fully
-      // preload BEFORE user scrolls into them. Manual feels smooth because
-      // it's middle (preloads while you're on Microscope). Microscope and
-      // Blending need wider margins to match.
-      // 900px bitmaps mean total memory across all 3 is ~1.5GB — fine.
-      { rootMargin: '120% 0px 60% 0px' },
+      { rootMargin: '60% 0px 60% 0px' },
     );
     io.observe(section);
     return () => io.disconnect();
   }, []);
 
-  // ---- Frame preloading (progressive: first / last / mid then fill) ----
+  // ---- Set video src when ready to load ----
   useEffect(() => {
     if (!shouldLoad) return;
+    const v = videoRef.current;
+    if (!v) return;
+    if (!v.src) v.src = videoSrc;
+    // Try to preload the first frame so it renders before user scrolls in
+    v.load();
+  }, [shouldLoad, videoSrc]);
 
-    const order: number[] = [];
-    const seen = new Set<number>();
-    const push = (i: number) => {
-      if (i < 0 || i >= frameCount || seen.has(i)) return;
-      seen.add(i);
-      order.push(i);
-    };
-    push(0);
-    push(frameCount - 1);
-    push(Math.floor(frameCount / 2));
-    push(Math.floor(frameCount / 4));
-    push(Math.floor((frameCount * 3) / 4));
-    for (let i = 0; i < frameCount; i++) push(i);
-
-    let cancelled = false;
-    let n = 0;
-
-    const failedIdx: number[] = [];
-
-    // Target bitmap width — sized to actual viewport (no oversizing).
-    // GPU memory budget = TARGET_W × TARGET_H × 4 bytes × frameCount. At 720px
-    // wide each frame is ~1MB; at 1280px it's ~3.7MB. Across 3 service sections
-    // (1600+ total frames) 1280px hit 6GB → memory thrashing → scroll chop.
-    // 720px keeps total under 1.5GB and is visually indistinguishable during
-    // fast motion (the browser GPU-upscales for free).
-    const TARGET_W = Math.min(900, Math.ceil(window.innerWidth));
-    const supportsBitmap = typeof createImageBitmap === 'function';
-
-    const loadOne = (idx: number) =>
-      new Promise<void>((resolve) => {
-        const url = `${framePath}/frame_${String(idx + 1).padStart(4, '0')}${frameExt}`;
-        const markDone = () => {
-          if (cancelled) return resolve();
-          n++;
-          setLoadedCount(n);
-          if (n === Math.min(8, frameCount)) setReady(true);
-          resolve();
-        };
-
-        if (supportsBitmap) {
-          // Fetch → blob → ImageBitmap (decoded off main thread, GPU-ready)
-          fetch(url)
-            .then((res) => {
-              if (!res.ok) throw new Error(`HTTP ${res.status}`);
-              return res.blob();
-            })
-            .then((blob) =>
-              createImageBitmap(blob, {
-                resizeWidth: TARGET_W,
-                resizeQuality: 'high',
-                imageOrientation: 'from-image',
-              } as ImageBitmapOptions),
-            )
-            .then((bmp) => {
-              if (cancelled) {
-                bmp.close?.();
-                return;
-              }
-              imagesRef.current[idx] = bmp;
-              markDone();
-            })
-            .catch(() => {
-              if (!imagesRef.current[idx]) failedIdx.push(idx);
-              resolve();
-            });
-        } else {
-          // Fallback: HTMLImageElement (older browsers)
-          const img = new Image();
-          img.decoding = 'async';
-          img.onload = () => {
-            if (cancelled) return resolve();
-            imagesRef.current[idx] = img;
-            markDone();
-          };
-          img.onerror = () => {
-            if (!imagesRef.current[idx]) failedIdx.push(idx);
-            resolve();
-          };
-          img.src = url;
-        }
-      });
-
-    (async () => {
-      // Larger batch = more parallel decodes (createImageBitmap runs off main thread).
-      // 24 saturates modern CPUs without blocking the network queue.
-      const batchSize = 24;
-      for (let i = 0; i < order.length; i += batchSize) {
-        if (cancelled) return;
-        await Promise.all(order.slice(i, i + batchSize).map(loadOne));
-      }
-    })();
-
-    // Retry-loop: every 2s try any frames that 404'd. Self-heals when extraction completes.
-    const retryTimer = setInterval(() => {
-      if (cancelled || failedIdx.length === 0) return;
-      const batch = failedIdx.splice(0, 32);
-      batch.forEach((idx) => {
-        if (!imagesRef.current[idx]) loadOne(idx);
-      });
-    }, 2000);
-
-    return () => {
-      cancelled = true;
-      clearInterval(retryTimer);
-      // Free GPU memory held by ImageBitmaps
-      for (const item of imagesRef.current) {
-        if (item && 'close' in item && typeof item.close === 'function') {
-          try { item.close(); } catch {}
-        }
-      }
-      imagesRef.current = [];
-    };
-  }, [framePath, frameCount, frameExt, shouldLoad]);
-
-  // ---- Scroll tracking + canvas drawing (with LERP smoothing) ----
+  // ---- Scroll → video.currentTime, with LERP smoothing for buttery feel ----
   useEffect(() => {
-    const canvas = canvasRef.current;
     const section = sectionRef.current;
-    if (!canvas || !section) return;
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return;
+    const video = videoRef.current;
+    if (!section || !video) return;
 
-    // Cap DPR at 1.0 — canvas paint cost scales with pixel count.
-    // Retina (DPR 2-3) was forcing 4-9x more pixels per frame which is the
-    // primary chop cause. At 1.0 the image is upscaled by the display, but
-    // for a fast-moving 90fps animation no one perceives the difference.
-    const DPR_CAP = 1;
-    let dpr = Math.min(DPR_CAP, window.devicePixelRatio || 1);
     let targetProgress = 0;
     let smoothedProgress = 0;
     let rafLoop = 0;
     let running = false;
-    let lastDrawSig = '';
+    let isReady = false;
 
-    type DrawSrc = ImageBitmap | HTMLImageElement;
-    const srcW = (img: DrawSrc) => (img as HTMLImageElement).naturalWidth || img.width;
-    const srcH = (img: DrawSrc) => (img as HTMLImageElement).naturalHeight || img.height;
-
-    const paintImg = (img: DrawSrc, w: number, h: number) => {
-      const imgR = srcW(img) / srcH(img);
-      const scrR = w / h;
-      let dw, dh, dx, dy;
-      if (scrR > imgR) {
-        dw = w; dh = w / imgR; dx = 0; dy = (h - dh) / 2;
-      } else {
-        dh = h; dw = h * imgR; dx = (w - dw) / 2; dy = 0;
-      }
-      ctx.drawImage(img, dx, dy, dw, dh);
+    const onLoaded = () => {
+      isReady = true;
+      setReady(true);
+      // Seek to first frame so it shows immediately
+      try {
+        video.currentTime = 0;
+      } catch {}
     };
-
-    // Find the nearest loaded frame to a target index — graceful fallback
-    // when frames are still loading or have failed to fetch.
-    const nearestLoaded = (target: number): DrawSrc | null => {
-      const last = frameCount - 1;
-      const hit = imagesRef.current[target];
-      if (hit) return hit;
-      for (let d = 1; d <= last; d++) {
-        const before = target - d;
-        const after = target + d;
-        const b = before >= 0 ? imagesRef.current[before] : null;
-        if (b) return b;
-        const a = after <= last ? imagesRef.current[after] : null;
-        if (a) return a;
-      }
-      return null;
-    };
-
-    const drawFrame = (frameFloat: number) => {
-      const last = frameCount - 1;
-      const f = Math.max(0, Math.min(last, frameFloat));
-      // Round to the nearest integer frame. With 90fps motion-interp source
-      // there's already real motion data between frames — no need for the
-      // canvas to do sub-frame alpha blending (which doubles paint cost).
-      const idx = Math.round(f);
-      const sig = String(idx);
-      if (sig === lastDrawSig) return;
-      const img = imagesRef.current[idx] || nearestLoaded(idx);
-      if (!img) return;
-      lastDrawSig = sig;
-      currentFrameRef.current = idx;
-      const w = window.innerWidth;
-      const h = window.innerHeight;
-      ctx.clearRect(0, 0, w, h);
-      paintImg(img, w, h);
-    };
+    video.addEventListener('loadedmetadata', onLoaded);
+    if (video.readyState >= 1) onLoaded();
 
     const computeTarget = () => {
       const rect = section.getBoundingClientRect();
@@ -302,21 +128,28 @@ export const ServiceBreakdown: React.FC<ServiceBreakdownProps> = ({
       targetProgress = p;
     };
 
+    const seekTo = (p: number) => {
+      if (!isReady || !video.duration || isNaN(video.duration)) return;
+      // Clamp slightly inside [0, duration] to avoid edge stalls
+      const t = Math.max(0, Math.min(video.duration - 0.001, p * video.duration));
+      // Only seek if movement is meaningful — avoids spamming the decoder
+      if (Math.abs((video.currentTime || 0) - t) > 0.008) {
+        video.currentTime = t;
+      }
+    };
+
     const loop = () => {
-      // LERP smoothed → target. Higher factor = snappier (less lag), lower = smoother glide.
-      // 0.12 lands in the sweet spot — perceived responsiveness without jitter.
-      const factor = 0.12;
+      const factor = 0.15;
       const diff = targetProgress - smoothedProgress;
-      if (Math.abs(diff) < 0.00005) {
+      if (Math.abs(diff) < 0.0001) {
         smoothedProgress = targetProgress;
       } else {
         smoothedProgress += diff * factor;
       }
       progress.set(smoothedProgress);
-      drawFrame(smoothedProgress * (frameCount - 1));
+      seekTo(smoothedProgress);
 
-      // Continue running while ANY motion is happening or until perfectly settled
-      if (Math.abs(targetProgress - smoothedProgress) > 0.00005) {
+      if (Math.abs(targetProgress - smoothedProgress) > 0.0001) {
         rafLoop = requestAnimationFrame(loop);
       } else {
         running = false;
@@ -330,41 +163,27 @@ export const ServiceBreakdown: React.FC<ServiceBreakdownProps> = ({
       }
     };
 
-    const resize = () => {
-      dpr = window.devicePixelRatio || 1;
-      canvas.width = window.innerWidth * dpr;
-      canvas.height = window.innerHeight * dpr;
-      canvas.style.width = `${window.innerWidth}px`;
-      canvas.style.height = `${window.innerHeight}px`;
-      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-      ctx.imageSmoothingEnabled = true;
-      ctx.imageSmoothingQuality = 'high';
-      currentFrameRef.current = -1;
-      lastDrawSig = '';
-      computeTarget();
-      smoothedProgress = targetProgress;
-      progress.set(smoothedProgress);
-      drawFrame(smoothedProgress * (frameCount - 1));
-    };
-
     const onScroll = () => {
       computeTarget();
       kick();
     };
 
-    resize();
+    // Initialize position
+    computeTarget();
+    smoothedProgress = targetProgress;
+    progress.set(smoothedProgress);
+    seekTo(smoothedProgress);
 
     window.addEventListener('scroll', onScroll, { passive: true });
-    window.addEventListener('resize', resize);
+    window.addEventListener('resize', onScroll, { passive: true });
 
     return () => {
+      video.removeEventListener('loadedmetadata', onLoaded);
       window.removeEventListener('scroll', onScroll);
-      window.removeEventListener('resize', resize);
+      window.removeEventListener('resize', onScroll);
       if (rafLoop) cancelAnimationFrame(rafLoop);
     };
-  }, [progress, frameCount]);
-
-  const loaderPct = Math.round((loadedCount / frameCount) * 100);
+  }, [progress, shouldLoad]);
 
   return (
     <section
@@ -374,27 +193,31 @@ export const ServiceBreakdown: React.FC<ServiceBreakdownProps> = ({
       style={{ height: `${scrollVH * 100}vh` }}
     >
       <div className="sticky top-0 h-screen w-full overflow-hidden bg-black">
-        <canvas ref={canvasRef} className="absolute inset-0 w-full h-full" />
+        <video
+          ref={videoRef}
+          className="absolute inset-0 w-full h-full object-cover"
+          muted
+          playsInline
+          preload="auto"
+          // @ts-expect-error - non-standard but improves iOS behavior
+          webkit-playsinline="true"
+          // @ts-expect-error - non-standard, hint to browser
+          disablePictureInPicture
+        />
 
-        {!ready && (
+        {!ready && shouldLoad && (
           <div className="absolute inset-0 z-50 bg-black flex flex-col items-center justify-center">
             <div className="font-mono text-[10px] uppercase tracking-[0.35em] text-zinc-500 mb-4">
-              Loading frames · {loaderPct}%
+              Loading
             </div>
             <div className="w-48 h-px bg-zinc-800 overflow-hidden">
-              <div
-                className="h-full bg-[#00FFBD] transition-all duration-200"
-                style={{ width: `${loaderPct}%` }}
-              />
+              <div className="h-full bg-[#00FFBD] animate-pulse w-1/3" />
             </div>
           </div>
         )}
 
         {hud?.vignette === 'scope' ? (
-          <>
-            {/* Microscope-style heavy circular vignette */}
-            <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_center,_transparent_0%,_transparent_38%,_rgba(0,0,0,0.55)_62%,_rgba(0,0,0,0.92)_100%)]" />
-          </>
+          <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_center,_transparent_0%,_transparent_38%,_rgba(0,0,0,0.55)_62%,_rgba(0,0,0,0.92)_100%)]" />
         ) : (
           <>
             <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_center,_transparent_0%,_rgba(0,0,0,0.55)_75%,_rgba(0,0,0,0.85)_100%)]" />
@@ -402,7 +225,6 @@ export const ServiceBreakdown: React.FC<ServiceBreakdownProps> = ({
           </>
         )}
 
-        {/* Reticle / crosshair */}
         {hud?.reticle && (
           <div className="pointer-events-none absolute inset-0 z-[5] flex items-center justify-center">
             <svg width="180" height="180" viewBox="0 0 180 180" className="opacity-40">
@@ -430,11 +252,11 @@ export const ServiceBreakdown: React.FC<ServiceBreakdownProps> = ({
               </span>
             )}
             {hud?.topLeft && <span>{hud.topLeft}</span>}
-            {hud?.frameCounter && <FrameCounter progress={progress} total={frameCount} />}
+            {hud?.frameCounter && <FrameCounter progress={progress} total={virtualFrames} />}
           </div>
         )}
 
-        {/* HUD: top-right status — hidden on small screens to avoid clutter */}
+        {/* HUD: top-right status */}
         {hud?.topRight && (
           <div className="hidden md:block absolute top-5 right-12 z-10">
             <span className="font-mono text-[9px] uppercase tracking-[0.3em] text-[#00FFBD]/55">
@@ -443,14 +265,13 @@ export const ServiceBreakdown: React.FC<ServiceBreakdownProps> = ({
           </div>
         )}
 
-        {/* HUD: bottom-right status — hidden on small screens */}
+        {/* HUD: bottom-right status */}
         {hud?.bottomRight && (
           <div className="hidden md:block absolute bottom-5 right-12 z-10 font-mono text-[9px] uppercase tracking-[0.3em] text-[#00FFBD]/45">
             {hud.bottomRight}
           </div>
         )}
 
-        {/* HUD: scale bar bottom-center */}
         {hud?.scaleBar && (
           <div className="pointer-events-none absolute bottom-10 left-1/2 -translate-x-1/2 z-10 flex flex-col items-center gap-1.5">
             <div className="flex items-end h-3">
@@ -506,32 +327,19 @@ const FrameCounter: React.FC<{ progress: ReturnType<typeof useMotionValue<number
 };
 
 const OverlayBlock: React.FC<{ ov: Overlay; progress: ReturnType<typeof useMotionValue<number>> }> = ({ ov, progress }) => {
-  const fade = 0.06;
-  const inStart = Math.max(0, ov.enter - fade);
-  const inEnd = ov.enter;
-  const outStart = ov.exit;
-  const outEnd = Math.min(1, ov.exit + fade);
-
   const opacity = useTransform(
     progress,
-    [inStart, inEnd, outStart, outEnd],
+    [ov.enter - 0.06, ov.enter, ov.exit, ov.exit + 0.06],
     [0, 1, 1, 0],
-    { clamp: true }
   );
-  const yShift = useTransform(
-    progress,
-    [inStart, inEnd, outStart, outEnd],
-    [24, 0, 0, -24],
-    { clamp: true }
-  );
-
-  const isRight = ov.position === 'right' || ov.position === 'top-right' || ov.position === 'bottom-right';
-  const isCenter = ov.position === 'center';
+  const yShift = useTransform(progress, [ov.enter - 0.06, ov.enter], [16, 0]);
 
   const align =
-    isRight ? 'items-end text-right'
-    : isCenter ? 'items-center text-center'
-    : 'items-start text-left';
+    ov.position === 'center'
+      ? 'text-center items-center'
+      : ov.position.endsWith('right')
+        ? 'text-right items-end'
+        : 'text-left items-start';
 
   return (
     <motion.div
@@ -539,7 +347,6 @@ const OverlayBlock: React.FC<{ ov: Overlay; progress: ReturnType<typeof useMotio
       className={`pointer-events-none absolute z-20 ${positionClasses[ov.position]}`}
     >
       <div className={`relative flex flex-col gap-2 p-5 bg-black/40 backdrop-blur-md border border-white/10 ${align}`}>
-        {/* Drafting tick marks */}
         <span aria-hidden className="absolute top-0 left-0 w-2 h-px bg-[#00FFBD]/70" />
         <span aria-hidden className="absolute top-0 left-0 w-px h-2 bg-[#00FFBD]/70" />
         <span aria-hidden className="absolute top-0 right-0 w-2 h-px bg-[#00FFBD]/70" />
@@ -569,9 +376,9 @@ const OverlayBlock: React.FC<{ ov: Overlay; progress: ReturnType<typeof useMotio
           </p>
         )}
         {ov.stat && (
-          <div className="flex items-center gap-2 mt-0.5">
-            <span className="block w-5 h-px bg-[#00FFBD]" />
-            <span className="font-mono text-[10px] uppercase tracking-[0.3em] text-[#00FFBD]">
+          <div className="flex items-center gap-2 mt-1">
+            <span className="block w-6 h-px bg-[#00FFBD]" />
+            <span className="font-mono text-[10px] uppercase tracking-[0.25em] text-[#00FFBD]">
               {ov.stat}
             </span>
           </div>

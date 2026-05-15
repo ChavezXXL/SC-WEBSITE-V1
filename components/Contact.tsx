@@ -2,6 +2,7 @@
 import React, { useState, useRef } from 'react';
 import { Mail, Phone, MapPin, Check, UploadCloud, FileText, X, ArrowRight, Send, CheckCircle } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { trackPhoneClick, trackFormSubmit } from '../services/analytics';
 
 export const Contact: React.FC = () => {
   const [copiedPhone, setCopiedPhone] = useState(false);
@@ -75,6 +76,8 @@ export const Contact: React.FC = () => {
 
       if (response.ok || isLocalDev) {
         setSubmitStatus('success');
+        // Fire Google Ads conversion event on successful submit
+        if (!isLocalDev) trackFormSubmit();
         resetForm();
         setTimeout(() => setSubmitStatus('idle'), 5000);
       } else {
@@ -132,6 +135,8 @@ export const Contact: React.FC = () => {
                 href="tel:+18183894234"
                 className="flex items-start gap-4 cursor-pointer group no-underline"
                 onClick={(e) => {
+                  // Fire Google Ads conversion for phone-click intent (mobile call OR desktop copy)
+                  trackPhoneClick();
                   // On desktop, copy instead of calling
                   if (window.innerWidth > 768) {
                     e.preventDefault();

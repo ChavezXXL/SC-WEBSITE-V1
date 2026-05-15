@@ -172,6 +172,24 @@
       // This prevents "ReferenceError: process is not defined" which causes the white/black screen crash
       window.process = { env: { NODE_ENV: 'production' } };
     </script>
+
+    <!--
+      Google tag (gtag.js) — Google Ads conversion tracking.
+      The src URL + the second `gtag('config', ...)` line both reference the
+      Google Ads conversion ID. To activate:
+        1. Get the AW-XXXXXXXXX ID from Google Ads → Tools → Conversions → Google tag setup
+        2. Find/replace AW-CONVERSION_ID_PLACEHOLDER in BOTH this file AND services/analytics.ts
+        3. Redeploy to Netlify
+      Until then, the loader URL 404s harmlessly (no perf or render impact).
+    -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=AW-CONVERSION_ID_PLACEHOLDER"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      window.gtag = gtag;
+      gtag('js', new Date());
+      gtag('config', 'AW-CONVERSION_ID_PLACEHOLDER');
+    </script>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
