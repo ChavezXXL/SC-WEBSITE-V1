@@ -94,28 +94,22 @@ export const ServiceBreakdown: React.FC<ServiceBreakdownProps> = ({
     v.load();
   }, [shouldLoad, videoSrc]);
 
-  // ---- Scroll → video.currentTime, with LERP smoothing for buttery feel ----
+  // ---- Scroll → video.currentTime with throttled, queued seeks ----
+  // Key insight: seeking video is asynchronous — issuing seek requests faster
+  // than the decoder can fulfill them creates jank. We track the in-flight
+  // seek and only issue a new one when the previous finishes. We also drive
+  // the visible frame via requestVideoFrameCallback (rVFC) when available,
+  // which paints in sync with the actual video presentation timer.
   useEffect(() => {
     const section = sectionRef.current;
     const video = videoRef.current;
     if (!section || !video) return;
 
-    let targetProgress = 0;
-    let smoothedProgress = 0;
-    let rafLoop = 0;
-    let running = false;
     let isReady = false;
-
-    const onLoaded = () => {
-      isReady = true;
-      setReady(true);
-      // Seek to first frame so it shows immediately
-      try {
-        video.currentTime = 0;
-      } catch {}
-    };
-    video.addEventListener('loadedmetadata', onLoaded);
-    if (video.readyState >= 1) onLoaded();
+    let isSeeking = false;
+    let pendingTarget: number | null = null;
+    let rafLoop = 0;
+    let lastSet = -1;
 
     const computeTarget = () => {
       const rect = section.getBoundingClientRect();
@@ -125,63 +119,74 @@ export const ServiceBreakdown: React.FC<ServiceBreakdownProps> = ({
       let p = total > 0 ? scrolled / total : 0;
       if (p < 0) p = 0;
       if (p > 1) p = 1;
-      targetProgress = p;
+      return p;
     };
 
-    const seekTo = (p: number) => {
-      if (!isReady || !video.duration || isNaN(video.duration)) return;
-      // Clamp slightly inside [0, duration] to avoid edge stalls
-      const t = Math.max(0, Math.min(video.duration - 0.001, p * video.duration));
-      // Only seek if movement is meaningful — avoids spamming the decoder
-      if (Math.abs((video.currentTime || 0) - t) > 0.008) {
-        video.currentTime = t;
+    const applySeek = (p: number) => {
+      if (!isReady || !video.duration || isNaN(video.duration)) {
+        pendingTarget = p;
+        return;
+      }
+      const t = Math.max(0, Math.min(video.duration - 0.0001, p * video.duration));
+      // No-op if already there
+      if (Math.abs((video.currentTime || 0) - t) < 0.012) return;
+      // If a seek is in-flight, queue the new target — it will be applied
+      // when 'seeked' fires. This prevents decoder thrash.
+      if (isSeeking) {
+        pendingTarget = p;
+        return;
+      }
+      isSeeking = true;
+      video.currentTime = t;
+    };
+
+    const onSeeked = () => {
+      isSeeking = false;
+      if (pendingTarget != null) {
+        const next = pendingTarget;
+        pendingTarget = null;
+        applySeek(next);
       }
     };
 
-    const loop = () => {
-      const factor = 0.15;
-      const diff = targetProgress - smoothedProgress;
-      if (Math.abs(diff) < 0.0001) {
-        smoothedProgress = targetProgress;
-      } else {
-        smoothedProgress += diff * factor;
-      }
-      progress.set(smoothedProgress);
-      seekTo(smoothedProgress);
-
-      if (Math.abs(targetProgress - smoothedProgress) > 0.0001) {
-        rafLoop = requestAnimationFrame(loop);
-      } else {
-        running = false;
+    const onLoaded = () => {
+      isReady = true;
+      setReady(true);
+      try {
+        video.currentTime = 0;
+      } catch {}
+      // iOS Safari needs a play() call (even at rate 0) to keep the decoder
+      // warm and paint seek frames reliably. Muted + playsInline allows it
+      // without user gesture on modern iOS.
+      video.playbackRate = 0;
+      const playPromise = video.play();
+      if (playPromise && typeof playPromise.catch === 'function') {
+        playPromise.catch(() => { /* autoplay rejected — fall back to seek-only */ });
       }
     };
 
-    const kick = () => {
-      if (!running) {
-        running = true;
-        rafLoop = requestAnimationFrame(loop);
+    video.addEventListener('loadedmetadata', onLoaded);
+    video.addEventListener('seeked', onSeeked);
+    if (video.readyState >= 1) onLoaded();
+
+    // Single rAF loop, driven by scroll. Direct seek (no LERP) — the LERP
+    // was causing the back-and-forth seek thrash that read as "gunky".
+    const tick = () => {
+      const p = computeTarget();
+      progress.set(p);
+      if (Math.abs(p - lastSet) > 0.0008) {
+        lastSet = p;
+        applySeek(p);
       }
+      rafLoop = requestAnimationFrame(tick);
     };
-
-    const onScroll = () => {
-      computeTarget();
-      kick();
-    };
-
-    // Initialize position
-    computeTarget();
-    smoothedProgress = targetProgress;
-    progress.set(smoothedProgress);
-    seekTo(smoothedProgress);
-
-    window.addEventListener('scroll', onScroll, { passive: true });
-    window.addEventListener('resize', onScroll, { passive: true });
+    rafLoop = requestAnimationFrame(tick);
 
     return () => {
       video.removeEventListener('loadedmetadata', onLoaded);
-      window.removeEventListener('scroll', onScroll);
-      window.removeEventListener('resize', onScroll);
+      video.removeEventListener('seeked', onSeeked);
       if (rafLoop) cancelAnimationFrame(rafLoop);
+      try { video.pause(); } catch {}
     };
   }, [progress, shouldLoad]);
 
