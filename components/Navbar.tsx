@@ -122,6 +122,8 @@ export const Navbar: React.FC<NavbarProps> = ({ currentView, onChangeView }) => 
             <button 
               className="md:hidden text-white p-2 relative z-50 bg-white/10 rounded-full backdrop-blur-md"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              aria-label={mobileMenuOpen ? 'Close menu' : 'Open menu'}
+              aria-expanded={mobileMenuOpen}
             >
               {mobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
             </button>

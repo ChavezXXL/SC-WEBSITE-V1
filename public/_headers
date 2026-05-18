@@ -1,10 +1,23 @@
-# Netlify cache headers
+# Netlify headers — security + caching
 # index.html: never cache so deploys are immediately visible
 /
   Cache-Control: public, max-age=0, must-revalidate
+  Strict-Transport-Security: max-age=63072000; includeSubDomains; preload
+  X-Content-Type-Options: nosniff
+  X-Frame-Options: SAMEORIGIN
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: geolocation=(), microphone=(), camera=(), payment=()
+  Cross-Origin-Opener-Policy: same-origin
+  Cross-Origin-Resource-Policy: same-site
 
 /index.html
   Cache-Control: public, max-age=0, must-revalidate
+  Strict-Transport-Security: max-age=63072000; includeSubDomains; preload
+  X-Content-Type-Options: nosniff
+  X-Frame-Options: SAMEORIGIN
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: geolocation=(), microphone=(), camera=(), payment=()
+  Cross-Origin-Opener-Policy: same-origin
 
 # Hashed assets (Vite builds these with content hashes in filename) — cache forever
 /assets/*
