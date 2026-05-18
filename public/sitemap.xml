@@ -1,43 +1,30 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
   <url>
     <loc>https://scprecisiondeburring.com/</loc>
+    <lastmod>2026-05-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
-  </url>
-  <url>
-    <loc>https://scprecisiondeburring.com/#process</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://scprecisiondeburring.com/#industries</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://scprecisiondeburring.com/#services</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.9</priority>
-  </url>
-  <url>
-    <loc>https://scprecisiondeburring.com/#service-microscope</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.85</priority>
-  </url>
-  <url>
-    <loc>https://scprecisiondeburring.com/#service-manual</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.85</priority>
-  </url>
-  <url>
-    <loc>https://scprecisiondeburring.com/#service-blending</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.85</priority>
-  </url>
-  <url>
-    <loc>https://scprecisiondeburring.com/#contact</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.9</priority>
+    <image:image>
+      <image:loc>https://scprecisiondeburring.com/gallery/yelp-2.jpg</image:loc>
+      <image:title>Multi-Bore Aerospace Manifold</image:title>
+      <image:caption>Precision deburred multi-bore aerospace manifold by SC Precision Deburring, Los Angeles.</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://scprecisiondeburring.com/gallery/yelp-4.jpg</image:loc>
+      <image:title>Multi-Port Aerospace Manifold</image:title>
+      <image:caption>Multi-port aerospace manifold with cross-drilled bores, deburred and inspection-ready.</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://scprecisiondeburring.com/gallery/yelp-1.jpg</image:loc>
+      <image:title>Hydraulic Valve Body</image:title>
+      <image:caption>Hydraulic valve body with deburred internal passages.</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://scprecisiondeburring.com/gallery/yelp-3.jpg</image:loc>
+      <image:title>Finished Stainless Spool</image:title>
+      <image:caption>Stainless steel spool — finished and ready for assembly.</image:caption>
+    </image:image>
   </url>
 </urlset>
