@@ -60,6 +60,31 @@ const faqs: FaqItem[] = [
     question: "What do you need to send a quote?",
     answer: "A drawing or photo, an approximate quantity, and any spec callouts. Quote back in 24 hours.",
   },
+  {
+    category: 'LOCATION',
+    question: 'Where is SC Precision Deburring located?',
+    answer: "Pacoima, California — 12734 Branford Street, Unit 17, in the San Fernando Valley. We serve all of Southern California: Los Angeles, Orange, Ventura, San Bernardino, Riverside, San Diego, and Kern counties.",
+  },
+  {
+    category: 'CERTIFICATIONS',
+    question: 'Are you ISO 9001 or AS9100 certified?',
+    answer: "ISO 9001:2015 certified. AS9100 certification is in progress for full aerospace approved-vendor-list eligibility. Documented quality processes on every job, with sign-off on every batch.",
+  },
+  {
+    category: 'TECHNIQUE',
+    question: 'What is microscope deburring?',
+    answer: "Deburring performed under magnification — typically 10x to 40x — for parts where burrs hide inside cross-drilled holes, internal passages, or tight features the naked eye can't catch. Standard for aerospace manifolds, valve bodies, and high-tolerance medical devices.",
+  },
+  {
+    category: 'INDUSTRIES',
+    question: 'Do you work with aerospace, defense, and medical OEMs?',
+    answer: "Yes — that's the core of our business. We deburr parts for aerospace Tier 1 and Tier 2 suppliers, defense contractors, and medical device manufacturers across Southern California. Most of our work involves AS9100-environment parts.",
+  },
+  {
+    category: 'PRICING',
+    question: 'How much does deburring cost?',
+    answer: "Depends on part complexity, material, and quantity — but quotes come back in 24 hours, free, with no minimum order. Small simple batches start at a few dollars per part; complex aerospace work prices per print and spec callout.",
+  },
 ];
 
 const FaqRow: React.FC<{ item: FaqItem; index: number; isOpen: boolean; onToggle: () => void }> = ({ item, index, isOpen, onToggle }) => (
