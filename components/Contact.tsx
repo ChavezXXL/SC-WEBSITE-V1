@@ -39,7 +39,24 @@ export const Contact: React.FC = () => {
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
-      setFileName(e.target.files[0].name);
+      const file = e.target.files[0];
+      // Netlify Forms hard-caps attachments at 8MB on free tier.
+      // Give a clear warning so the user knows to compress before submitting
+      // (silent server-side rejection was losing customer files).
+      const MAX_BYTES = 7.5 * 1024 * 1024; // 7.5MB — safe margin under 8MB limit
+      if (file.size > MAX_BYTES) {
+        const sizeMB = (file.size / 1024 / 1024).toFixed(1);
+        alert(
+          `That file is ${sizeMB}MB — our upload limit is 7.5MB.\n\n` +
+            `Quick options:\n` +
+            `• Phone photo: use the email/text option to send it instead.\n` +
+            `• PDF/drawing: try compressing at smallpdf.com or ilovepdf.com.\n` +
+            `• Or email it directly to quotes@scprecisiondeburring.com after you submit the form.`,
+        );
+        if (fileInputRef.current) fileInputRef.current.value = '';
+        return;
+      }
+      setFileName(file.name);
     }
   };
 
