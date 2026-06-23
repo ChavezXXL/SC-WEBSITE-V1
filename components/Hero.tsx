@@ -1,12 +1,15 @@
 
 import React, { useRef } from 'react';
-import { motion, useScroll, useTransform } from 'framer-motion';
-import { useVideoBackgroundPair } from './useVideoBackgroundPair';
+import { motion, useScroll, useTransform, useInView, useReducedMotion } from 'framer-motion';
+import { useBackgroundVideo } from './useBackgroundVideo';
 
 const VIDEO_SRC = "/videos/hero-bg.mp4";
+const VIDEO_POSTER = "/videos/posters/hero-bg.jpg";
 
 export const Hero: React.FC = () => {
   const ref = useRef<HTMLElement>(null);
+  const shouldReduceMotion = useReducedMotion();
+  const inView = useInView(ref, { margin: "0px 0px -10% 0px" });
   const { scrollYProgress } = useScroll({
     target: ref,
     offset: ["start start", "end start"]
@@ -15,9 +18,8 @@ export const Hero: React.FC = () => {
   const yText = useTransform(scrollYProgress, [0, 1], ["0%", "40%"]);
   const opacityText = useTransform(scrollYProgress, [0, 0.5], [1, 0]);
 
-  const videoARef = useRef<HTMLVideoElement>(null);
-  const videoBRef = useRef<HTMLVideoElement>(null);
-  const { activeVideo } = useVideoBackgroundPair(videoARef, videoBRef, ref, VIDEO_SRC);
+  const videoRef = useRef<HTMLVideoElement>(null);
+  useBackgroundVideo(videoRef, ref, VIDEO_SRC);
 
   const scrollToServices = (e: React.MouseEvent) => {
       e.preventDefault();
@@ -29,23 +31,16 @@ export const Hero: React.FC = () => {
       ref={ref}
       className="relative min-h-screen w-full flex flex-col justify-center items-center bg-[#030305] overflow-hidden pt-20"
     >
-      {/* Video Background — dual-element seamless crossfade */}
+      {/* Video Background — single looping element (poster paints instantly) */}
       <div className="absolute inset-0 pointer-events-none">
         <video
-          ref={videoARef}
+          ref={videoRef}
           muted
           playsInline
           loop
           preload="metadata"
-          className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-[1200ms] ease-linear ${activeVideo === 'a' ? 'opacity-100' : 'opacity-0'}`}
-        />
-        <video
-          ref={videoBRef}
-          muted
-          playsInline
-          loop
-          preload="metadata"
-          className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-[1200ms] ease-linear ${activeVideo === 'b' ? 'opacity-100' : 'opacity-0'}`}
+          poster={VIDEO_POSTER}
+          className="absolute inset-0 w-full h-full object-cover"
         />
 
         {/* Vignette + brand-tint overlay */}
@@ -56,14 +51,18 @@ export const Hero: React.FC = () => {
       </div>
 
       <motion.div
-        style={{ y: yText, opacity: opacityText }}
+        style={{
+          y: shouldReduceMotion ? 0 : yText,
+          opacity: shouldReduceMotion ? 1 : opacityText,
+          willChange: inView && !shouldReduceMotion ? 'transform, opacity' : 'auto',
+        }}
         className="relative z-20 container mx-auto px-6 text-center flex flex-col items-center"
       >
         {/* Cinematic Title Reveal */}
         <h1 className="text-5xl md:text-8xl lg:text-9xl font-bold tracking-tight text-white mb-6 relative font-space" style={{ textShadow: '0 4px 40px rgba(0,0,0,0.6)' }}>
           <div className="overflow-hidden">
             <motion.span
-              initial={{ y: "100%" }}
+              initial={shouldReduceMotion ? false : { y: "100%" }}
               animate={{ y: 0 }}
               transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
               className="block"
@@ -75,7 +74,7 @@ export const Hero: React.FC = () => {
 
         <div className="overflow-hidden mb-12">
             <motion.p
-              initial={{ y: "100%", opacity: 0 }}
+              initial={shouldReduceMotion ? false : { y: "100%", opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
               transition={{ duration: 1, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
               className="text-lg md:text-2xl font-light tracking-[0.3em] text-zinc-200 uppercase"

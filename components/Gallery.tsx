@@ -123,10 +123,16 @@ export const Gallery: React.FC<GalleryProps> = ({ onBack }) => {
   return (
     <div ref={topRef} className="min-h-screen bg-[#030305] text-white font-sans">
 
-      {/* Background atmospherics */}
+      {/* Background atmospherics — pre-baked radial gradients (no GPU blur) */}
       <div className="fixed inset-0 pointer-events-none">
-        <div className="absolute top-[10%] left-[-10%] w-[600px] h-[600px] bg-[#00FFBD]/8 blur-[140px] rounded-full" />
-        <div className="absolute bottom-[10%] right-[-10%] w-[500px] h-[500px] bg-[#00FFBD]/6 blur-[140px] rounded-full" />
+        <div
+          className="absolute top-[10%] left-[-10%] w-[600px] h-[600px] rounded-full"
+          style={{ background: 'radial-gradient(circle, rgba(0,255,189,0.08) 0%, rgba(0,255,189,0.03) 35%, transparent 70%)' }}
+        />
+        <div
+          className="absolute bottom-[10%] right-[-10%] w-[500px] h-[500px] rounded-full"
+          style={{ background: 'radial-gradient(circle, rgba(0,255,189,0.06) 0%, rgba(0,255,189,0.02) 35%, transparent 70%)' }}
+        />
       </div>
 
       {/* Top status / nav */}

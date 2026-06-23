@@ -1,6 +1,6 @@
 
 import React, { useEffect, useRef, useState } from 'react';
-import { motion, useScroll, useTransform, MotionValue } from 'framer-motion';
+import { motion, useScroll, useTransform, useInView, MotionValue } from 'framer-motion';
 
 const Dot: React.FC<{ index: number; active: MotionValue<number> }> = ({ index, active }) => {
   const [on, setOn] = useState(false);
@@ -48,6 +48,7 @@ const industries = [
 
 export const Industries: React.FC = () => {
   const targetRef = useRef<HTMLDivElement>(null);
+  const inView = useInView(targetRef, { margin: "0px 0px -10% 0px" });
   const { scrollYProgress } = useScroll({
     target: targetRef,
   });
@@ -62,7 +63,7 @@ export const Industries: React.FC = () => {
     <section ref={targetRef} id="industries" className="relative h-[400vh] bg-[#030305]">
       <div className="sticky top-0 flex h-screen items-center overflow-hidden">
 
-        <motion.div style={{ x }} className="flex gap-6 md:gap-10 pl-6 md:pl-24 pr-24">
+        <motion.div style={{ x, willChange: inView ? 'transform' : 'auto' }} className="flex gap-6 md:gap-10 pl-6 md:pl-24 pr-24">
 
           {/* Intro Card */}
           <div className="flex-shrink-0 w-[80vw] md:w-[40vw] h-[60vh] md:h-[70vh] flex flex-col justify-center">

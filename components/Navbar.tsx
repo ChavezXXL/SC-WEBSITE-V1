@@ -14,10 +14,19 @@ export const Navbar: React.FC<NavbarProps> = ({ currentView, onChangeView }) => 
   const [logoError, setLogoError] = useState(false);
 
   useEffect(() => {
+    // Coalesce scroll work to one update per frame and mark the listener
+    // passive so it never blocks scrolling.
+    let ticking = false;
     const handleScroll = () => {
-      setScrolled(window.scrollY > 20);
+      if (ticking) return;
+      ticking = true;
+      window.requestAnimationFrame(() => {
+        setScrolled(window.scrollY > 20);
+        ticking = false;
+      });
     };
-    window.addEventListener('scroll', handleScroll);
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    handleScroll(); // sync initial state (e.g. refresh at a non-zero scroll position)
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 

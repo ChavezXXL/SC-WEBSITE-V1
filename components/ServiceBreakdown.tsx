@@ -65,9 +65,14 @@ export const ServiceBreakdown: React.FC<ServiceBreakdownProps> = ({
   const [ready, setReady] = useState(false);
   const [shouldLoad, setShouldLoad] = useState(false);
 
+  // Poster frame derived from the clip path (/videos/scroll/x.mp4 -> /videos/posters/x.jpg)
+  const poster = videoSrc.replace('/scroll/', '/posters/').replace(/\.mp4$/, '.jpg');
+
   const progress = useMotionValue(0);
 
-  // ---- Lazy gate: only attach src when section is within ~60% of viewport ----
+  // ---- Lazy gate: attach src when section is within ~20% of viewport ----
+  // (was 60%, which kicked off all three multi-MB scroll videos at once well
+  // before they were on screen, competing with rendering.)
   useEffect(() => {
     const section = sectionRef.current;
     if (!section) return;
@@ -78,7 +83,7 @@ export const ServiceBreakdown: React.FC<ServiceBreakdownProps> = ({
           io.disconnect();
         }
       },
-      { rootMargin: '60% 0px 60% 0px' },
+      { rootMargin: '20% 0px 20% 0px' },
     );
     io.observe(section);
     return () => io.disconnect();
@@ -204,9 +209,8 @@ export const ServiceBreakdown: React.FC<ServiceBreakdownProps> = ({
           muted
           playsInline
           preload="auto"
-          // @ts-expect-error - non-standard but improves iOS behavior
+          poster={poster}
           webkit-playsinline="true"
-          // @ts-expect-error - non-standard, hint to browser
           disablePictureInPicture
         />
 
@@ -351,7 +355,7 @@ const OverlayBlock: React.FC<{ ov: Overlay; progress: ReturnType<typeof useMotio
       style={{ opacity, y: yShift }}
       className={`pointer-events-none absolute z-20 ${positionClasses[ov.position]}`}
     >
-      <div className={`relative flex flex-col gap-2 p-5 bg-black/40 backdrop-blur-md border border-white/10 ${align}`}>
+      <div className={`relative flex flex-col gap-2 p-5 bg-black/70 border border-white/10 ${align}`}>
         <span aria-hidden className="absolute top-0 left-0 w-2 h-px bg-[#00FFBD]/70" />
         <span aria-hidden className="absolute top-0 left-0 w-px h-2 bg-[#00FFBD]/70" />
         <span aria-hidden className="absolute top-0 right-0 w-2 h-px bg-[#00FFBD]/70" />

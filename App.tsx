@@ -12,6 +12,7 @@ import { BlendingSection } from './components/BlendingSection';
 import { ServicesIntro } from './components/ServicesIntro';
 import { PrecisionCTA } from './components/PrecisionCTA';
 import { DataProvider } from './components/DataContext';
+import { ErrorBoundary } from './components/ErrorBoundary';
 
 // Lazy-loaded — below the fold or rarely-used. Reduces initial JS bundle.
 const Contact = lazy(() => import('./components/Contact').then(m => ({ default: m.Contact })));
@@ -53,7 +54,6 @@ const SectionGap: React.FC = () => (
 
 function App() {
   const [view, setView] = useState<'home' | 'gallery' | 'admin'>('home');
-  const [isAdminAuthOpen, setIsAdminAuthOpen] = useState(false);
 
   // Always start at top when switching views
   useEffect(() => {
@@ -61,8 +61,14 @@ function App() {
   }, [view]);
 
   const handleAdminAccess = () => {
+    // Cosmetic, owner-only gate (all admin data is per-browser localStorage, so
+    // this is not real security). The password comes from a build-time env var
+    // (VITE_ADMIN_PASSWORD) so it isn't committed in the source; set it in
+    // Netlify → Site configuration → Environment variables. Falls back to a
+    // default only if unset.
+    const expected = ((import.meta as any).env?.VITE_ADMIN_PASSWORD as string | undefined) || 'sc-admin';
     const password = prompt("Enter Admin Password:");
-    if (password === "admin") {
+    if (password === expected) {
         setView('admin');
     } else if (password) {
         alert("Incorrect password.");
@@ -72,9 +78,11 @@ function App() {
   if (view === 'admin') {
     return (
       <DataProvider>
-        <Suspense fallback={<div className="min-h-screen bg-[#030305] flex items-center justify-center text-zinc-500 font-mono text-xs uppercase tracking-widest">Loading…</div>}>
-          <AdminDashboard onExit={() => setView('home')} />
-        </Suspense>
+        <ErrorBoundary>
+          <Suspense fallback={<div className="min-h-screen bg-[#030305] flex items-center justify-center text-zinc-500 font-mono text-xs uppercase tracking-widest">Loading…</div>}>
+            <AdminDashboard onExit={() => setView('home')} />
+          </Suspense>
+        </ErrorBoundary>
       </DataProvider>
     );
   }
@@ -143,20 +151,26 @@ function App() {
 
               {/* Contact Section with ID */}
               <div id="contact">
-                <Suspense fallback={<div className="h-32 bg-[#030305]" />}>
-                  <Contact />
-                </Suspense>
+                <ErrorBoundary>
+                  <Suspense fallback={<div className="h-32 bg-[#030305]" />}>
+                    <Contact />
+                  </Suspense>
+                </ErrorBoundary>
               </div>
 
               {/* FAQ Section - Moved below Contact as requested */}
-              <Suspense fallback={<div className="h-32 bg-[#030305]" />}>
-                <FAQ />
-              </Suspense>
+              <ErrorBoundary>
+                <Suspense fallback={<div className="h-32 bg-[#030305]" />}>
+                  <FAQ />
+                </Suspense>
+              </ErrorBoundary>
             </>
           ) : (
-            <Suspense fallback={<div className="min-h-screen bg-[#030305] flex items-center justify-center text-zinc-500 font-mono text-xs uppercase tracking-widest">Loading gallery…</div>}>
-              <Gallery onBack={() => setView('home')} />
-            </Suspense>
+            <ErrorBoundary>
+              <Suspense fallback={<div className="min-h-screen bg-[#030305] flex items-center justify-center text-zinc-500 font-mono text-xs uppercase tracking-widest">Loading gallery…</div>}>
+                <Gallery onBack={() => setView('home')} />
+              </Suspense>
+            </ErrorBoundary>
           )}
         </main>
 

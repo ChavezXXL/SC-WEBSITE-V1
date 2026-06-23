@@ -32,10 +32,16 @@ export const ServicesIntro: React.FC = () => {
   return (
     <section className="relative min-h-screen bg-[#030305] overflow-hidden flex items-center justify-center py-24 md:py-32">
 
-      {/* Atmosphere */}
+      {/* Atmosphere — pre-baked radial gradients (no 140px GPU blur layer) */}
       <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute top-[10%] left-[-10%] w-[600px] h-[600px] bg-[#00FFBD]/10 blur-[140px] rounded-full" />
-        <div className="absolute bottom-[10%] right-[-10%] w-[500px] h-[500px] bg-[#00FFBD]/8 blur-[140px] rounded-full" />
+        <div
+          className="absolute top-[10%] left-[-10%] w-[600px] h-[600px] rounded-full"
+          style={{ background: 'radial-gradient(circle, rgba(0,255,189,0.10) 0%, rgba(0,255,189,0.04) 35%, transparent 70%)' }}
+        />
+        <div
+          className="absolute bottom-[10%] right-[-10%] w-[500px] h-[500px] rounded-full"
+          style={{ background: 'radial-gradient(circle, rgba(0,255,189,0.08) 0%, rgba(0,255,189,0.03) 35%, transparent 70%)' }}
+        />
       </div>
 
       {/* GIANT outline 03 — background flair */}

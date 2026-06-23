@@ -54,7 +54,7 @@
       "telephone": "+1-818-389-4234",
       "email": "SCPRECISIONDEBURRING@GMAIL.COM",
       "image": "https://scprecisiondeburring.com/gallery/yelp-2.jpg",
-      "logo": "https://scprecisiondeburring.com/favicon.svg",
+      "logo": "https://scprecisiondeburring.com/logo.png",
       "address": {
         "@type": "PostalAddress",
         "streetAddress": "12734 Branford Street Unit #17",
@@ -305,85 +305,30 @@
 
     <!--
       Google tag (gtag.js) — Google Ads conversion tracking.
-      The src URL + the second `gtag('config', ...)` line both reference the
-      Google Ads conversion ID. To activate:
-        1. Get the AW-XXXXXXXXX ID from Google Ads → Tools → Conversions → Google tag setup
-        2. Find/replace AW-CONVERSION_ID_PLACEHOLDER in BOTH this file AND services/analytics.ts
-        3. Redeploy to Netlify
-      Until then, the loader URL 404s harmlessly (no perf or render impact).
+      The loader is injected ONLY when a real AW- conversion ID is set below,
+      so until then we make ZERO request to googletagmanager.com (no 404).
+      To activate: replace the AW_ID value here AND AW_CONVERSION_ID in
+      services/analytics.ts with the real ID, then rebuild + redeploy.
     -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=AW-CONVERSION_ID_PLACEHOLDER"></script>
     <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      window.gtag = gtag;
-      gtag('js', new Date());
-      gtag('config', 'AW-CONVERSION_ID_PLACEHOLDER');
+      (function () {
+        var AW_ID = 'AW-CONVERSION_ID_PLACEHOLDER';
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){ dataLayer.push(arguments); }
+        window.gtag = gtag;
+        if (AW_ID.indexOf('PLACEHOLDER') !== -1) return; // not configured yet — skip the request
+        var s = document.createElement('script');
+        s.async = true;
+        s.src = 'https://www.googletagmanager.com/gtag/js?id=' + AW_ID;
+        document.head.appendChild(s);
+        gtag('js', new Date());
+        gtag('config', AW_ID);
+      })();
     </script>
-    <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <style>
-      body {
-        font-family: 'Inter', sans-serif;
-        background-color: #050505;
-        color: #fafafa;
-        overflow-x: hidden;
-      }
-      h1, h2, h3, h4, h5, h6 {
-        font-family: 'Space Grotesk', sans-serif;
-      }
-      
-      /* Film Grain Overlay */
-      .bg-noise {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        pointer-events: none;
-        z-index: 50;
-        opacity: 0.03;
-        background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
-      }
-
-      /* Premium Scrollbar */
-      ::-webkit-scrollbar {
-        width: 6px;
-      }
-      ::-webkit-scrollbar-track {
-        background: #050505;
-      }
-      ::-webkit-scrollbar-thumb {
-        background: #333;
-        border-radius: 10px;
-      }
-      ::-webkit-scrollbar-thumb:hover {
-        background: #555;
-      }
-
-      .glass-panel {
-        background: rgba(20, 20, 23, 0.7);
-        backdrop-filter: blur(20px);
-        -webkit-backdrop-filter: blur(20px);
-        border: 1px solid rgba(255, 255, 255, 0.08);
-        box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
-      }
-    </style>
-  <script type="importmap">
-{
-  "imports": {
-    "react": "https://aistudiocdn.com/react@^19.2.0",
-    "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.0/",
-    "react/": "https://aistudiocdn.com/react@^19.2.0/",
-    "lucide-react": "https://aistudiocdn.com/lucide-react@^0.555.0",
-    "framer-motion": "https://aistudiocdn.com/framer-motion@^12.23.24"
-  }
-}
-</script>
-<link rel="stylesheet" href="/index.css">
-</head>
+  </head>
   <body>
     <div id="root"></div>
     <div class="bg-noise"></div>
@@ -391,12 +336,13 @@
     <!-- NETLIFY FORMS CONFIGURATION -->
     <!-- This hidden form tells Netlify to expect these fields -->
     <!-- ADDED: enctype="multipart/form-data" for file support -->
-    <form name="contact" data-netlify="true" enctype="multipart/form-data" hidden>
+    <form name="contact" data-netlify="true" netlify-honeypot="bot-field" enctype="multipart/form-data" hidden>
       <input type="text" name="name" />
       <input type="email" name="email" />
       <input type="text" name="service" />
       <textarea name="details"></textarea>
       <input type="file" name="attachment" />
+      <input name="bot-field" />
     </form>
 
     <!-- CRITICAL: Entry point for the React App -->

@@ -2,36 +2,29 @@
 import React, { useRef } from 'react';
 import { motion } from 'framer-motion';
 import { ArrowRight } from 'lucide-react';
-import { useVideoBackgroundPair } from './useVideoBackgroundPair';
+import { useBackgroundVideo } from './useBackgroundVideo';
 
 const VIDEO_SRC = '/videos/cta-bg.mp4';
+const VIDEO_POSTER = '/videos/posters/cta-bg.jpg';
 
 export const PrecisionCTA: React.FC = () => {
   const sectionRef = useRef<HTMLElement>(null);
-  const videoARef = useRef<HTMLVideoElement>(null);
-  const videoBRef = useRef<HTMLVideoElement>(null);
-  const { activeVideo } = useVideoBackgroundPair(videoARef, videoBRef, sectionRef, VIDEO_SRC);
+  const videoRef = useRef<HTMLVideoElement>(null);
+  useBackgroundVideo(videoRef, sectionRef, VIDEO_SRC);
 
   return (
     <section ref={sectionRef} className="relative py-32 md:py-44 overflow-hidden bg-[#030305]">
 
-      {/* Video Background — dual-element seamless crossfade */}
+      {/* Video Background — single looping element (poster paints instantly) */}
       <div className="absolute inset-0 pointer-events-none">
         <video
-          ref={videoARef}
+          ref={videoRef}
           muted
           playsInline
           loop
           preload="metadata"
-          className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-[1200ms] ease-linear ${activeVideo === 'a' ? 'opacity-100' : 'opacity-0'}`}
-        />
-        <video
-          ref={videoBRef}
-          muted
-          playsInline
-          loop
-          preload="metadata"
-          className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-[1200ms] ease-linear ${activeVideo === 'b' ? 'opacity-100' : 'opacity-0'}`}
+          poster={VIDEO_POSTER}
+          className="absolute inset-0 w-full h-full object-cover"
         />
 
         {/* Vignette + brand-tint overlays */}

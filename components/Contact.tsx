@@ -1,5 +1,5 @@
 
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Mail, Phone, MapPin, Check, UploadCloud, FileText, X, ArrowRight, Send, CheckCircle } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { trackPhoneClick, trackFormSubmit } from '../services/analytics';
@@ -9,6 +9,8 @@ export const Contact: React.FC = () => {
   const [copiedEmail, setCopiedEmail] = useState(false);
   const [copiedAddress, setCopiedAddress] = useState(false);
   const [fileName, setFileName] = useState<string | null>(null);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [isDragging, setIsDragging] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle');
 
@@ -37,28 +39,56 @@ export const Contact: React.FC = () => {
     }
   };
 
+  const clearPreview = () => {
+    if (previewUrl) URL.revokeObjectURL(previewUrl);
+    setPreviewUrl(null);
+  };
+
+  // Shared validation/handling for both click-to-pick and drag-and-drop.
+  const processFile = (file: File) => {
+    // Netlify Forms hard-caps attachments at ~8MB on the free tier.
+    // Warn clearly so the user knows to compress before submitting
+    // (silent server-side rejection was losing customer files).
+    const MAX_BYTES = 7.5 * 1024 * 1024; // 7.5MB — safe margin under the 8MB limit
+    if (file.size > MAX_BYTES) {
+      const sizeMB = (file.size / 1024 / 1024).toFixed(1);
+      alert(
+        `That file is ${sizeMB}MB — our upload limit is 7.5MB.\n\n` +
+          `Quick options:\n` +
+          `• Phone photo: use the email/text option to send it instead.\n` +
+          `• PDF/drawing: try compressing at smallpdf.com or ilovepdf.com.\n` +
+          `• Or email it directly to quotes@scprecisiondeburring.com after you submit the form.`,
+      );
+      if (fileInputRef.current) fileInputRef.current.value = '';
+      clearPreview();
+      setFileName(null);
+      return;
+    }
+    clearPreview();
+    setPreviewUrl(file.type.startsWith('image/') ? URL.createObjectURL(file) : null);
+    setFileName(file.name);
+  };
+
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      const file = e.target.files[0];
-      // Netlify Forms hard-caps attachments at 8MB on free tier.
-      // Give a clear warning so the user knows to compress before submitting
-      // (silent server-side rejection was losing customer files).
-      const MAX_BYTES = 7.5 * 1024 * 1024; // 7.5MB — safe margin under 8MB limit
-      if (file.size > MAX_BYTES) {
-        const sizeMB = (file.size / 1024 / 1024).toFixed(1);
-        alert(
-          `That file is ${sizeMB}MB — our upload limit is 7.5MB.\n\n` +
-            `Quick options:\n` +
-            `• Phone photo: use the email/text option to send it instead.\n` +
-            `• PDF/drawing: try compressing at smallpdf.com or ilovepdf.com.\n` +
-            `• Or email it directly to quotes@scprecisiondeburring.com after you submit the form.`,
-        );
-        if (fileInputRef.current) fileInputRef.current.value = '';
-        return;
-      }
-      setFileName(file.name);
+    if (e.target.files && e.target.files[0]) processFile(e.target.files[0]);
+  };
+
+  const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    setIsDragging(false);
+    const file = e.dataTransfer.files?.[0];
+    if (!file) return;
+    processFile(file);
+    // Mirror the dropped file into the real <input> so FormData picks it up on submit.
+    if (fileInputRef.current) {
+      const dt = new DataTransfer();
+      dt.items.add(file);
+      fileInputRef.current.files = dt.files;
     }
   };
+
+  // Release any object URL when it changes or on unmount (no memory leak).
+  useEffect(() => () => { if (previewUrl) URL.revokeObjectURL(previewUrl); }, [previewUrl]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -72,6 +102,7 @@ export const Contact: React.FC = () => {
     const resetForm = () => {
       setFormData({ name: '', email: '', service: 'Microscope Deburring', details: '' });
       setFileName(null);
+      clearPreview();
       if (fileInputRef.current) fileInputRef.current.value = '';
     };
 
@@ -219,16 +250,25 @@ export const Contact: React.FC = () => {
                 name="contact"
                 method="POST"
                 data-netlify="true"
+                netlify-honeypot="bot-field"
                 encType="multipart/form-data"
                 onSubmit={handleSubmit}
                 className="space-y-6"
               >
                 <input type="hidden" name="form-name" value="contact" />
+                {/* Honeypot: hidden from humans; bots that fill it are dropped by Netlify */}
+                <p className="hidden" aria-hidden="true">
+                  <label>
+                    Don&apos;t fill this out if you&apos;re human:{' '}
+                    <input name="bot-field" tabIndex={-1} autoComplete="off" />
+                  </label>
+                </p>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="space-y-2">
-                    <label className="text-xs font-semibold text-zinc-500 uppercase tracking-wider">Full Name</label>
+                    <label htmlFor="contact-name" className="text-xs font-semibold text-zinc-500 uppercase tracking-wider">Full Name</label>
                     <input
+                      id="contact-name"
                       name="name"
                       value={formData.name}
                       onChange={handleChange}
@@ -239,8 +279,9 @@ export const Contact: React.FC = () => {
                     />
                   </div>
                   <div className="space-y-2">
-                    <label className="text-xs font-semibold text-zinc-500 uppercase tracking-wider">Email Address</label>
+                    <label htmlFor="contact-email" className="text-xs font-semibold text-zinc-500 uppercase tracking-wider">Email Address</label>
                     <input
+                      id="contact-email"
                       name="email"
                       value={formData.email}
                       onChange={handleChange}
@@ -253,9 +294,10 @@ export const Contact: React.FC = () => {
                 </div>
 
                 <div className="space-y-2">
-                  <label className="text-xs font-semibold text-zinc-500 uppercase tracking-wider">Service Interest</label>
+                  <label htmlFor="contact-service" className="text-xs font-semibold text-zinc-500 uppercase tracking-wider">Service Interest</label>
                   <div className="relative">
                       <select
+                          id="contact-service"
                           name="service"
                           value={formData.service}
                           onChange={handleChange}
@@ -274,8 +316,9 @@ export const Contact: React.FC = () => {
                 </div>
 
                 <div className="space-y-2">
-                  <label className="text-xs font-semibold text-zinc-500 uppercase tracking-wider">Project Details</label>
+                  <label htmlFor="contact-details" className="text-xs font-semibold text-zinc-500 uppercase tracking-wider">Project Details</label>
                   <textarea
+                      id="contact-details"
                       name="details"
                       value={formData.details}
                       onChange={handleChange}
@@ -288,27 +331,42 @@ export const Contact: React.FC = () => {
 
                 {/* File Upload Section */}
                 <div className="space-y-2">
-                    <label className="text-xs font-semibold text-zinc-500 uppercase tracking-wider">Attach Drawings/Prints</label>
+                    <label htmlFor="contact-attachment" className="text-xs font-semibold text-zinc-500 uppercase tracking-wider">Attach Drawing/Print/Photo</label>
                     <div
+                        role="button"
+                        tabIndex={0}
+                        aria-label="Attach a drawing, print, or photo"
                         onClick={() => fileInputRef.current?.click()}
-                        className="border-2 border-dashed border-zinc-700 rounded-lg p-6 flex flex-col items-center justify-center cursor-pointer hover:border-[#00FFBD]/50 hover:bg-zinc-900/50 transition-all group"
+                        onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); fileInputRef.current?.click(); } }}
+                        onDragOver={(e) => { e.preventDefault(); setIsDragging(true); }}
+                        onDragLeave={(e) => { e.preventDefault(); setIsDragging(false); }}
+                        onDrop={handleDrop}
+                        className={`border-2 border-dashed rounded-lg p-6 flex flex-col items-center justify-center cursor-pointer transition-all group focus:outline-none focus:ring-1 focus:ring-[#00FFBD] ${isDragging ? 'border-[#00FFBD] bg-zinc-900/60' : 'border-zinc-700 hover:border-[#00FFBD]/50 hover:bg-zinc-900/50'}`}
                     >
                         <input
+                            id="contact-attachment"
                             type="file"
                             name="attachment"
                             ref={fileInputRef}
                             className="hidden"
+                            accept="image/*,.pdf,.dxf,.dwg,.step,.stp,.igs,.iges"
                             onChange={handleFileChange}
                         />
                         {fileName ? (
                             <div className="flex items-center gap-3 bg-[#00FFBD]/10 px-4 py-2 rounded-full border border-[#00FFBD]/20">
-                                <FileText className="w-4 h-4 text-[#00FFBD]" />
-                                <span className="text-sm text-[#00FFBD] font-medium">{fileName}</span>
+                                {previewUrl ? (
+                                    <img src={previewUrl} alt="Attachment preview" className="w-8 h-8 rounded object-cover border border-[#00FFBD]/30" />
+                                ) : (
+                                    <FileText className="w-4 h-4 text-[#00FFBD]" />
+                                )}
+                                <span className="text-sm text-[#00FFBD] font-medium max-w-[12rem] truncate">{fileName}</span>
                                 <button
                                     type="button"
+                                    aria-label="Remove attachment"
                                     onClick={(e) => {
                                         e.stopPropagation();
                                         setFileName(null);
+                                        clearPreview();
                                         if (fileInputRef.current) fileInputRef.current.value = '';
                                     }}
                                     className="hover:text-white transition-colors"
@@ -319,9 +377,9 @@ export const Contact: React.FC = () => {
                         ) : (
                             <>
                                 <UploadCloud className="w-8 h-8 text-zinc-500 mb-2 group-hover:text-[#00FFBD] transition-colors" />
-                                <p className="text-sm text-zinc-400 group-hover:text-zinc-300">
-                                    Click to attach file <br/>
-                                    <span className="text-xs text-zinc-600">(Drawings, Prints, Specs)</span>
+                                <p className="text-sm text-zinc-400 group-hover:text-zinc-300 text-center">
+                                    Drag &amp; drop or click to attach one file <br/>
+                                    <span className="text-xs text-zinc-600">Drawings, prints, photos, PDF/CAD · have several? Email the rest to quotes@scprecisiondeburring.com</span>
                                 </p>
                             </>
                         )}
@@ -338,7 +396,7 @@ export const Contact: React.FC = () => {
                       className="flex items-center gap-3 bg-green-500/10 border border-green-500/20 rounded-lg px-4 py-3"
                     >
                       <CheckCircle className="w-5 h-5 text-green-400 flex-shrink-0" />
-                      <p className="text-sm text-green-300">Your inquiry has been sent successfully! We'll get back to you within 24 hours.</p>
+                      <p className="text-sm text-green-300">Your inquiry has been sent successfully! We'll get back to you within 24 hours. For large or additional CAD/STEP files, email them to quotes@scprecisiondeburring.com.</p>
                     </motion.div>
                   )}
                   {submitStatus === 'error' && (

@@ -28,11 +28,6 @@ export interface GalleryItem {
   title: string;
 }
 
-export interface ChatMessage {
-  role: 'user' | 'model';
-  text: string;
-}
-
 export interface DataContextType {
   galleryItems: GalleryItem[];
   addGalleryItem: (item: Omit<GalleryItem, 'id'>) => void;
@@ -41,6 +36,4 @@ export interface DataContextType {
   comparisonRight: string;
   updateComparisonImages: (left: string, right: string) => void;
   resetToDefaults: () => void;
-  aiInstruction: string;
-  updateAiInstruction: (instruction: string) => void;
 }

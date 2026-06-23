@@ -1,7 +1,7 @@
 
 import React, { useRef } from 'react';
 import { motion } from 'framer-motion';
-import { useVideoBackgroundPair } from './useVideoBackgroundPair';
+import { useBackgroundVideo } from './useBackgroundVideo';
 
 type Feature = {
   id: number;
@@ -63,6 +63,7 @@ const features: Feature[] = [
 ];
 
 const VIDEO_SRC = "/videos/process-bg.mp4";
+const VIDEO_POSTER = "/videos/posters/process-bg.jpg";
 
 const SpecCard: React.FC<{ feature: Feature; index: number }> = ({ feature, index }) => {
   return (
@@ -73,8 +74,9 @@ const SpecCard: React.FC<{ feature: Feature; index: number }> = ({ feature, inde
       transition={{ duration: 0.6, delay: index * 0.08 }}
       className="group relative h-full"
     >
-      {/* Hairline frame */}
-      <div className="relative h-full p-7 md:p-8 bg-[#06080a]/55 backdrop-blur-2xl border border-white/[0.09] group-hover:border-[#00FFBD]/40 transition-colors duration-500 overflow-hidden">
+      {/* Hairline frame — solid fill (no backdrop-blur: it sat over the moving
+          video and forced a full re-blur every frame while scrolling) */}
+      <div className="relative h-full p-7 md:p-8 bg-[#06080a]/90 border border-white/[0.09] group-hover:border-[#00FFBD]/40 transition-colors duration-500 overflow-hidden">
 
         {/* Drafting corner ticks */}
         <span aria-hidden className="absolute top-0 left-0 w-3 h-px bg-[#00FFBD]/50 group-hover:bg-[#00FFBD] transition-colors duration-500" />
@@ -148,30 +150,22 @@ const SpecCard: React.FC<{ feature: Feature; index: number }> = ({ feature, inde
 
 export const Process: React.FC = () => {
   const sectionRef = useRef<HTMLElement>(null);
-  const videoARef = useRef<HTMLVideoElement>(null);
-  const videoBRef = useRef<HTMLVideoElement>(null);
-  const { activeVideo } = useVideoBackgroundPair(videoARef, videoBRef, sectionRef, VIDEO_SRC);
+  const videoRef = useRef<HTMLVideoElement>(null);
+  useBackgroundVideo(videoRef, sectionRef, VIDEO_SRC);
 
   return (
     <section ref={sectionRef} id="process" className="relative min-h-screen py-32 md:py-40 bg-[#030305] overflow-hidden flex items-center justify-center scroll-mt-32">
 
-      {/* Video Background — dual elements crossfade for seamless infinite loop */}
+      {/* Video Background — single looping element (poster paints instantly) */}
       <div className="absolute inset-0 pointer-events-none">
         <video
-          ref={videoARef}
+          ref={videoRef}
           muted
           playsInline
           loop
           preload="metadata"
-          className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-[1200ms] ease-linear ${activeVideo === 'a' ? 'opacity-100' : 'opacity-0'}`}
-        />
-        <video
-          ref={videoBRef}
-          muted
-          playsInline
-          loop
-          preload="metadata"
-          className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-[1200ms] ease-linear ${activeVideo === 'b' ? 'opacity-100' : 'opacity-0'}`}
+          poster={VIDEO_POSTER}
+          className="absolute inset-0 w-full h-full object-cover"
         />
 
         {/* Vignette + brand-tint overlay */}
@@ -189,9 +183,16 @@ export const Process: React.FC = () => {
           }}
         />
 
-        {/* Brand glow */}
-        <div className="absolute top-[20%] left-[-15%] w-[600px] h-[600px] bg-[#00FFBD]/10 blur-[140px] rounded-full" />
-        <div className="absolute bottom-[10%] right-[-15%] w-[500px] h-[500px] bg-[#00FFBD]/8 blur-[140px] rounded-full" />
+        {/* Brand glow — pre-baked radial gradients (cheaper to composite than a
+            140px GPU blur sitting over the moving video) */}
+        <div
+          className="absolute top-[20%] left-[-15%] w-[600px] h-[600px] rounded-full"
+          style={{ background: 'radial-gradient(circle, rgba(0,255,189,0.10) 0%, rgba(0,255,189,0.04) 35%, transparent 70%)' }}
+        />
+        <div
+          className="absolute bottom-[10%] right-[-15%] w-[500px] h-[500px] rounded-full"
+          style={{ background: 'radial-gradient(circle, rgba(0,255,189,0.08) 0%, rgba(0,255,189,0.03) 35%, transparent 70%)' }}
+        />
       </div>
 
       <div className="container mx-auto px-6 relative z-10">

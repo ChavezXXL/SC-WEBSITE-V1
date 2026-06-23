@@ -53,10 +53,16 @@ export const Preloader = () => {
           exit={{ y: '-100%', transition: { duration: 0.9, ease: [0.76, 0, 0.24, 1] } }}
           className="fixed inset-0 z-[100] bg-[#030305] flex items-center justify-center overflow-hidden"
         >
-          {/* Background atmospherics */}
+          {/* Background atmospherics — pre-baked radial gradients (no GPU blur) */}
           <div className="absolute inset-0 pointer-events-none">
-            <div className="absolute top-[20%] left-[20%] w-[400px] h-[400px] bg-[#00FFBD]/10 blur-[120px] rounded-full" />
-            <div className="absolute bottom-[20%] right-[20%] w-[400px] h-[400px] bg-[#00FFBD]/8 blur-[120px] rounded-full" />
+            <div
+              className="absolute top-[20%] left-[20%] w-[400px] h-[400px] rounded-full"
+              style={{ background: 'radial-gradient(circle, rgba(0,255,189,0.10) 0%, rgba(0,255,189,0.04) 35%, transparent 70%)' }}
+            />
+            <div
+              className="absolute bottom-[20%] right-[20%] w-[400px] h-[400px] rounded-full"
+              style={{ background: 'radial-gradient(circle, rgba(0,255,189,0.08) 0%, rgba(0,255,189,0.03) 35%, transparent 70%)' }}
+            />
           </div>
 
           {/* Drafting corner ticks */}
