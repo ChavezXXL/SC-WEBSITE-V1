@@ -20,7 +20,7 @@ const industries = [
     id: 1,
     title: "Aerospace & Defense",
     subtitle: "Flight Critical Precision",
-    description: "Burr-free precision for flight-critical parts. Our work flies in fighter jets, drones, and satellites — meeting the strictest MIL-STD and ITAR specs.",
+    description: "Burr-free precision for flight-critical parts. Our work flies in fighter jets, drones, and satellites — finished to your print, dimensions held.",
     image: "https://images.unsplash.com/photo-1517976487492-5750f3195933?q=80&w=2600&auto=format&fit=crop"
   },
   {

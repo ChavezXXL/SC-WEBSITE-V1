@@ -48,7 +48,7 @@ const faqs: FaqItem[] = [
   {
     category: 'QUALITY',
     question: 'How do you ensure quality?',
-    answer: "ISO 9001:2015 process. Every part inspected under magnification before pass-off, with documented sign-off on every batch.",
+    answer: "Every part is inspected under magnification before pass-off, with documented sign-off on every batch — a repeatable, written quality process on every job.",
   },
   {
     category: 'LOGISTICS',
@@ -68,7 +68,7 @@ const faqs: FaqItem[] = [
   {
     category: 'CERTIFICATIONS',
     question: 'Are you ISO 9001 or AS9100 certified?',
-    answer: "ISO 9001:2015 certified. AS9100 certification is in progress for full aerospace approved-vendor-list eligibility. Documented quality processes on every job, with sign-off on every batch.",
+    answer: "We're not currently ISO 9001 or AS9100 certified. We run a documented, repeatable quality process — every part inspected under magnification, with written sign-off on every batch. Many of our customers are themselves ISO/AS9100-certified shops that trust us with their deburring and finishing.",
   },
   {
     category: 'TECHNIQUE',
@@ -78,7 +78,7 @@ const faqs: FaqItem[] = [
   {
     category: 'INDUSTRIES',
     question: 'Do you work with aerospace, defense, and medical OEMs?',
-    answer: "Yes — that's the core of our business. We deburr parts for aerospace Tier 1 and Tier 2 suppliers, defense contractors, and medical device manufacturers across Southern California. Most of our work involves AS9100-environment parts.",
+    answer: "Yes — that's the core of our business. We deburr parts for aerospace Tier 1 and Tier 2 suppliers, defense contractors, and medical device manufacturers across Southern California. Much of our work goes into AS9100-controlled supply chains.",
   },
   {
     category: 'PRICING',

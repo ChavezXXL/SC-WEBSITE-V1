@@ -117,8 +117,8 @@ function App() {
                      <div className="text-xs md:text-sm text-zinc-500 uppercase tracking-widest font-medium">Satisfied Clients</div>
                   </div>
                   <div className="space-y-3">
-                     <div className="text-4xl md:text-5xl font-bold text-white tracking-tighter">ISO</div>
-                     <div className="text-xs md:text-sm text-zinc-500 uppercase tracking-widest font-medium">9001:2015 Compliance</div>
+                     <Counter from={0} to={100} suffix="%" />
+                     <div className="text-xs md:text-sm text-zinc-500 uppercase tracking-widest font-medium">Scope-Inspected</div>
                   </div>
                 </div>
               </section>
