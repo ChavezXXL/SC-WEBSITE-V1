@@ -188,7 +188,7 @@ export const ComparisonSection: React.FC = () => {
             <div className="pl-0 lg:pl-12">
               <div className="mb-6 flex items-center gap-3">
                 <div className="h-[2px] w-8 bg-[#00FFBD]"></div>
-                <span className="text-[#00FFBD] text-xs font-bold uppercase tracking-widest">Before / After</span>
+                <span className="text-[#00FFBD] text-xs font-bold uppercase tracking-widest">Edge Retention Technology</span>
               </div>
 
               <h2 className="text-3xl md:text-5xl font-bold text-white mb-6 font-space leading-tight">

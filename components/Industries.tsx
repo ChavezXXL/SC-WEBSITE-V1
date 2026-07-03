@@ -18,24 +18,31 @@ const Dot: React.FC<{ index: number; active: MotionValue<number> }> = ({ index, 
 const industries = [
   {
     id: 1,
-    title: "Machine Shops",
-    subtitle: "The Overflow Bench",
-    description: "When the work is good, the deburr bench backs up. Send us the overflow — we finish it to your print and bring it back, so jobs don't slip and you don't have to hire.",
-    image: "/gallery/yelp-2.jpg"
-  },
-  {
-    id: 2,
     title: "Aerospace & Defense",
-    subtitle: "Flight Hardware",
-    description: "Manifolds, valve bodies, housings, fittings. Finished to the print, dimensions held, every edge inspected before it goes back.",
+    subtitle: "Flight Critical Precision",
+    description: "Burr-free precision for flight-critical parts. Our work flies in fighter jets, drones, and satellites — finished to your print, dimensions held.",
     image: "https://images.unsplash.com/photo-1517976487492-5750f3195933?q=80&w=2600&auto=format&fit=crop"
   },
   {
-    id: 3,
-    title: "Medical",
-    subtitle: "Clean Edges",
-    description: "Medical parts leave no room for a stray burr. We work under magnification, take off the burr, and leave everything else exactly as machined.",
+    id: 2,
+    title: "Medical Devices",
+    subtitle: "Surgical Perfection",
+    description: "Surgical precision is non-negotiable. We deliver ultra-clean, burr-free edges on scalpels, implants, and diagnostic tools. FDA-ready, every part.",
     image: "https://carstens.com/cdn/shop/articles/image2_00b88acf-efe4-4f66-8fec-208f14d71bc8_1999x.jpg?v=1629425281"
+  },
+  {
+    id: 3,
+    title: "Automotive",
+    subtitle: "Performance Engineering",
+    description: "From supercars to daily drivers — performance, safety, and zero failures. Our deburring delivers smoother shifts, faster engines, and total reliability.",
+    image: "https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?q=80&w=2600&auto=format&fit=crop"
+  },
+  {
+    id: 4,
+    title: "Commercial Aviation",
+    subtitle: "Global Reliability",
+    description: "Every flight depends on perfect edges. We deburr engine blades and cabin hardware for top commercial fleets — FAA-grade, every time.",
+    image: "https://images.unsplash.com/photo-1436491865332-7a61a109cc05?q=80&w=2600&auto=format&fit=crop"
   }
 ];
 
@@ -46,14 +53,14 @@ export const Industries: React.FC = () => {
     target: targetRef,
   });
 
-  // Map vertical scroll to horizontal scroll (tuned for intro card + 3 industry cards)
-  const x = useTransform(scrollYProgress, [0, 1], ["0%", "-70%"]);
+  // Map vertical scroll to horizontal scroll
+  const x = useTransform(scrollYProgress, [0, 1], ["0%", "-75%"]);
 
   // Animated dot indicator
   const activeDot = useTransform(scrollYProgress, (v) => Math.min(industries.length - 1, Math.floor(v * industries.length)));
 
   return (
-    <section ref={targetRef} id="industries" className="relative h-[350vh] bg-[#030305]">
+    <section ref={targetRef} id="industries" className="relative h-[400vh] bg-[#030305]">
       <div className="sticky top-0 flex h-screen items-center overflow-hidden">
 
         <motion.div style={{ x, willChange: inView ? 'transform' : 'auto' }} className="flex gap-6 md:gap-10 pl-6 md:pl-24 pr-24">
@@ -67,11 +74,11 @@ export const Industries: React.FC = () => {
               </span>
             </div>
             <h2 className="text-5xl md:text-7xl font-black text-white mb-6 uppercase tracking-tight leading-[0.9]">
-              Who We <br/>
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-white via-[#9affde] to-[#00FFBD]">Work For.</span>
+              Industries <br/>
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-white via-[#9affde] to-[#00FFBD]">We Power.</span>
             </h2>
             <p className="text-lg text-zinc-400 max-w-md font-light leading-relaxed">
-              Machine shops across Southern California send us their finishing — aerospace, defense, and medical work. Scroll through.
+              Scroll to explore how our precision finishing enables innovation across the most demanding sectors on Earth — and beyond.
             </p>
 
             {/* Active dots — sync to scroll */}

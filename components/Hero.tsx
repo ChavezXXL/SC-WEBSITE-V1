@@ -1,9 +1,7 @@
 
 import React, { useRef } from 'react';
 import { motion, useScroll, useTransform, useInView, useReducedMotion } from 'framer-motion';
-import { Phone, ArrowRight } from 'lucide-react';
 import { useBackgroundVideo } from './useBackgroundVideo';
-import { trackPhoneClick } from '../services/analytics';
 
 const VIDEO_SRC = "/videos/hero-bg.mp4";
 const VIDEO_POSTER = "/videos/posters/hero-bg.jpg";
@@ -23,9 +21,9 @@ export const Hero: React.FC = () => {
   const videoRef = useRef<HTMLVideoElement>(null);
   useBackgroundVideo(videoRef, ref, VIDEO_SRC);
 
-  const scrollToContact = (e: React.MouseEvent) => {
+  const scrollToServices = (e: React.MouseEvent) => {
       e.preventDefault();
-      document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' });
+      document.getElementById('services')?.scrollIntoView({ behavior: 'smooth' });
   };
 
   return (
@@ -60,22 +58,8 @@ export const Hero: React.FC = () => {
         }}
         className="relative z-20 container mx-auto px-6 text-center flex flex-col items-center"
       >
-        {/* Brand kicker */}
-        <motion.div
-          initial={shouldReduceMotion ? false : { opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.8 }}
-          className="flex items-center justify-center gap-3 mb-8"
-        >
-          <span className="block w-8 h-px bg-[#00FFBD]" />
-          <span className="font-mono text-[10px] md:text-[11px] uppercase tracking-[0.4em] text-[#00FFBD]">
-            SC Precision Deburring — Pacoima, CA
-          </span>
-          <span className="block w-8 h-px bg-[#00FFBD]" />
-        </motion.div>
-
         {/* Cinematic Title Reveal */}
-        <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold tracking-tight text-white mb-8 relative font-space" style={{ textShadow: '0 4px 40px rgba(0,0,0,0.6)' }}>
+        <h1 className="text-5xl md:text-8xl lg:text-9xl font-bold tracking-tight text-white mb-6 relative font-space" style={{ textShadow: '0 4px 40px rgba(0,0,0,0.6)' }}>
           <div className="overflow-hidden">
             <motion.span
               initial={shouldReduceMotion ? false : { y: "100%" }}
@@ -83,71 +67,38 @@ export const Hero: React.FC = () => {
               transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
               className="block"
             >
-              Deburring
-            </motion.span>
-          </div>
-          <div className="overflow-hidden">
-            <motion.span
-              initial={shouldReduceMotion ? false : { y: "100%" }}
-              animate={{ y: 0 }}
-              transition={{ duration: 1, delay: 0.12, ease: [0.16, 1, 0.3, 1] }}
-              className="block text-transparent bg-clip-text bg-gradient-to-r from-white via-[#9affde] to-[#00FFBD] pb-2"
-            >
-              off your plate.
+              SC DEBURRING
             </motion.span>
           </div>
         </h1>
 
-        <div className="overflow-hidden mb-10">
+        <div className="overflow-hidden mb-12">
             <motion.p
               initial={shouldReduceMotion ? false : { y: "100%", opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
-              transition={{ duration: 1, delay: 0.25, ease: [0.16, 1, 0.3, 1] }}
-              className="text-lg md:text-2xl font-light text-zinc-200 leading-relaxed max-w-2xl mx-auto"
+              transition={{ duration: 1, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
+              className="text-lg md:text-2xl font-light tracking-[0.3em] text-zinc-200 uppercase"
               style={{ textShadow: '0 2px 20px rgba(0,0,0,0.6)' }}
             >
-               We take the deburring and finishing your bench can't get to — done right and back fast, anywhere in SoCal.
+               Where Precision Meets Perfection
             </motion.p>
         </div>
 
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ duration: 1, delay: 0.7 }}
-          className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6"
+          transition={{ duration: 1, delay: 0.8 }}
+          className="flex flex-col sm:flex-row items-center justify-center gap-6"
         >
           <a
-            href="tel:+18183894234"
-            onClick={() => trackPhoneClick()}
-            className="group inline-flex items-center gap-3 px-8 py-4 bg-[#00FFBD] text-black font-black text-sm uppercase tracking-[0.15em] border border-[#00FFBD] hover:bg-transparent hover:text-[#00FFBD] transition-all duration-300 shadow-[0_0_40px_rgba(0,255,189,0.25)] hover:shadow-[0_0_60px_rgba(0,255,189,0.45)]"
+            href="#services"
+            className="group relative px-8 py-4 bg-white/5 border border-white/10 backdrop-blur-md text-white font-medium rounded-full overflow-hidden transition-all hover:bg-white/10 hover:border-[#00FFBD]/40 hover:scale-105"
+            onClick={scrollToServices}
           >
-            <Phone className="w-4 h-4" strokeWidth={2.5} />
-            Call Santiago — (818) 389-4234
-          </a>
-          <a
-            href="#contact"
-            onClick={scrollToContact}
-            className="group relative px-8 py-4 bg-white/5 border border-white/15 backdrop-blur-md text-white font-medium overflow-hidden transition-all hover:bg-white/10 hover:border-[#00FFBD]/40"
-          >
-            <span className="relative z-10 text-sm uppercase tracking-[0.15em] flex items-center gap-2">
-              Send a batch
-              <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+            <span className="relative z-10 text-sm uppercase tracking-widest flex items-center gap-2">
+              Explore Services
             </span>
           </a>
-        </motion.div>
-
-        {/* Speed strip */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 1, delay: 1 }}
-          className="mt-12 flex flex-wrap items-center justify-center gap-x-4 gap-y-2 font-mono text-[10px] md:text-[11px] uppercase tracking-[0.3em] text-zinc-300"
-        >
-          <span>Same-day quotes</span>
-          <span className="text-[#00FFBD]">·</span>
-          <span>Fast turnaround</span>
-          <span className="text-[#00FFBD]">·</span>
-          <span>We pick up and deliver</span>
         </motion.div>
       </motion.div>
 
