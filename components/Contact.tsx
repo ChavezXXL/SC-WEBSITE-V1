@@ -163,13 +163,13 @@ export const Contact: React.FC = () => {
             className="font-black text-white uppercase tracking-tight leading-[0.9] mb-6"
             style={{ fontSize: 'clamp(2.75rem, 7vw, 6rem)' }}
           >
-            Let's discuss your{' '}
+            Send a{' '}
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-white via-[#9affde] to-[#00FFBD]">
-              project.
+              batch.
             </span>
           </h2>
           <p className="text-lg md:text-xl text-zinc-400 max-w-2xl mx-auto font-light leading-relaxed">
-            Reach out to our team for technical specs, lead times, or a custom quote. Most quotes back within 24 hours.
+            Call or use the form — part, material, quantity. Quotes go back the same day. Want to see the work first? Send a small first lot before you commit to anything.
           </p>
         </div>
 
@@ -198,7 +198,7 @@ export const Contact: React.FC = () => {
                 </div>
                 <div>
                   <h4 className="text-white font-medium flex items-center gap-2">
-                    Call Us
+                    Call Santiago
                     {copiedPhone && <span className="text-xs text-green-400 font-normal flex items-center animate-in fade-in slide-in-from-left-2"><Check className="w-3 h-3 mr-1"/> Copied</span>}
                   </h4>
                   <p className="text-zinc-500 group-hover:text-blue-400 transition-colors">(818) 389-4234</p>
@@ -226,7 +226,7 @@ export const Contact: React.FC = () => {
               {/* Address */}
               <div
                 className="flex items-start gap-4 cursor-pointer group"
-                 onClick={() => handleCopy('12734 Branford Street Unit #17', 'address')}
+                 onClick={() => handleCopy('12734 Branford St STE 17, Pacoima, CA 91331', 'address')}
                  title="Click to copy address"
               >
                 <div className="w-10 h-10 rounded-full bg-zinc-900 flex items-center justify-center border border-zinc-800 text-blue-400 group-hover:border-blue-500 transition-colors">
@@ -234,10 +234,10 @@ export const Contact: React.FC = () => {
                 </div>
                 <div>
                   <h4 className="text-white font-medium flex items-center gap-2">
-                      Visit HQ
+                      The Shop
                       {copiedAddress && <span className="text-xs text-green-400 font-normal flex items-center animate-in fade-in slide-in-from-left-2"><Check className="w-3 h-3 mr-1"/> Copied</span>}
                   </h4>
-                  <p className="text-zinc-500 group-hover:text-blue-400 transition-colors">12734 Branford Street Unit #17</p>
+                  <p className="text-zinc-500 group-hover:text-blue-400 transition-colors">12734 Branford St STE 17, Pacoima, CA 91331</p>
                 </div>
               </div>
             </div>
@@ -304,8 +304,9 @@ export const Contact: React.FC = () => {
                           className="w-full bg-zinc-900/50 border border-zinc-700 rounded-lg px-4 py-3 text-white focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 transition-all appearance-none cursor-pointer hover:bg-zinc-900"
                       >
                       <option>Microscope Deburring</option>
-                      <option>Manual Deburring</option>
-                      <option>Sand Blasting</option>
+                      <option>Hand / Manual Deburring</option>
+                      <option>Flash & Heavy Burr Grinding</option>
+                      <option>Edge Finishing / Edge Break</option>
                       <option>Blending</option>
                       <option>General Inquiry</option>
                       </select>
@@ -396,7 +397,7 @@ export const Contact: React.FC = () => {
                       className="flex items-center gap-3 bg-green-500/10 border border-green-500/20 rounded-lg px-4 py-3"
                     >
                       <CheckCircle className="w-5 h-5 text-green-400 flex-shrink-0" />
-                      <p className="text-sm text-green-300">Your inquiry has been sent successfully! We'll get back to you within 24 hours. For large or additional CAD/STEP files, email them to quotes@scprecisiondeburring.com.</p>
+                      <p className="text-sm text-green-300">Got it — your message is in. Quotes go back the same day. For large or additional CAD/STEP files, email them to quotes@scprecisiondeburring.com.</p>
                     </motion.div>
                   )}
                   {submitStatus === 'error' && (
@@ -432,7 +433,7 @@ export const Contact: React.FC = () => {
                   )}
                 </button>
                 <p className="text-center text-xs text-zinc-500">
-                    Your message is sent directly to our team. We respond within 24 hours.
+                    Your message goes straight to the shop. Quotes go back the same day.
                 </p>
               </form>
           </div>

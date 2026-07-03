@@ -123,7 +123,7 @@ export const Preloader = () => {
               transition={{ delay: 0.2 }}
               className="font-mono text-[10px] uppercase tracking-[0.35em] text-zinc-500 mb-12"
             >
-              Where Precision Meets Perfection
+              Deburring &amp; Finishing · Pacoima, CA
             </motion.div>
 
             {/* Progress block */}

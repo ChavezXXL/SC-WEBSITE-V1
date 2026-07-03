@@ -11,8 +11,10 @@ import { ManualSection } from './components/ManualSection';
 import { BlendingSection } from './components/BlendingSection';
 import { ServicesIntro } from './components/ServicesIntro';
 import { PrecisionCTA } from './components/PrecisionCTA';
+import { StickyCallBar } from './components/StickyCallBar';
 import { DataProvider } from './components/DataContext';
 import { ErrorBoundary } from './components/ErrorBoundary';
+import { trackPhoneClick } from './services/analytics';
 
 // Lazy-loaded — below the fold or rarely-used. Reduces initial JS bundle.
 const Contact = lazy(() => import('./components/Contact').then(m => ({ default: m.Contact })));
@@ -106,15 +108,15 @@ function App() {
                 <div className="container mx-auto px-6 grid grid-cols-2 md:grid-cols-4 gap-12 text-center">
                   <div className="space-y-3">
                      <Counter from={0} to={10} suffix="+" />
-                     <div className="text-xs md:text-sm text-zinc-500 uppercase tracking-widest font-medium">Expert Employees</div>
+                     <div className="text-xs md:text-sm text-zinc-500 uppercase tracking-widest font-medium">People on the Bench</div>
                   </div>
                   <div className="space-y-3">
                      <Counter from={0} to={45} suffix="+" />
-                     <div className="text-xs md:text-sm text-zinc-500 uppercase tracking-widest font-medium">Industry Years</div>
+                     <div className="text-xs md:text-sm text-zinc-500 uppercase tracking-widest font-medium">Years in the Trade</div>
                   </div>
                   <div className="space-y-3">
                      <Counter from={0} to={100} suffix="+" />
-                     <div className="text-xs md:text-sm text-zinc-500 uppercase tracking-widest font-medium">Satisfied Clients</div>
+                     <div className="text-xs md:text-sm text-zinc-500 uppercase tracking-widest font-medium">Shops &amp; Clients Served</div>
                   </div>
                   <div className="space-y-3">
                      <Counter from={0} to={100} suffix="%" />
@@ -174,11 +176,19 @@ function App() {
           )}
         </main>
 
-        <footer className="bg-[#020202] py-12 border-t border-white/5 text-center relative group">
+        <footer className="bg-[#020202] pt-12 pb-24 md:pb-12 border-t border-white/5 text-center relative group">
           <div className="container mx-auto px-6 flex flex-col items-center justify-center gap-6 text-zinc-600 text-sm">
-            
+
             <div className="flex flex-col items-center gap-2">
               <span className="block font-bold text-zinc-400 text-lg tracking-wide">SC DEBURRING</span>
+              <p>SC Deburring LLC · 12734 Branford St STE 17, Pacoima, CA 91331</p>
+              <a
+                href="tel:+18183894234"
+                onClick={() => trackPhoneClick()}
+                className="text-zinc-400 hover:text-[#00FFBD] transition-colors"
+              >
+                (818) 389-4234
+              </a>
               <p>© {new Date().getFullYear()} SC Precision Deburring. All rights reserved.</p>
             </div>
 
@@ -203,6 +213,9 @@ function App() {
              </button>
           </div>
         </footer>
+
+        {/* Mobile-only tap-to-call bar */}
+        <StickyCallBar />
       </div>
     </DataProvider>
   );

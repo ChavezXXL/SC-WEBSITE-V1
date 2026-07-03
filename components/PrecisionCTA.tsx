@@ -1,8 +1,9 @@
 
 import React, { useRef } from 'react';
 import { motion } from 'framer-motion';
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, Phone } from 'lucide-react';
 import { useBackgroundVideo } from './useBackgroundVideo';
+import { trackPhoneClick } from '../services/analytics';
 
 const VIDEO_SRC = '/videos/cta-bg.mp4';
 const VIDEO_POSTER = '/videos/posters/cta-bg.jpg';
@@ -61,7 +62,7 @@ export const PrecisionCTA: React.FC = () => {
           >
             <span className="block w-8 h-px bg-[#00FFBD]" />
             <span className="font-mono text-[10px] md:text-[11px] uppercase tracking-[0.4em] text-[#00FFBD]">
-              The Standard We Set
+              The Overflow Bench
             </span>
             <span className="block w-8 h-px bg-[#00FFBD]" />
           </motion.div>
@@ -74,9 +75,9 @@ export const PrecisionCTA: React.FC = () => {
             className="font-black mb-8 tracking-tight uppercase leading-[0.9]"
             style={{ fontSize: 'clamp(2.5rem, 8vw, 7.5rem)' }}
           >
-            <span className="block text-white">Precision is</span>
+            <span className="block text-white">Your bench is full.</span>
             <span className="block text-transparent bg-clip-text bg-gradient-to-r from-white via-[#9affde] to-[#00FFBD]">
-              not an option.
+              Ours isn't.
             </span>
           </motion.h2>
 
@@ -85,9 +86,19 @@ export const PrecisionCTA: React.FC = () => {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.8, delay: 0.15 }}
-            className="text-lg md:text-2xl text-zinc-300 mb-12 max-w-2xl mx-auto font-light leading-relaxed"
+            className="text-lg md:text-2xl text-zinc-300 mb-6 max-w-2xl mx-auto font-light leading-relaxed"
           >
-            It is the absolute requirement. We handle the finishing touches that ensure safety, performance, and longevity.
+            Shops across SoCal send us the deburring and finishing their own bench can't get to — so jobs don't slip and nobody has to hire.
+          </motion.p>
+
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8, delay: 0.2 }}
+            className="text-base md:text-xl text-[#00FFBD] mb-12 max-w-2xl mx-auto font-medium leading-relaxed"
+          >
+            Send a small first lot and see the work before you commit to anything.
           </motion.p>
 
           {/* Industry roster — engineering caption style */}
@@ -115,13 +126,22 @@ export const PrecisionCTA: React.FC = () => {
             whileInView={{ opacity: 1 }}
             viewport={{ once: true }}
             transition={{ duration: 0.8, delay: 0.5 }}
+            className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6"
           >
+            <a
+              href="tel:+18183894234"
+              onClick={() => trackPhoneClick()}
+              className="group inline-flex items-center gap-3 px-8 md:px-10 py-4 md:py-5 bg-[#00FFBD] text-black font-black text-sm uppercase tracking-[0.2em] rounded-none border border-[#00FFBD] hover:bg-transparent hover:text-[#00FFBD] transition-all duration-300 shadow-[0_0_40px_rgba(0,255,189,0.25)] hover:shadow-[0_0_60px_rgba(0,255,189,0.45)]"
+            >
+              <Phone className="w-4 h-4" strokeWidth={2.5} />
+              Call Santiago — (818) 389-4234
+            </a>
             <a
               href="#contact"
               onClick={(e) => { e.preventDefault(); document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' }); }}
-              className="group inline-flex items-center gap-3 px-8 md:px-10 py-4 md:py-5 bg-[#00FFBD] text-black font-black text-sm uppercase tracking-[0.2em] rounded-none border border-[#00FFBD] hover:bg-transparent hover:text-[#00FFBD] transition-all duration-300 shadow-[0_0_40px_rgba(0,255,189,0.25)] hover:shadow-[0_0_60px_rgba(0,255,189,0.45)]"
+              className="group inline-flex items-center gap-3 px-8 md:px-10 py-4 md:py-5 bg-white/5 border border-white/15 backdrop-blur-md text-white font-medium text-sm uppercase tracking-[0.2em] hover:bg-white/10 hover:border-[#00FFBD]/40 transition-all duration-300"
             >
-              Get a Free Quote
+              Send a batch
               <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" strokeWidth={2.5} />
             </a>
           </motion.div>

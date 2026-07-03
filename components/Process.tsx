@@ -21,11 +21,11 @@ const features: Feature[] = [
     ref: "DRG-01 / 04",
     glyph: "▽",
     glyphLabel: "Surface Finish",
-    stat: "24",
-    statSuffix: "HR",
+    stat: "SAME",
+    statSuffix: "DAY",
     statLabel: "Quote Turnaround",
-    title: "Rapid Processing",
-    description: "Fast turnaround times without sacrificing quality. We maintain your supply chain velocity.",
+    title: "Fast Turnaround",
+    description: "Quotes go out the same day. Parts come back fast, so your jobs don't slip.",
   },
   {
     id: 2,
@@ -36,7 +36,7 @@ const features: Feature[] = [
     statSuffix: "%",
     statLabel: "Inspection Rate",
     title: "Precision Focus",
-    description: "Zero defects. Every edge is inspected to ensure compliance with your print specifications.",
+    description: "Every part checked against your print before it goes back. Edges broken where it says, left sharp where it doesn't.",
   },
   {
     id: 3,
@@ -46,8 +46,8 @@ const features: Feature[] = [
     stat: "1—50K",
     statSuffix: "",
     statLabel: "Volume Range",
-    title: "Adaptive Solutions",
-    description: "Tailored processes for unique specifications, material types, and production volumes.",
+    title: "Any Volume",
+    description: "One-off prototypes to production runs in the thousands. Same finish at every count.",
   },
   {
     id: 4,
@@ -56,9 +56,9 @@ const features: Feature[] = [
     glyphLabel: "True Position",
     stat: "45",
     statSuffix: "+",
-    statLabel: "Industry Years",
-    title: "Decades of Expertise",
-    description: "Built on deep industry knowledge. We deliver verified results and reliable service.",
+    statLabel: "Years in the Trade",
+    title: "Deburring Is the Whole Business",
+    description: "Not a side bench in a machine shop — it's all we do, and we've done it for decades.",
   },
 ];
 
@@ -219,7 +219,7 @@ export const Process: React.FC = () => {
             transition={{ duration: 0.8, delay: 0.1 }}
             className="text-lg md:text-xl text-zinc-300/90 font-light leading-relaxed max-w-2xl mx-auto"
           >
-            From aerospace components to medical devices, we engineer the finish that defines performance.
+            Aerospace, defense, and medical shops send us their finishing. Here's what they count on.
           </motion.p>
         </div>
 
