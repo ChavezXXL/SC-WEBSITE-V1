@@ -1,7 +1,6 @@
 
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X } from 'lucide-react';
 
 type FaqItem = {
   category: string;
@@ -93,7 +92,8 @@ const FaqRow: React.FC<{ item: FaqItem; index: number; isOpen: boolean; onToggle
   >
     <button
       onClick={onToggle}
-      className="w-full text-left px-2 md:px-6 py-6 md:py-8 flex items-start justify-between gap-6 outline-none"
+      aria-expanded={isOpen}
+      className="w-full text-left px-2 md:px-6 py-6 md:py-8 flex items-start justify-between gap-6 outline-none focus-visible:ring-1 focus-visible:ring-[#00FFBD]/60"
     >
       <div className="flex items-start gap-6 md:gap-10 flex-1 min-w-0">
         <span className="font-mono text-[10px] uppercase tracking-[0.3em] text-zinc-500 group-hover:text-[#00FFBD]/70 transition-colors w-12 md:w-16 flex-shrink-0 mt-1">
@@ -149,25 +149,9 @@ const faqSchema = {
 };
 
 export const FAQ: React.FC = () => {
-  const [open, setOpen] = useState(false);
   const [openIdx, setOpenIdx] = useState<number | null>(null);
 
   const toggle = (i: number) => setOpenIdx(openIdx === i ? null : i);
-
-  // Lock body scroll + ESC key while modal open
-  useEffect(() => {
-    if (!open) return;
-    const original = document.body.style.overflow;
-    document.body.style.overflow = 'hidden';
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') setOpen(false);
-    };
-    window.addEventListener('keydown', onKey);
-    return () => {
-      document.body.style.overflow = original;
-      window.removeEventListener('keydown', onKey);
-    };
-  }, [open]);
 
   return (
     <>
@@ -178,138 +162,65 @@ export const FAQ: React.FC = () => {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
       />
 
-      {/* Trigger band — sits where FAQ section used to live */}
-      <section className="relative py-20 md:py-24 bg-[#030305] border-t border-white/[0.05]">
-        <div className="container mx-auto px-6 max-w-4xl text-center">
-          <div className="flex items-center justify-center gap-3 mb-5">
-            <span className="block w-8 h-px bg-[#00FFBD]" />
-            <span className="font-mono text-[10px] uppercase tracking-[0.4em] text-[#00FFBD]">
-              ※ Got Questions?
-            </span>
-            <span className="block w-8 h-px bg-[#00FFBD]" />
+      {/* Inline FAQ — questions live right on the page, no popup to open/close */}
+      <section id="faq" className="relative py-20 md:py-28 bg-[#030305] border-t border-white/[0.05] scroll-mt-24">
+        <div className="container mx-auto px-6 max-w-4xl">
+
+          <div className="text-center mb-12 md:mb-16">
+            <div className="flex items-center justify-center gap-3 mb-5">
+              <span className="block w-8 h-px bg-[#00FFBD]" />
+              <span className="font-mono text-[10px] uppercase tracking-[0.4em] text-[#00FFBD]">
+                ※ Got Questions?
+              </span>
+              <span className="block w-8 h-px bg-[#00FFBD]" />
+            </div>
+
+            <h2
+              className="font-black text-white uppercase tracking-tight leading-[0.95] mb-4"
+              style={{ fontSize: 'clamp(2rem, 5vw, 3.75rem)' }}
+            >
+              Frequently asked.{' '}
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-white via-[#9affde] to-[#00FFBD]">
+                We've got answers.
+              </span>
+            </h2>
+            <p className="text-sm md:text-base text-zinc-400 font-light leading-relaxed max-w-2xl mx-auto">
+              Click any question to expand it.
+            </p>
           </div>
 
-          <h2
-            className="font-black text-white uppercase tracking-tight leading-[0.95] mb-8"
-            style={{ fontSize: 'clamp(2rem, 5vw, 3.75rem)' }}
-          >
-            Frequently asked.{' '}
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-white via-[#9affde] to-[#00FFBD]">
-              We've got answers.
-            </span>
-          </h2>
+          {/* List */}
+          <div className="bg-[#06080a] border border-white/[0.08]">
+            {faqs.map((item, idx) => (
+              <FaqRow
+                key={idx}
+                item={item}
+                index={idx}
+                isOpen={openIdx === idx}
+                onToggle={() => toggle(idx)}
+              />
+            ))}
 
-          <button
-            onClick={() => setOpen(true)}
-            className="group inline-flex items-center gap-3 px-8 md:px-10 py-4 bg-[#00FFBD] text-black font-black text-xs uppercase tracking-[0.25em] border border-[#00FFBD] hover:bg-transparent hover:text-[#00FFBD] transition-all duration-300 shadow-[0_0_30px_rgba(0,255,189,0.2)] hover:shadow-[0_0_50px_rgba(0,255,189,0.35)]"
-          >
-            View FAQ
-            <span className="text-base leading-none translate-y-[-1px] group-hover:translate-x-1 transition-transform">→</span>
-          </button>
+            {/* Footer CTA */}
+            <div className="px-6 md:px-10 py-10 md:py-12 text-center">
+              <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-zinc-500 mb-3">
+                Didn't find your question?
+              </p>
+              <a
+                href="#contact"
+                onClick={(e) => { e.preventDefault(); document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' }); }}
+                className="inline-flex items-center gap-2 text-[#00FFBD] font-mono text-xs uppercase tracking-[0.3em] hover:text-white transition-colors duration-300 group"
+              >
+                <span className="relative">
+                  Send Us A Message
+                  <span className="absolute -bottom-1 left-0 right-0 h-px bg-[#00FFBD] group-hover:bg-white transition-colors" />
+                </span>
+                <span className="text-base translate-y-[-1px]">→</span>
+              </a>
+            </div>
+          </div>
         </div>
       </section>
-
-      {/* Modal */}
-      <AnimatePresence>
-        {open && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.3 }}
-            className="fixed inset-0 z-[120] bg-[#030305]/95 backdrop-blur-2xl"
-          >
-            {/* Drafting tick corners */}
-            <span aria-hidden className="hidden md:block absolute top-6 left-6 w-4 h-px bg-[#00FFBD] z-10" />
-            <span aria-hidden className="hidden md:block absolute top-6 left-6 w-px h-4 bg-[#00FFBD] z-10" />
-            <span aria-hidden className="hidden md:block absolute top-6 right-6 w-4 h-px bg-[#00FFBD] z-10" />
-            <span aria-hidden className="hidden md:block absolute top-6 right-6 w-px h-4 bg-[#00FFBD] z-10" />
-            <span aria-hidden className="hidden md:block absolute bottom-6 left-6 w-4 h-px bg-[#00FFBD] z-10" />
-            <span aria-hidden className="hidden md:block absolute bottom-6 left-6 w-px h-4 bg-[#00FFBD] z-10" />
-            <span aria-hidden className="hidden md:block absolute bottom-6 right-6 w-4 h-px bg-[#00FFBD] z-10" />
-            <span aria-hidden className="hidden md:block absolute bottom-6 right-6 w-px h-4 bg-[#00FFBD] z-10" />
-
-            {/* Persistent close button — top-right of viewport, always reachable */}
-            <button
-              onClick={() => setOpen(false)}
-              aria-label="Close FAQ"
-              className="fixed top-4 right-4 md:top-5 md:right-5 z-[125] p-3 bg-[#06080a]/80 backdrop-blur-md border border-white/10 hover:border-[#00FFBD]/40 text-zinc-300 hover:text-[#00FFBD] transition-colors rounded-full"
-            >
-              <X className="w-5 h-5" strokeWidth={1.5} />
-            </button>
-
-            {/* Scrollable container with backdrop click-to-close. Backdrop & content live here. */}
-            <div
-              onClick={() => setOpen(false)}
-              className="absolute inset-0 overflow-y-auto overscroll-contain flex items-start justify-center px-4 py-6 md:px-6 md:py-12"
-              style={{ WebkitOverflowScrolling: 'touch' }}
-            >
-              <motion.div
-                initial={{ scale: 0.97, y: 20, opacity: 0 }}
-                animate={{ scale: 1, y: 0, opacity: 1 }}
-                exit={{ scale: 0.97, y: 20, opacity: 0 }}
-                transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
-                className="relative w-full max-w-4xl bg-[#06080a] border border-white/[0.08] mb-12"
-                onClick={(e) => e.stopPropagation()}
-              >
-
-              {/* Modal header */}
-              <div className="px-6 md:px-10 pt-12 md:pt-14 pb-8 md:pb-10 border-b border-white/[0.07]">
-                <div className="flex items-center gap-3 mb-5">
-                  <span className="block w-8 h-px bg-[#00FFBD]" />
-                  <span className="font-mono text-[10px] uppercase tracking-[0.4em] text-[#00FFBD]">
-                    ※ Frequently Asked
-                  </span>
-                </div>
-                <h3
-                  className="font-black text-white uppercase tracking-tight leading-[0.95] mb-3"
-                  style={{ fontSize: 'clamp(1.75rem, 4vw, 3rem)' }}
-                >
-                  Questions{' '}
-                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-white via-[#9affde] to-[#00FFBD]">
-                    answered.
-                  </span>
-                </h3>
-                <p className="text-sm md:text-base text-zinc-400 font-light leading-relaxed max-w-2xl">
-                  Click any to expand. If your question isn't here, send it our way — we'll get back within 24 hours.
-                </p>
-              </div>
-
-              {/* List */}
-              <div className="border-t border-white/[0.07]">
-                {faqs.map((item, idx) => (
-                  <FaqRow
-                    key={idx}
-                    item={item}
-                    index={idx}
-                    isOpen={openIdx === idx}
-                    onToggle={() => toggle(idx)}
-                  />
-                ))}
-              </div>
-
-              {/* Footer CTA */}
-              <div className="px-6 md:px-10 py-10 md:py-12 text-center border-t border-white/[0.07]">
-                <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-zinc-500 mb-3">
-                  Didn't find your question?
-                </p>
-                <a
-                  href="#contact"
-                  onClick={(e) => { e.preventDefault(); setOpen(false); document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' }); }}
-                  className="inline-flex items-center gap-2 text-[#00FFBD] font-mono text-xs uppercase tracking-[0.3em] hover:text-white transition-colors duration-300 group"
-                >
-                  <span className="relative">
-                    Send Us A Message
-                    <span className="absolute -bottom-1 left-0 right-0 h-px bg-[#00FFBD] group-hover:bg-white transition-colors" />
-                  </span>
-                  <span className="text-base translate-y-[-1px]">→</span>
-                </a>
-              </div>
-            </motion.div>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
     </>
   );
 };
