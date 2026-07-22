@@ -126,18 +126,19 @@ function App() {
               {/* Comparison Section - New Addition */}
               <ComparisonSection />
 
-              {/* Process Section with ID for navigation */}
-              <div id="process">
+              {/* Process Section (anchor id lives on the section itself, which
+                  carries scroll-mt for the fixed navbar) */}
+              <div>
                 <Process />
               </div>
 
-              {/* Industries Section with ID for navigation */}
-              <div id="industries" className="py-24">
+              {/* Industries Section (anchor id on the section itself) */}
+              <div className="py-24">
                 <Industries />
               </div>
 
               {/* Services — intro + scroll-driven breakdowns (anchor for nav) */}
-              <div id="services">
+              <div id="services" className="scroll-mt-24">
                 <ServicesIntro />
                 <MicroscopeSection />
                 <SectionGap />
@@ -149,8 +150,8 @@ function App() {
               {/* Call to Action Strip */}
               <PrecisionCTA />
 
-              {/* Contact Section with ID */}
-              <div id="contact">
+              {/* Contact Section (anchor id on the section inside Contact) */}
+              <div>
                 <ErrorBoundary>
                   <Suspense fallback={<div className="h-32 bg-[#030305]" />}>
                     <Contact />

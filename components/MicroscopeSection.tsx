@@ -50,7 +50,8 @@ export const MicroscopeSection: React.FC = () => {
       introKicker="SVC-01 / 03"
       introTitle="Microscope Deburring"
       introBody="Complicated parts. Tight tolerances. Verified under magnification."
-      videoSrc="/videos/scroll/microscope.mp4"
+      frameBase="/frames/microscope"
+      frameCount={121}
       virtualFrames={596}
       scrollVH={5}
       overlays={overlays}

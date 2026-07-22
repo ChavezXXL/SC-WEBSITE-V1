@@ -50,7 +50,8 @@ export const BlendingSection: React.FC = () => {
       introKicker="SVC-03 / 03"
       introTitle="Blending"
       introBody="Tool marks erased. Surface continuous. Built for the parts where it matters."
-      videoSrc="/videos/scroll/blending.mp4"
+      frameBase="/frames/blending"
+      frameCount={193}
       virtualFrames={956}
       scrollVH={8}
       overlays={overlays}

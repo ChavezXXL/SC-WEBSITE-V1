@@ -21,28 +21,28 @@ const industries = [
     title: "Aerospace & Defense",
     subtitle: "Flight Critical Precision",
     description: "Burr-free precision for flight-critical parts. Our work flies in fighter jets, drones, and satellites — finished to your print, dimensions held.",
-    image: "https://images.unsplash.com/photo-1517976487492-5750f3195933?q=80&w=2600&auto=format&fit=crop"
+    image: "/img/industries/aerospace.jpg"
   },
   {
     id: 2,
     title: "Medical Devices",
     subtitle: "Surgical Perfection",
     description: "Surgical precision is non-negotiable. We deliver ultra-clean, burr-free edges on scalpels, implants, and diagnostic tools. FDA-ready, every part.",
-    image: "https://carstens.com/cdn/shop/articles/image2_00b88acf-efe4-4f66-8fec-208f14d71bc8_1999x.jpg?v=1629425281"
+    image: "/img/industries/medical.jpg"
   },
   {
     id: 3,
     title: "Automotive",
     subtitle: "Performance Engineering",
     description: "From supercars to daily drivers — performance, safety, and zero failures. Our deburring delivers smoother shifts, faster engines, and total reliability.",
-    image: "https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?q=80&w=2600&auto=format&fit=crop"
+    image: "/img/industries/automotive.jpg"
   },
   {
     id: 4,
     title: "Commercial Aviation",
     subtitle: "Global Reliability",
     description: "Every flight depends on perfect edges. We deburr engine blades and cabin hardware for top commercial fleets — FAA-grade, every time.",
-    image: "https://images.unsplash.com/photo-1436491865332-7a61a109cc05?q=80&w=2600&auto=format&fit=crop"
+    image: "/img/industries/aviation.jpg"
   }
 ];
 
@@ -60,7 +60,7 @@ export const Industries: React.FC = () => {
   const activeDot = useTransform(scrollYProgress, (v) => Math.min(industries.length - 1, Math.floor(v * industries.length)));
 
   return (
-    <section ref={targetRef} id="industries" className="relative h-[400vh] bg-[#030305]">
+    <section ref={targetRef} id="industries" className="relative h-[400vh] bg-[#030305] scroll-mt-24">
       <div className="sticky top-0 flex h-screen items-center overflow-hidden">
 
         <motion.div style={{ x, willChange: inView ? 'transform' : 'auto' }} className="flex gap-6 md:gap-10 pl-6 md:pl-24 pr-24">

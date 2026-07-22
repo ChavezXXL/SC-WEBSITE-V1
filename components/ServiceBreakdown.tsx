@@ -31,8 +31,10 @@ export type ServiceBreakdownProps = {
   introKicker: string;
   introTitle: string;
   introBody?: string;
-  /** Path to the scroll video (e.g. /videos/scroll/microscope.mp4) */
-  videoSrc: string;
+  /** Base path of the extracted frame sequence (e.g. /frames/microscope) */
+  frameBase: string;
+  /** Number of frame_NNNN.jpg images in the sequence */
+  frameCount: number;
   /** Optional: total "virtual frames" for HUD frame counter display */
   virtualFrames?: number;
   /** Pinned scroll length in viewport heights, default 5 */
@@ -54,67 +56,150 @@ const positionClasses: Record<Overlay['position'], string> = {
 export const ServiceBreakdown: React.FC<ServiceBreakdownProps> = ({
   id,
   ref: drawingRef,
-  videoSrc,
+  frameBase,
+  frameCount,
   virtualFrames = 100,
   scrollVH = 5,
   overlays,
   hud,
 }) => {
   const sectionRef = useRef<HTMLElement>(null);
-  const videoRef = useRef<HTMLVideoElement>(null);
-  const [ready, setReady] = useState(false);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const imagesRef = useRef<(HTMLImageElement | undefined)[]>([]);
+  const paintedRef = useRef(false);
+  const [painted, setPainted] = useState(false);
   const [shouldLoad, setShouldLoad] = useState(false);
 
-  // Poster frame derived from the clip path (/videos/scroll/x.mp4 -> /videos/posters/x.jpg)
-  const poster = videoSrc.replace('/scroll/', '/posters/').replace(/\.mp4$/, '.jpg');
+  // Poster shown via CSS background until the first canvas frame paints
+  const poster = frameBase.replace('/frames/', '/videos/posters/') + '.jpg';
 
   const progress = useMotionValue(0);
 
-  // ---- Lazy gate: attach src when section is within ~20% of viewport ----
-  // (was 60%, which kicked off all three multi-MB scroll videos at once well
-  // before they were on screen, competing with rendering.)
+  // ---- Lazy gate: start loading frames when section is within ~20% of viewport ----
+  // IntersectionObserver primary + a passive scroll-position fallback, so frame
+  // loading can never be stranded by an observer that fails to deliver.
   useEffect(() => {
     const section = sectionRef.current;
     if (!section) return;
+    let done = false;
+
+    const trigger = () => {
+      if (done) return;
+      done = true;
+      setShouldLoad(true);
+      io.disconnect();
+      window.removeEventListener('scroll', checkByPosition);
+    };
+
+    const checkByPosition = () => {
+      const rect = section.getBoundingClientRect();
+      const vh = window.innerHeight;
+      if (rect.top < vh * 1.2 && rect.bottom > -vh * 0.2) trigger();
+    };
+
     const io = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setShouldLoad(true);
-          io.disconnect();
-        }
-      },
+      ([entry]) => { if (entry.isIntersecting) trigger(); },
       { rootMargin: '20% 0px 20% 0px' },
     );
     io.observe(section);
-    return () => io.disconnect();
+    window.addEventListener('scroll', checkByPosition, { passive: true });
+    checkByPosition(); // handle loading mid-page (refresh at anchor, back-nav)
+
+    return () => {
+      io.disconnect();
+      window.removeEventListener('scroll', checkByPosition);
+    };
   }, []);
 
-  // ---- Set video src when ready to load ----
+  // ---- Canvas frame-sequence scrub (Apple technique) ----
+  // We NEVER seek video.currentTime on scroll — async decoder seeks are what
+  // made these sections choppy, and Safari often refuses to paint seeked
+  // frames at all (black sections on Macs). Instead the clip ships as JPEG
+  // frames drawn synchronously to a <canvas>: zero seek latency, identical
+  // behavior in every browser.
   useEffect(() => {
     if (!shouldLoad) return;
-    const v = videoRef.current;
-    if (!v) return;
-    if (!v.src) v.src = videoSrc;
-    // Try to preload the first frame so it renders before user scrolls in
-    v.load();
-  }, [shouldLoad, videoSrc]);
-
-  // ---- Scroll → video.currentTime with throttled, queued seeks ----
-  // Key insight: seeking video is asynchronous — issuing seek requests faster
-  // than the decoder can fulfill them creates jank. We track the in-flight
-  // seek and only issue a new one when the previous finishes. We also drive
-  // the visible frame via requestVideoFrameCallback (rVFC) when available,
-  // which paints in sync with the actual video presentation timer.
-  useEffect(() => {
     const section = sectionRef.current;
-    const video = videoRef.current;
-    if (!section || !video) return;
+    const canvas = canvasRef.current;
+    if (!section || !canvas) return;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
 
-    let isReady = false;
-    let isSeeking = false;
-    let pendingTarget: number | null = null;
-    let rafLoop = 0;
-    let lastSet = -1;
+    let disposed = false;
+    const images = imagesRef.current;
+    images.length = frameCount;
+
+    const frameSrc = (i: number) => `${frameBase}/frame_${String(i + 1).padStart(4, '0')}.jpg`;
+
+    // Progressive load order: endpoints, then midpoints at increasing density,
+    // then sequential fill — scrubbing works (coarsely) almost immediately.
+    const order: number[] = [];
+    const seen = new Set<number>();
+    const push = (i: number) => {
+      if (i >= 0 && i < frameCount && !seen.has(i)) { seen.add(i); order.push(i); }
+    };
+    push(0);
+    push(frameCount - 1);
+    for (let step = 2; step <= 16; step *= 2) {
+      for (let k = 1; k < step; k++) push(Math.round((frameCount * k) / step));
+    }
+    for (let i = 0; i < frameCount; i++) push(i);
+
+    let lastDrawn = -1;
+
+    const resize = () => {
+      // Cap DPR at 2: on a 5K iMac an uncapped canvas would be 5120x2880 —
+      // enormous fill cost for no visible gain on video-derived frames.
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      canvas.width = Math.round(canvas.clientWidth * dpr);
+      canvas.height = Math.round(canvas.clientHeight * dpr);
+      lastDrawn = -1; // force redraw at new size
+    };
+
+    // While frames stream in, draw the nearest loaded frame so partial loads
+    // still scrub instead of freezing.
+    const nearestLoaded = (i: number) => {
+      if (images[i]) return i;
+      for (let d = 1; d < frameCount; d++) {
+        if (i - d >= 0 && images[i - d]) return i - d;
+        if (i + d < frameCount && images[i + d]) return i + d;
+      }
+      return -1;
+    };
+
+    const draw = (i: number) => {
+      const idx = nearestLoaded(i);
+      if (idx < 0 || idx === lastDrawn) return;
+      const img = images[idx]!;
+      lastDrawn = idx;
+      const cw = canvas.width;
+      const ch = canvas.height;
+      // object-cover math: fill the canvas, crop overflow, center
+      const ir = img.naturalWidth / img.naturalHeight;
+      const cr = cw / ch;
+      let dw: number, dh: number, dx: number, dy: number;
+      if (cr > ir) { dw = cw; dh = cw / ir; dx = 0; dy = (ch - dh) / 2; }
+      else { dh = ch; dw = ch * ir; dy = 0; dx = (cw - dw) / 2; }
+      ctx.drawImage(img, dx, dy, dw, dh);
+      if (!paintedRef.current) { paintedRef.current = true; setPainted(true); }
+    };
+
+    const loadFrame = (i: number) =>
+      new Promise<void>((resolve) => {
+        const img = new Image();
+        img.decoding = 'async';
+        img.onload = () => { if (!disposed) images[i] = img; resolve(); };
+        img.onerror = () => resolve();
+        img.src = frameSrc(i);
+      });
+
+    (async () => {
+      const BATCH = 12;
+      for (let b = 0; b < order.length; b += BATCH) {
+        if (disposed) return;
+        await Promise.all(order.slice(b, b + BATCH).map(loadFrame));
+      }
+    })();
 
     const computeTarget = () => {
       const rect = section.getBoundingClientRect();
@@ -127,73 +212,30 @@ export const ServiceBreakdown: React.FC<ServiceBreakdownProps> = ({
       return p;
     };
 
-    const applySeek = (p: number) => {
-      if (!isReady || !video.duration || isNaN(video.duration)) {
-        pendingTarget = p;
-        return;
-      }
-      const t = Math.max(0, Math.min(video.duration - 0.0001, p * video.duration));
-      // No-op if already there
-      if (Math.abs((video.currentTime || 0) - t) < 0.012) return;
-      // If a seek is in-flight, queue the new target — it will be applied
-      // when 'seeked' fires. This prevents decoder thrash.
-      if (isSeeking) {
-        pendingTarget = p;
-        return;
-      }
-      isSeeking = true;
-      video.currentTime = t;
-    };
-
-    const onSeeked = () => {
-      isSeeking = false;
-      if (pendingTarget != null) {
-        const next = pendingTarget;
-        pendingTarget = null;
-        applySeek(next);
-      }
-    };
-
-    const onLoaded = () => {
-      isReady = true;
-      setReady(true);
-      try {
-        video.currentTime = 0;
-      } catch {}
-      // iOS Safari needs a play() call (even at rate 0) to keep the decoder
-      // warm and paint seek frames reliably. Muted + playsInline allows it
-      // without user gesture on modern iOS.
-      video.playbackRate = 0;
-      const playPromise = video.play();
-      if (playPromise && typeof playPromise.catch === 'function') {
-        playPromise.catch(() => { /* autoplay rejected — fall back to seek-only */ });
-      }
-    };
-
-    video.addEventListener('loadedmetadata', onLoaded);
-    video.addEventListener('seeked', onSeeked);
-    if (video.readyState >= 1) onLoaded();
-
-    // Single rAF loop, driven by scroll. Direct seek (no LERP) — the LERP
-    // was causing the back-and-forth seek thrash that read as "gunky".
+    // rAF loop: overlays/HUD get the raw progress (exact timing); the drawn
+    // frame follows through a light lerp that swallows scroll-wheel steps.
+    let current = 0;
+    let raf = 0;
     const tick = () => {
-      const p = computeTarget();
-      progress.set(p);
-      if (Math.abs(p - lastSet) > 0.0008) {
-        lastSet = p;
-        applySeek(p);
-      }
-      rafLoop = requestAnimationFrame(tick);
+      const target = computeTarget();
+      progress.set(target);
+      current += (target - current) * 0.22;
+      if (Math.abs(target - current) < 0.0005) current = target;
+      draw(Math.round(current * (frameCount - 1)));
+      raf = requestAnimationFrame(tick);
     };
-    rafLoop = requestAnimationFrame(tick);
+
+    resize();
+    window.addEventListener('resize', resize);
+    raf = requestAnimationFrame(tick);
 
     return () => {
-      video.removeEventListener('loadedmetadata', onLoaded);
-      video.removeEventListener('seeked', onSeeked);
-      if (rafLoop) cancelAnimationFrame(rafLoop);
-      try { video.pause(); } catch {}
+      disposed = true;
+      cancelAnimationFrame(raf);
+      window.removeEventListener('resize', resize);
+      images.length = 0;
     };
-  }, [progress, shouldLoad]);
+  }, [shouldLoad, frameBase, frameCount, progress]);
 
   return (
     <section
@@ -202,21 +244,19 @@ export const ServiceBreakdown: React.FC<ServiceBreakdownProps> = ({
       className="relative scroll-mt-32"
       style={{ height: `${scrollVH * 100}vh` }}
     >
-      <div className="sticky top-0 h-screen w-full overflow-hidden bg-black">
-        <video
-          ref={videoRef}
-          className="absolute inset-0 w-full h-full object-cover"
-          muted
-          playsInline
-          preload="auto"
-          poster={poster}
-          webkit-playsinline="true"
-          disablePictureInPicture
+      <div
+        className="sticky top-0 h-screen w-full overflow-hidden bg-black"
+        style={{ backgroundImage: `url(${poster})`, backgroundSize: 'cover', backgroundPosition: 'center' }}
+      >
+        <canvas
+          ref={canvasRef}
+          className="absolute inset-0 w-full h-full"
+          aria-hidden
         />
 
-        {!ready && shouldLoad && (
-          <div className="absolute inset-0 z-50 bg-black flex flex-col items-center justify-center">
-            <div className="font-mono text-[10px] uppercase tracking-[0.35em] text-zinc-500 mb-4">
+        {!painted && shouldLoad && (
+          <div className="absolute bottom-16 left-1/2 -translate-x-1/2 z-50 flex flex-col items-center">
+            <div className="font-mono text-[10px] uppercase tracking-[0.35em] text-zinc-400 mb-3">
               Loading
             </div>
             <div className="w-48 h-px bg-zinc-800 overflow-hidden">

@@ -11,7 +11,11 @@ body {
   font-family: 'Inter', sans-serif;
   background-color: #050505;
   color: #fafafa;
+  /* clip never creates a scroll container, so position:sticky (which the
+     scrub + industries sections depend on) can't be broken by this rule.
+     hidden line = fallback for Safari <=15. */
   overflow-x: hidden;
+  overflow-x: clip;
 }
 
 h1, h2, h3, h4, h5, h6 {

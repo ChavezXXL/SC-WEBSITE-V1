@@ -81,8 +81,8 @@ export const Navbar: React.FC<NavbarProps> = ({ currentView, onChangeView }) => 
               className="flex items-center gap-3 cursor-pointer group relative z-50"
             >
               {!logoError ? (
-                <img 
-                  src="https://i.imgur.com/wbRrGxM.png" 
+                <img
+                  src="/logo.png"
                   onError={() => setLogoError(true)}
                   alt="SC Deburring" 
                   className={`object-contain transition-all duration-300 ${scrolled ? 'h-10' : 'h-12 md:h-14'}`}
