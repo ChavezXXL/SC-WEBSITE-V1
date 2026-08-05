@@ -2,6 +2,7 @@
 import React, { useRef } from 'react';
 import { motion, useScroll, useTransform, useInView, useReducedMotion } from 'framer-motion';
 import { useBackgroundVideo } from './useBackgroundVideo';
+import { scrollToSection } from './scrollToSection';
 
 const VIDEO_SRC = "/videos/hero-bg.mp4";
 const VIDEO_POSTER = "/videos/posters/hero-bg.jpg";
@@ -23,7 +24,7 @@ export const Hero: React.FC = () => {
 
   const scrollToServices = (e: React.MouseEvent) => {
       e.preventDefault();
-      document.getElementById('services')?.scrollIntoView({ behavior: 'smooth' });
+      scrollToSection('services');
   };
 
   return (

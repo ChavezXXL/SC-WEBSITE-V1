@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { Menu, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { trackPhoneClick } from '../services/analytics';
+import { scrollToSection } from './scrollToSection';
 
 interface NavbarProps {
   currentView: 'home' | 'gallery';
@@ -41,16 +42,15 @@ export const Navbar: React.FC<NavbarProps> = ({ currentView, onChangeView }) => 
 
   const handleNavClick = (id?: string, view?: 'home' | 'gallery') => {
     setMobileMenuOpen(false);
-    
+
     const targetView = view || 'home';
-    
+
     if (currentView !== targetView) {
       onChangeView(targetView);
       if (targetView === 'home' && id) {
         setTimeout(() => {
-          const element = document.getElementById(id);
-          if (element) {
-            element.scrollIntoView({ behavior: 'smooth' });
+          if (document.getElementById(id)) {
+            scrollToSection(id);
           } else {
              window.scrollTo({ top: 0, behavior: 'smooth' });
           }
@@ -60,10 +60,7 @@ export const Navbar: React.FC<NavbarProps> = ({ currentView, onChangeView }) => 
       }
     } else {
       if (id) {
-        const element = document.getElementById(id);
-        if (element) {
-          element.scrollIntoView({ behavior: 'smooth' });
-        }
+        scrollToSection(id);
       } else {
         window.scrollTo({ top: 0, behavior: 'smooth' });
       }

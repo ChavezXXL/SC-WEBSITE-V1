@@ -30,7 +30,7 @@ export const ServicesIntro: React.FC = () => {
   };
 
   return (
-    <section className="relative min-h-screen bg-[#030305] overflow-hidden flex items-center justify-center py-24 md:py-32">
+    <section id="services-intro" className="relative min-h-screen bg-[#030305] overflow-hidden flex items-center justify-center py-24 md:py-32">
 
       {/* Atmosphere — pre-baked radial gradients (no 140px GPU blur layer) */}
       <div className="absolute inset-0 pointer-events-none">
