@@ -147,7 +147,7 @@ export const FAQ: React.FC = () => {
       {/* FAQ JSON-LD lives in index.html — single source of truth, no duplicate schema */}
 
       {/* Inline FAQ — questions live right on the page, no popup to open/close */}
-      <section id="faq" className="relative py-20 md:py-28 bg-[#030305] border-t border-white/[0.05] scroll-mt-24">
+      <section id="faq" className="relative py-20 md:py-28 bg-[#030305] border-t border-white/[0.05] scroll-mt-10">
         <div className="container mx-auto px-6 max-w-4xl">
 
           <div className="text-center mb-12 md:mb-16">

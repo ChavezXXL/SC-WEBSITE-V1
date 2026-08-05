@@ -146,7 +146,7 @@ export const Contact: React.FC = () => {
   };
 
   return (
-    <section id="contact" className="py-24 md:py-32 bg-zinc-950 border-t border-zinc-900 relative scroll-mt-32">
+    <section id="contact" className="py-24 md:py-32 bg-zinc-950 border-t border-zinc-900 relative">
       <div className="container mx-auto px-6">
 
         {/* Centered hero heading */}

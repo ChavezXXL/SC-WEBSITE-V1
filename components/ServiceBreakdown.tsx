@@ -273,7 +273,7 @@ export const ServiceBreakdown: React.FC<ServiceBreakdownProps> = ({
     <section
       id={id}
       ref={sectionRef}
-      className="relative scroll-mt-32"
+      className="relative"
       style={{ height: `${effectiveVH * 100}vh` }}
     >
       <div

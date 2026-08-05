@@ -154,7 +154,7 @@ export const Process: React.FC = () => {
   useBackgroundVideo(videoRef, sectionRef, VIDEO_SRC);
 
   return (
-    <section ref={sectionRef} id="process" className="relative min-h-screen py-32 md:py-40 bg-[#030305] overflow-hidden flex items-center justify-center scroll-mt-32">
+    <section ref={sectionRef} id="process" className="relative min-h-screen py-32 md:py-40 bg-[#030305] overflow-hidden flex items-center justify-center">
 
       {/* Video Background — single looping element (poster paints instantly) */}
       <div className="absolute inset-0 pointer-events-none">

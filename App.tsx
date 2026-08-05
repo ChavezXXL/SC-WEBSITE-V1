@@ -153,8 +153,10 @@ function App() {
                 <Industries />
               </div>
 
-              {/* Services — intro + scroll-driven breakdowns (anchor for nav) */}
-              <div id="services" className="scroll-mt-24">
+              {/* Services — intro + scroll-driven breakdowns (anchor for nav).
+                  No scroll offset: the intro is a full-viewport centered section,
+                  so a flush landing frames it perfectly. */}
+              <div id="services">
                 <ServicesIntro />
                 <MicroscopeSection />
                 <SectionGap />

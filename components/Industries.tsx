@@ -135,7 +135,7 @@ export const Industries: React.FC = () => {
   const activeDot = useTransform(scrollYProgress, (v) => Math.min(industries.length - 1, Math.floor(v * industries.length)));
 
   return (
-    <section id="industries" className="relative bg-[#030305] scroll-mt-24">
+    <section id="industries" className="relative bg-[#030305]">
 
       {/* Mobile: native swipe carousel — no scroll hijacking on touch */}
       <div className="md:hidden py-16">
