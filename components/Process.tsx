@@ -141,8 +141,6 @@ const SpecCard: React.FC<{ feature: Feature; index: number }> = ({ feature, inde
           </p>
         </div>
 
-        {/* Title-block divider line at very top — like a real drafting sheet */}
-        <div className="absolute top-12 left-7 right-7 h-px bg-white/[0.06] group-hover:bg-[#00FFBD]/20 transition-colors duration-500 pointer-events-none" />
       </div>
     </motion.div>
   );
