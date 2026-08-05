@@ -118,7 +118,8 @@ export const ComparisonSection: React.FC = () => {
               <div className="absolute inset-0">
                 <img
                   src={comparisonRight}
-                  alt="Raw Machined Part"
+                  alt="Raw machined part before deburring"
+                  decoding="async"
                   className="w-full h-full object-cover"
                   style={{
                     filter: isSimulation ? 'contrast(1.1) brightness(0.7) sepia(0.2) grayscale(0.2)' : undefined
@@ -151,7 +152,8 @@ export const ComparisonSection: React.FC = () => {
               >
                 <img
                   src={comparisonLeft}
-                  alt="Deburred Finished Part"
+                  alt="Finished part after precision deburring"
+                  decoding="async"
                   className="h-full object-cover max-w-none"
                   style={{
                     width: containerWidth ? `${containerWidth}px` : '100vw',

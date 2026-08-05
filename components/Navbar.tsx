@@ -131,7 +131,7 @@ export const Navbar: React.FC<NavbarProps> = ({ currentView, onChangeView }) => 
               <a
                 href="tel:+18183894234"
                 onClick={() => trackPhoneClick()}
-                className="px-4 py-2 text-xs font-bold uppercase tracking-widest rounded-full text-zinc-300 hover:text-[#00FFBD] transition-colors whitespace-nowrap"
+                className="hidden lg:block px-4 py-2 text-xs font-bold uppercase tracking-widest rounded-full text-zinc-300 hover:text-[#00FFBD] transition-colors whitespace-nowrap"
               >
                 (818) 389-4234
               </a>

@@ -226,8 +226,12 @@ export const ServiceBreakdown: React.FC<ServiceBreakdownProps> = ({
 
     // rAF loop: overlays/HUD get the raw progress (exact timing); the drawn
     // frame follows through a light lerp that swallows scroll-wheel steps.
+    // The loop runs ONLY while the section is near the viewport — otherwise
+    // three of these would each do a layout read (getBoundingClientRect)
+    // every frame for the life of the page.
     let current = 0;
     let raf = 0;
+    let running = false;
     const tick = () => {
       const target = computeTarget();
       progress.set(target);
@@ -236,14 +240,30 @@ export const ServiceBreakdown: React.FC<ServiceBreakdownProps> = ({
       draw(Math.round(current * (frameCount - 1)));
       raf = requestAnimationFrame(tick);
     };
+    const startLoop = () => {
+      if (running) return;
+      running = true;
+      raf = requestAnimationFrame(tick);
+    };
+    const stopLoop = () => {
+      running = false;
+      cancelAnimationFrame(raf);
+    };
+
+    const activeIO = new IntersectionObserver(
+      ([entry]) => { if (entry.isIntersecting) startLoop(); else stopLoop(); },
+      { rootMargin: '100% 0px 100% 0px' },
+    );
+    activeIO.observe(section);
 
     resize();
     window.addEventListener('resize', resize);
-    raf = requestAnimationFrame(tick);
+    startLoop(); // observer delivers async; run immediately, it will pause us if offscreen
 
     return () => {
       disposed = true;
-      cancelAnimationFrame(raf);
+      stopLoop();
+      activeIO.disconnect();
       window.removeEventListener('resize', resize);
       images.length = 0;
     };

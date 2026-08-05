@@ -43,7 +43,7 @@ const features: Feature[] = [
     ref: "DRG-03 / 04",
     glyph: "Ø",
     glyphLabel: "Diameter",
-    stat: "1—50K",
+    stat: "1-50K",
     statSuffix: "",
     statLabel: "Volume Range",
     title: "Adaptive Solutions",
@@ -54,7 +54,7 @@ const features: Feature[] = [
     ref: "DRG-04 / 04",
     glyph: "⌖",
     glyphLabel: "True Position",
-    stat: "3–5",
+    stat: "3-5",
     statSuffix: "DAY",
     statLabel: "Typical Turnaround",
     title: "Reliable Delivery",
@@ -101,7 +101,7 @@ const SpecCard: React.FC<{ feature: Feature; index: number }> = ({ feature, inde
         {/* Top row: glyph + drawing ref */}
         <div className="flex items-start justify-between mb-8 relative">
           <div className="flex flex-col items-start">
-            <span className="font-serif text-5xl md:text-6xl text-[#00FFBD] leading-none select-none" style={{ fontFeatureSettings: '"ss01"' }}>
+            <span className="font-space text-5xl md:text-6xl text-[#00FFBD] leading-none select-none">
               {feature.glyph}
             </span>
             <span className="mt-2 font-mono text-[9px] uppercase tracking-[0.3em] text-zinc-600">

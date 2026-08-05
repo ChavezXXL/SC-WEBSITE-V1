@@ -50,6 +50,9 @@ export const useBackgroundVideo = (
     };
 
     const onError = () => {
+      // Ignore teardown aborts (e.g. React StrictMode's dev double-mount) —
+      // only log genuine decode/network failures.
+      if (cancelled || !video.error || video.error.code === MediaError.MEDIA_ERR_ABORTED) return;
       // eslint-disable-next-line no-console
       console.error(`[video bg] failed to load: ${src}`);
     };
