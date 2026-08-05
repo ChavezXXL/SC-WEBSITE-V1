@@ -3,7 +3,7 @@
         xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
   <url>
     <loc>https://scprecisiondeburring.com/</loc>
-    <lastmod>2026-05-18</lastmod>
+    <lastmod>2026-08-04</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
     <image:image>
@@ -25,6 +25,16 @@
       <image:loc>https://scprecisiondeburring.com/gallery/yelp-3.jpg</image:loc>
       <image:title>Finished Stainless Spool</image:title>
       <image:caption>Stainless steel spool — finished and ready for assembly.</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://scprecisiondeburring.com/img/work/work-01.jpg</image:loc>
+      <image:title>Complex Geometry Deburring</image:title>
+      <image:caption>Complex machined part deburred by hand at SC Precision Deburring.</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://scprecisiondeburring.com/img/work/work-07.jpg</image:loc>
+      <image:title>Before and After Deburring Comparison</image:title>
+      <image:caption>Machined part edges before and after precision deburring.</image:caption>
     </image:image>
   </url>
 </urlset>

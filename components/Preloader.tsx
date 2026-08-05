@@ -9,8 +9,14 @@ const phases = [
   'BENCH READY',
 ];
 
+// Show the boot animation only on the first visit of a session — repeat
+// views (and ad-click bounces back to the page) go straight to content.
+const alreadyBooted = () => {
+  try { return sessionStorage.getItem('sc-booted') === '1'; } catch { return false; }
+};
+
 export const Preloader = () => {
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(() => !alreadyBooted());
   const [progress, setProgress] = useState(0);
   const [phaseIdx, setPhaseIdx] = useState(0);
 
@@ -23,8 +29,10 @@ export const Preloader = () => {
   }, [isLoading]);
 
   useEffect(() => {
+    if (!isLoading) return;
+    try { sessionStorage.setItem('sc-booted', '1'); } catch { /* private mode */ }
     const start = performance.now();
-    const total = 1800;
+    const total = 700; // brief brand moment, not a gate
     let raf = 0;
 
     const tick = () => {
@@ -36,11 +44,12 @@ export const Preloader = () => {
       if (p < 1) {
         raf = requestAnimationFrame(tick);
       } else {
-        setTimeout(() => setIsLoading(false), 350);
+        setTimeout(() => setIsLoading(false), 100);
       }
     };
     raf = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(raf);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const pct = Math.round(progress * 100);
@@ -106,15 +115,15 @@ export const Preloader = () => {
               ※ Precision Bench
             </motion.div>
 
-            {/* Logo */}
-            <motion.h1
+            {/* Logo — decorative, not a page heading */}
+            <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
               className="text-3xl md:text-5xl font-black text-white font-sans tracking-tight uppercase mb-3"
             >
               SC<span className="text-[#00FFBD]">·</span>Deburring
-            </motion.h1>
+            </motion.div>
 
             {/* Subtitle */}
             <motion.div

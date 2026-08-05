@@ -60,12 +60,28 @@ export const useBackgroundVideo = (
     video.addEventListener('error', onError);
     video.addEventListener('loadeddata', onLoadedData, { once: true });
 
+    // Don't compete with the critical path: hold the video download until the
+    // window 'load' event has fired (the poster covers the gap), then let the
+    // IntersectionObserver decide when to actually attach + play.
+    let pageLoaded = document.readyState === 'complete';
+    let wantsPlay = false;
+    const attachAndPlay = () => {
+      if (!video.src) video.src = src;
+      if (!prefersReducedMotion) tryPlay();
+    };
+    const onWindowLoad = () => {
+      pageLoaded = true;
+      if (wantsPlay) attachAndPlay();
+    };
+    if (!pageLoaded) window.addEventListener('load', onWindowLoad, { once: true });
+
     const io = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
-          if (!video.src) video.src = src; // lazy first-load
-          if (!prefersReducedMotion) tryPlay();
+          wantsPlay = true;
+          if (pageLoaded) attachAndPlay();
         } else {
+          wantsPlay = false;
           video.pause();
         }
       },
@@ -76,6 +92,7 @@ export const useBackgroundVideo = (
     return () => {
       cancelled = true;
       video.removeEventListener('error', onError);
+      window.removeEventListener('load', onWindowLoad);
       io.disconnect();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps

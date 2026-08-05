@@ -69,6 +69,18 @@ export const ServiceBreakdown: React.FC<ServiceBreakdownProps> = ({
   const paintedRef = useRef(false);
   const [painted, setPainted] = useState(false);
   const [shouldLoad, setShouldLoad] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+
+  // On phones the pinned scrub runs ~45% shorter — same footage, less thumb
+  // work (three of these sections stack up fast on a small screen).
+  useEffect(() => {
+    const mq = window.matchMedia('(max-width: 767px)');
+    const update = () => setIsMobile(mq.matches);
+    update();
+    mq.addEventListener('change', update);
+    return () => mq.removeEventListener('change', update);
+  }, []);
+  const effectiveVH = isMobile ? Math.max(3, Math.round(scrollVH * 0.55)) : scrollVH;
 
   // Poster shown via CSS background until the first canvas frame paints
   const poster = frameBase.replace('/frames/', '/videos/posters/') + '.jpg';
@@ -242,10 +254,10 @@ export const ServiceBreakdown: React.FC<ServiceBreakdownProps> = ({
       id={id}
       ref={sectionRef}
       className="relative scroll-mt-32"
-      style={{ height: `${scrollVH * 100}vh` }}
+      style={{ height: `${effectiveVH * 100}vh` }}
     >
       <div
-        className="sticky top-0 h-screen w-full overflow-hidden bg-black"
+        className="sticky top-0 h-stage w-full overflow-hidden bg-black"
         style={{ backgroundImage: `url(${poster})`, backgroundSize: 'cover', backgroundPosition: 'center' }}
       >
         <canvas
@@ -419,7 +431,7 @@ const OverlayBlock: React.FC<{ ov: Overlay; progress: ReturnType<typeof useMotio
         {ov.body && (
           <p
             className="text-zinc-100/90 font-light leading-snug"
-            style={{ fontSize: 'clamp(0.78rem, 0.9vw, 0.875rem)' }}
+            style={{ fontSize: 'clamp(0.875rem, 0.9vw + 0.55rem, 1rem)' }}
           >
             {ov.body}
           </p>

@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Page Not Found | SC Precision Deburring</title>
+  <meta name="robots" content="noindex" />
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background: #030305;
+      color: #fafafa;
+      font-family: 'Inter', -apple-system, system-ui, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 24px;
+    }
+    .wrap { max-width: 520px; }
+    .kicker {
+      font-family: ui-monospace, 'SF Mono', Consolas, monospace;
+      font-size: 10px;
+      letter-spacing: 0.4em;
+      text-transform: uppercase;
+      color: #00FFBD;
+      margin-bottom: 20px;
+    }
+    h1 {
+      font-size: clamp(2rem, 8vw, 3.5rem);
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: -0.02em;
+      line-height: 1;
+      margin-bottom: 16px;
+    }
+    p { color: #a1a1aa; font-weight: 300; line-height: 1.6; margin-bottom: 32px; }
+    .btns { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
+    a.primary {
+      display: inline-block;
+      padding: 14px 28px;
+      background: #00FFBD;
+      color: #000;
+      font-weight: 800;
+      font-size: 12px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      text-decoration: none;
+      border-radius: 999px;
+      border: 1px solid #00FFBD;
+    }
+    a.primary:hover { background: transparent; color: #00FFBD; }
+    a.ghost {
+      display: inline-block;
+      padding: 14px 28px;
+      background: transparent;
+      color: #fff;
+      font-weight: 500;
+      font-size: 12px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      text-decoration: none;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,0.2);
+    }
+    a.ghost:hover { border-color: rgba(0,255,189,0.5); color: #00FFBD; }
+    .ticks span { position: fixed; background: #00FFBD; }
+    .t1 { top: 24px; left: 24px; width: 18px; height: 1px; }
+    .t2 { top: 24px; left: 24px; width: 1px; height: 18px; }
+    .t3 { top: 24px; right: 24px; width: 18px; height: 1px; }
+    .t4 { top: 24px; right: 24px; width: 1px; height: 18px; }
+    .t5 { bottom: 24px; left: 24px; width: 18px; height: 1px; }
+    .t6 { bottom: 24px; left: 24px; width: 1px; height: 18px; }
+    .t7 { bottom: 24px; right: 24px; width: 18px; height: 1px; }
+    .t8 { bottom: 24px; right: 24px; width: 1px; height: 18px; }
+  </style>
+</head>
+<body>
+  <div class="ticks" aria-hidden="true">
+    <span class="t1"></span><span class="t2"></span><span class="t3"></span><span class="t4"></span>
+    <span class="t5"></span><span class="t6"></span><span class="t7"></span><span class="t8"></span>
+  </div>
+  <div class="wrap">
+    <div class="kicker">※ Drawing Not Found</div>
+    <h1>404 — Off the print.</h1>
+    <p>This page doesn't exist or has moved. The part you're looking for is probably on our homepage — or one call away.</p>
+    <div class="btns">
+      <a class="primary" href="/">Back to Home</a>
+      <a class="ghost" href="tel:+18183894234">Call (818) 389-4234</a>
+    </div>
+  </div>
+</body>
+</html>

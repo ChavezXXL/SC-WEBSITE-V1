@@ -29,7 +29,7 @@ export const Hero: React.FC = () => {
   return (
     <section
       ref={ref}
-      className="relative min-h-screen w-full flex flex-col justify-center items-center bg-[#030305] overflow-hidden pt-20"
+      className="relative min-h-stage w-full flex flex-col justify-center items-center bg-[#030305] overflow-hidden pt-20"
     >
       {/* Video Background — single looping element (poster paints instantly) */}
       <div className="absolute inset-0 pointer-events-none">
@@ -58,8 +58,8 @@ export const Hero: React.FC = () => {
         }}
         className="relative z-20 container mx-auto px-6 text-center flex flex-col items-center"
       >
-        {/* Cinematic Title Reveal */}
-        <h1 className="text-5xl md:text-8xl lg:text-9xl font-bold tracking-tight text-white mb-6 relative font-space" style={{ textShadow: '0 4px 40px rgba(0,0,0,0.6)' }}>
+        {/* Cinematic Title Reveal — visual wordmark (the SEO h1 is the line below) */}
+        <div className="text-5xl md:text-8xl lg:text-9xl font-bold tracking-tight text-white mb-6 relative font-space" style={{ textShadow: '0 4px 40px rgba(0,0,0,0.6)' }} aria-hidden>
           <div className="overflow-hidden">
             <motion.span
               initial={shouldReduceMotion ? false : { y: "100%" }}
@@ -70,26 +70,35 @@ export const Hero: React.FC = () => {
               SC DEBURRING
             </motion.span>
           </div>
-        </h1>
+        </div>
 
         <div className="overflow-hidden mb-12">
-            <motion.p
+            <motion.h1
               initial={shouldReduceMotion ? false : { y: "100%", opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
               transition={{ duration: 1, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
-              className="text-lg md:text-2xl font-light tracking-[0.3em] text-zinc-200 uppercase"
+              className="text-base md:text-2xl font-light tracking-[0.25em] text-zinc-200 uppercase"
               style={{ textShadow: '0 2px 20px rgba(0,0,0,0.6)' }}
             >
-               Where Precision Meets Perfection
-            </motion.p>
+               Precision Deburring for Aerospace &amp; Medical
+            </motion.h1>
         </div>
 
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 1, delay: 0.8 }}
-          className="flex flex-col sm:flex-row items-center justify-center gap-6"
+          className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6"
         >
+          <a
+            href="#contact"
+            className="group px-8 py-4 bg-[#00FFBD] border border-[#00FFBD] text-black font-black rounded-full transition-all hover:bg-transparent hover:text-[#00FFBD] hover:scale-105 shadow-[0_0_40px_rgba(0,255,189,0.25)]"
+            onClick={(e) => { e.preventDefault(); document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' }); }}
+          >
+            <span className="text-sm uppercase tracking-widest flex items-center gap-2">
+              Get a Free Quote
+            </span>
+          </a>
           <a
             href="#services"
             className="group relative px-8 py-4 bg-white/5 border border-white/10 backdrop-blur-md text-white font-medium rounded-full overflow-hidden transition-all hover:bg-white/10 hover:border-[#00FFBD]/40 hover:scale-105"

@@ -5,8 +5,8 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <title>Precision Deburring Los Angeles | Aerospace Manifolds & Valve Bodies | SC Precision Deburring</title>
-    <meta name="description" content="Precision deburring for aerospace manifolds, valve bodies, and cross-drilled parts. Microscope-verified hand finishing — burrs gone without changing dimensions. Manual deburring, blending, and surface finishing in Los Angeles. Quote in 24 hours." />
+    <title>Precision Deburring Los Angeles | SC Precision Deburring</title>
+    <meta name="description" content="Microscope-verified deburring for aerospace manifolds, valve bodies, and cross-drilled parts. Manual deburring and blending in Los Angeles. Quote in 24 hours." />
     <meta name="keywords" content="precision deburring, deburring services, deburring Los Angeles, aerospace deburring, manifold deburring, valve body deburring, cross-drilled deburring, microscope deburring, manual deburring, blending services, metal finishing, surface finishing, FOD-free deburring, San Fernando Valley deburring, Pacoima CA deburring, Arleta CA deburring, deburring shop near me, deburring near me" />
     <meta name="robots" content="index, follow, max-image-preview:large" />
     <meta name="author" content="SC Precision Deburring" />
@@ -15,7 +15,7 @@
 
     <!-- Open Graph / Social Sharing -->
     <meta property="og:type" content="website" />
-    <meta property="og:title" content="Precision Deburring Los Angeles | Aerospace & Medical | SC Precision Deburring" />
+    <meta property="og:title" content="Precision Deburring Los Angeles | SC Precision Deburring" />
     <meta property="og:description" content="Precision deburring for aerospace manifolds, valve bodies, and cross-drilled parts. Microscope-verified hand finishing — dimensions untouched. Quote in 24 hours." />
     <meta property="og:url" content="https://scprecisiondeburring.com/" />
     <meta property="og:site_name" content="SC Precision Deburring" />
@@ -49,7 +49,7 @@
       "description": "Precision deburring services for aerospace, medical, and high-tolerance manufacturing. Specializing in manifolds, valve bodies, and cross-drilled parts. Microscope-verified, manual finishing, and surface blending — burrs removed without changing dimensions.",
       "url": "https://scprecisiondeburring.com",
       "telephone": "+1-818-389-4234",
-      "email": "SCPRECISIONDEBURRING@GMAIL.COM",
+      "email": "quotes@scprecisiondeburring.com",
       "image": "https://scprecisiondeburring.com/gallery/yelp-2.jpg",
       "logo": "https://scprecisiondeburring.com/logo.png",
       "address": {
@@ -105,7 +105,7 @@
       "openingHoursSpecification": [{
         "@type": "OpeningHoursSpecification",
         "dayOfWeek": ["Monday","Tuesday","Wednesday","Thursday","Friday"],
-        "opens": "07:00",
+        "opens": "06:00",
         "closes": "17:00"
       }],
       "priceRange": "$$",
@@ -145,22 +145,6 @@
           }
         ]
       }
-    }
-    </script>
-
-    <!-- Structured Data: BreadcrumbList -->
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "BreadcrumbList",
-      "itemListElement": [
-        { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://scprecisiondeburring.com/" },
-        { "@type": "ListItem", "position": 2, "name": "Services", "item": "https://scprecisiondeburring.com/#services" },
-        { "@type": "ListItem", "position": 3, "name": "Microscope Deburring", "item": "https://scprecisiondeburring.com/#service-microscope" },
-        { "@type": "ListItem", "position": 4, "name": "Manual Deburring", "item": "https://scprecisiondeburring.com/#service-manual" },
-        { "@type": "ListItem", "position": 5, "name": "Blending", "item": "https://scprecisiondeburring.com/#service-blending" },
-        { "@type": "ListItem", "position": 6, "name": "Contact", "item": "https://scprecisiondeburring.com/#contact" }
-      ]
     }
     </script>
 
@@ -322,9 +306,14 @@
         gtag('config', AW_ID);
       })();
     </script>
+    <!-- LCP: the hero paints its poster first — fetch it at top priority -->
+    <link rel="preload" as="image" href="/videos/posters/hero-bg.jpg" fetchpriority="high" />
+
+    <!-- Fonts: swap-in without blocking first paint (print-media trick + noscript fallback) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+    <noscript><link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet"></noscript>
   </head>
   <body>
     <div id="root"></div>
@@ -335,8 +324,11 @@
     <!-- ADDED: enctype="multipart/form-data" for file support -->
     <form name="contact" data-netlify="true" netlify-honeypot="bot-field" enctype="multipart/form-data" hidden>
       <input type="text" name="name" />
+      <input type="text" name="company" />
       <input type="email" name="email" />
+      <input type="tel" name="phone" />
       <input type="text" name="service" />
+      <input type="text" name="quantity" />
       <textarea name="details"></textarea>
       <input type="file" name="attachment" />
       <input name="bot-field" />

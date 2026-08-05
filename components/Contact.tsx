@@ -7,7 +7,6 @@ import { trackPhoneClick, trackFormSubmit } from '../services/analytics';
 export const Contact: React.FC = () => {
   const [copiedPhone, setCopiedPhone] = useState(false);
   const [copiedEmail, setCopiedEmail] = useState(false);
-  const [copiedAddress, setCopiedAddress] = useState(false);
   const [fileName, setFileName] = useState<string | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [isDragging, setIsDragging] = useState(false);
@@ -17,25 +16,25 @@ export const Contact: React.FC = () => {
   // Form State
   const [formData, setFormData] = useState({
     name: '',
+    company: '',
     email: '',
+    phone: '',
     service: 'Microscope Deburring',
+    quantity: '',
     details: ''
   });
 
   const fileInputRef = useRef<HTMLInputElement>(null);
   const formRef = useRef<HTMLFormElement>(null);
 
-  const handleCopy = (text: string, type: 'phone' | 'email' | 'address') => {
+  const handleCopy = (text: string, type: 'phone' | 'email') => {
     navigator.clipboard.writeText(text);
     if (type === 'phone') {
       setCopiedPhone(true);
       setTimeout(() => setCopiedPhone(false), 2000);
-    } else if (type === 'email') {
+    } else {
       setCopiedEmail(true);
       setTimeout(() => setCopiedEmail(false), 2000);
-    } else {
-        setCopiedAddress(true);
-        setTimeout(() => setCopiedAddress(false), 2000);
     }
   };
 
@@ -100,7 +99,7 @@ export const Contact: React.FC = () => {
     setSubmitStatus('idle');
 
     const resetForm = () => {
-      setFormData({ name: '', email: '', service: 'Microscope Deburring', details: '' });
+      setFormData({ name: '', company: '', email: '', phone: '', service: 'Microscope Deburring', quantity: '', details: '' });
       setFileName(null);
       clearPreview();
       if (fileInputRef.current) fileInputRef.current.value = '';
@@ -193,7 +192,7 @@ export const Contact: React.FC = () => {
                 }}
                 title="Tap to call or click to copy"
               >
-                <div className="w-10 h-10 rounded-full bg-zinc-900 flex items-center justify-center border border-zinc-800 text-blue-400 group-hover:border-blue-500 transition-colors">
+                <div className="w-10 h-10 rounded-full bg-zinc-900 flex items-center justify-center border border-zinc-800 text-[#00FFBD] group-hover:border-[#00FFBD]/60 transition-colors">
                   <Phone className="w-5 h-5" />
                 </div>
                 <div>
@@ -201,17 +200,19 @@ export const Contact: React.FC = () => {
                     Call Us
                     {copiedPhone && <span className="text-xs text-green-400 font-normal flex items-center animate-in fade-in slide-in-from-left-2"><Check className="w-3 h-3 mr-1"/> Copied</span>}
                   </h4>
-                  <p className="text-zinc-500 group-hover:text-blue-400 transition-colors">(818) 389-4234</p>
+                  <p className="text-zinc-400 group-hover:text-[#00FFBD] transition-colors">(818) 389-4234</p>
+                  <p className="text-zinc-500 text-xs mt-1">Mon–Fri · 6:00 AM – 5:00 PM</p>
                 </div>
               </a>
 
-              {/* Email */}
-              <div
-                className="flex items-start gap-4 cursor-pointer group"
-                onClick={() => handleCopy('SCPRECISIONDEBURRING@GMAIL.COM', 'email')}
-                title="Click to copy email address"
+              {/* Email — opens the mail app; desktop click also copies */}
+              <a
+                href="mailto:quotes@scprecisiondeburring.com"
+                className="flex items-start gap-4 cursor-pointer group no-underline"
+                onClick={() => handleCopy('quotes@scprecisiondeburring.com', 'email')}
+                title="Email us (click also copies the address)"
               >
-                <div className="w-10 h-10 rounded-full bg-zinc-900 flex items-center justify-center border border-zinc-800 text-blue-400 group-hover:border-blue-500 transition-colors">
+                <div className="w-10 h-10 rounded-full bg-zinc-900 flex items-center justify-center border border-zinc-800 text-[#00FFBD] group-hover:border-[#00FFBD]/60 transition-colors">
                   <Mail className="w-5 h-5" />
                 </div>
                 <div>
@@ -219,27 +220,29 @@ export const Contact: React.FC = () => {
                     Email Us
                     {copiedEmail && <span className="text-xs text-green-400 font-normal flex items-center animate-in fade-in slide-in-from-left-2"><Check className="w-3 h-3 mr-1"/> Copied</span>}
                   </h4>
-                  <p className="text-zinc-500 group-hover:text-blue-400 transition-colors uppercase break-all">SCPRECISIONDEBURRING@GMAIL.COM</p>
+                  <p className="text-zinc-400 group-hover:text-[#00FFBD] transition-colors break-all">quotes@scprecisiondeburring.com</p>
                 </div>
-              </div>
+              </a>
 
-              {/* Address */}
-              <div
-                className="flex items-start gap-4 cursor-pointer group"
-                 onClick={() => handleCopy('12734 Branford Street Unit #17', 'address')}
-                 title="Click to copy address"
+              {/* Address — opens Google Maps */}
+              <a
+                href="https://www.google.com/maps/search/?api=1&query=12734+Branford+St+Unit+17+Pacoima+CA+91331"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-start gap-4 cursor-pointer group no-underline"
+                title="Open in Google Maps"
               >
-                <div className="w-10 h-10 rounded-full bg-zinc-900 flex items-center justify-center border border-zinc-800 text-blue-400 group-hover:border-blue-500 transition-colors">
+                <div className="w-10 h-10 rounded-full bg-zinc-900 flex items-center justify-center border border-zinc-800 text-[#00FFBD] group-hover:border-[#00FFBD]/60 transition-colors">
                   <MapPin className="w-5 h-5" />
                 </div>
                 <div>
                   <h4 className="text-white font-medium flex items-center gap-2">
                       Visit HQ
-                      {copiedAddress && <span className="text-xs text-green-400 font-normal flex items-center animate-in fade-in slide-in-from-left-2"><Check className="w-3 h-3 mr-1"/> Copied</span>}
                   </h4>
-                  <p className="text-zinc-500 group-hover:text-blue-400 transition-colors">12734 Branford Street Unit #17</p>
+                  <p className="text-zinc-400 group-hover:text-[#00FFBD] transition-colors">12734 Branford St, Unit 17, Pacoima, CA 91331</p>
+                  <p className="text-zinc-500 text-xs mt-1">Mon–Fri · 6:00 AM – 5:00 PM</p>
                 </div>
-              </div>
+              </a>
             </div>
           </div>
 
@@ -274,10 +277,26 @@ export const Contact: React.FC = () => {
                       onChange={handleChange}
                       type="text"
                       required
-                      className="w-full bg-zinc-900/50 border border-zinc-700 rounded-lg px-4 py-3 text-white focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 transition-all placeholder-zinc-600"
+                      className="w-full bg-zinc-900/50 border border-zinc-700 rounded-lg px-4 py-3 text-white focus:border-[#00FFBD]/70 focus:outline-none focus:ring-1 focus:ring-[#00FFBD]/50 transition-all placeholder-zinc-600"
                       placeholder="John Doe"
                     />
                   </div>
+                  <div className="space-y-2">
+                    <label htmlFor="contact-company" className="text-xs font-semibold text-zinc-500 uppercase tracking-wider">Company</label>
+                    <input
+                      id="contact-company"
+                      name="company"
+                      value={formData.company}
+                      onChange={handleChange}
+                      type="text"
+                      required
+                      className="w-full bg-zinc-900/50 border border-zinc-700 rounded-lg px-4 py-3 text-white focus:border-[#00FFBD]/70 focus:outline-none focus:ring-1 focus:ring-[#00FFBD]/50 transition-all placeholder-zinc-600"
+                      placeholder="Acme Machining"
+                    />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="space-y-2">
                     <label htmlFor="contact-email" className="text-xs font-semibold text-zinc-500 uppercase tracking-wider">Email Address</label>
                     <input
@@ -287,31 +306,59 @@ export const Contact: React.FC = () => {
                       onChange={handleChange}
                       type="email"
                       required
-                      className="w-full bg-zinc-900/50 border border-zinc-700 rounded-lg px-4 py-3 text-white focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 transition-all placeholder-zinc-600"
+                      className="w-full bg-zinc-900/50 border border-zinc-700 rounded-lg px-4 py-3 text-white focus:border-[#00FFBD]/70 focus:outline-none focus:ring-1 focus:ring-[#00FFBD]/50 transition-all placeholder-zinc-600"
                       placeholder="john@company.com"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <label htmlFor="contact-phone" className="text-xs font-semibold text-zinc-500 uppercase tracking-wider">Phone <span className="text-zinc-600 normal-case">(optional)</span></label>
+                    <input
+                      id="contact-phone"
+                      name="phone"
+                      value={formData.phone}
+                      onChange={handleChange}
+                      type="tel"
+                      autoComplete="tel"
+                      className="w-full bg-zinc-900/50 border border-zinc-700 rounded-lg px-4 py-3 text-white focus:border-[#00FFBD]/70 focus:outline-none focus:ring-1 focus:ring-[#00FFBD]/50 transition-all placeholder-zinc-600"
+                      placeholder="(818) 555-0100"
                     />
                   </div>
                 </div>
 
-                <div className="space-y-2">
-                  <label htmlFor="contact-service" className="text-xs font-semibold text-zinc-500 uppercase tracking-wider">Service Interest</label>
-                  <div className="relative">
-                      <select
-                          id="contact-service"
-                          name="service"
-                          value={formData.service}
-                          onChange={handleChange}
-                          className="w-full bg-zinc-900/50 border border-zinc-700 rounded-lg px-4 py-3 text-white focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 transition-all appearance-none cursor-pointer hover:bg-zinc-900"
-                      >
-                      <option>Microscope Deburring</option>
-                      <option>Manual Deburring</option>
-                      <option>Sand Blasting</option>
-                      <option>Blending</option>
-                      <option>General Inquiry</option>
-                      </select>
-                      <div className="absolute inset-y-0 right-0 flex items-center px-4 pointer-events-none">
-                          <svg className="w-4 h-4 text-zinc-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
-                      </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="space-y-2">
+                    <label htmlFor="contact-service" className="text-xs font-semibold text-zinc-500 uppercase tracking-wider">Service Interest</label>
+                    <div className="relative">
+                        <select
+                            id="contact-service"
+                            name="service"
+                            value={formData.service}
+                            onChange={handleChange}
+                            className="w-full bg-zinc-900/50 border border-zinc-700 rounded-lg px-4 py-3 text-white focus:border-[#00FFBD]/70 focus:outline-none focus:ring-1 focus:ring-[#00FFBD]/50 transition-all appearance-none cursor-pointer hover:bg-zinc-900"
+                        >
+                        <option>Microscope Deburring</option>
+                        <option>Manual Deburring</option>
+                        <option>Sand Blasting</option>
+                        <option>Blending</option>
+                        <option>General Inquiry</option>
+                        </select>
+                        <div className="absolute inset-y-0 right-0 flex items-center px-4 pointer-events-none">
+                            <svg className="w-4 h-4 text-zinc-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
+                        </div>
+                    </div>
+                  </div>
+                  <div className="space-y-2">
+                    <label htmlFor="contact-quantity" className="text-xs font-semibold text-zinc-500 uppercase tracking-wider">Approx. Quantity</label>
+                    <input
+                      id="contact-quantity"
+                      name="quantity"
+                      value={formData.quantity}
+                      onChange={handleChange}
+                      type="text"
+                      inputMode="numeric"
+                      className="w-full bg-zinc-900/50 border border-zinc-700 rounded-lg px-4 py-3 text-white focus:border-[#00FFBD]/70 focus:outline-none focus:ring-1 focus:ring-[#00FFBD]/50 transition-all placeholder-zinc-600"
+                      placeholder="e.g. 250 pcs"
+                    />
                   </div>
                 </div>
 
@@ -324,7 +371,7 @@ export const Contact: React.FC = () => {
                       onChange={handleChange}
                       rows={4}
                       required
-                      className="w-full bg-zinc-900/50 border border-zinc-700 rounded-lg px-4 py-3 text-white focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 transition-all placeholder-zinc-600 resize-none"
+                      className="w-full bg-zinc-900/50 border border-zinc-700 rounded-lg px-4 py-3 text-white focus:border-[#00FFBD]/70 focus:outline-none focus:ring-1 focus:ring-[#00FFBD]/50 transition-all placeholder-zinc-600 resize-none"
                       placeholder="Tell us about part materials, volumes, and requirements..."
                   ></textarea>
                 </div>
@@ -407,7 +454,7 @@ export const Contact: React.FC = () => {
                       className="flex items-center gap-3 bg-red-500/10 border border-red-500/20 rounded-lg px-4 py-3"
                     >
                       <X className="w-5 h-5 text-red-400 flex-shrink-0" />
-                      <p className="text-sm text-red-300">Something went wrong. Please email us directly at SCPRECISIONDEBURRING@GMAIL.COM</p>
+                      <p className="text-sm text-red-300">Something went wrong. Please email us directly at quotes@scprecisiondeburring.com</p>
                     </motion.div>
                   )}
                 </AnimatePresence>
@@ -416,23 +463,23 @@ export const Contact: React.FC = () => {
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="w-full bg-blue-600 hover:bg-blue-500 disabled:bg-blue-800 disabled:cursor-not-allowed text-white font-bold py-4 rounded-lg transition-all transform active:scale-[0.98] shadow-lg shadow-blue-900/20 flex items-center justify-center gap-2 group"
+                  className="w-full bg-[#00FFBD] hover:bg-white disabled:bg-[#00FFBD]/40 disabled:cursor-not-allowed text-black font-black uppercase tracking-[0.15em] py-4 rounded-lg transition-all transform active:scale-[0.98] shadow-[0_0_40px_rgba(0,255,189,0.25)] hover:shadow-[0_0_60px_rgba(0,255,189,0.4)] flex items-center justify-center gap-2 group"
                 >
                   {isSubmitting ? (
                     <>
-                      <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                      <div className="w-5 h-5 border-2 border-black/30 border-t-black rounded-full animate-spin" />
                       Sending...
                     </>
                   ) : (
                     <>
                       <Send className="w-5 h-5" />
-                      Send Inquiry
-                      <ArrowRight className="w-4 h-4 opacity-50 group-hover:translate-x-1 transition-transform" />
+                      Request My Free Quote
+                      <ArrowRight className="w-4 h-4 opacity-60 group-hover:translate-x-1 transition-transform" />
                     </>
                   )}
                 </button>
-                <p className="text-center text-xs text-zinc-500">
-                    Your message is sent directly to our team. We respond within 24 hours.
+                <p className="text-center text-xs text-zinc-400">
+                    Quotes back within 24 hours. Prints and drawings are kept confidential and shared only with the team quoting your job — NDA available on request.
                 </p>
               </form>
           </div>

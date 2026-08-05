@@ -36,7 +36,7 @@ const features: Feature[] = [
     statSuffix: "%",
     statLabel: "Inspection Rate",
     title: "Precision Focus",
-    description: "Zero defects. Every edge is inspected to ensure compliance with your print specifications.",
+    description: "Every part inspected under magnification. Every edge held to your print — nothing passes that we wouldn't ship on our own name.",
   },
   {
     id: 3,
@@ -54,11 +54,11 @@ const features: Feature[] = [
     ref: "DRG-04 / 04",
     glyph: "⌖",
     glyphLabel: "True Position",
-    stat: "45",
-    statSuffix: "+",
-    statLabel: "Industry Years",
-    title: "Decades of Expertise",
-    description: "Built on deep industry knowledge. We deliver verified results and reliable service.",
+    stat: "3–5",
+    statSuffix: "DAY",
+    statLabel: "Typical Turnaround",
+    title: "Reliable Delivery",
+    description: "Quoted in 24 hours, run in 3–5 business days, delivered on schedule. Faster when your timeline calls for it.",
   },
 ];
 

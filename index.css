@@ -50,6 +50,17 @@ h1, h2, h3, h4, h5, h6 {
   background: #555;
 }
 
+/* Viewport heights that account for mobile browser chrome, with a vh
+   fallback for older browsers (declaration order = fallback order). */
+.h-stage {
+  height: 100vh;
+  height: 100dvh;
+}
+.min-h-stage {
+  min-height: 100vh;
+  min-height: 100svh;
+}
+
 .glass-panel {
   background: rgba(20, 20, 23, 0.7);
   backdrop-filter: blur(20px);

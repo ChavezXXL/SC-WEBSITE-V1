@@ -55,8 +55,15 @@ export const ComparisonSection: React.FC = () => {
     if (isDragging) handleMove(e.touches[0].clientX);
   };
 
-  const handleMouseDown = () => setIsDragging(true);
-  const handleMouseUp = () => setIsDragging(false);
+  // Jump the divider straight to the pointer on press, then track it.
+  const handleMouseDown = (e: React.MouseEvent) => {
+    setIsDragging(true);
+    handleMove(e.clientX);
+  };
+  const handleTouchStart = (e: React.TouchEvent) => {
+    setIsDragging(true);
+    handleMove(e.touches[0].clientX);
+  };
 
   // Global event listeners for dragging outside the container
   useEffect(() => {
@@ -101,8 +108,9 @@ export const ComparisonSection: React.FC = () => {
             <div
               ref={containerRef}
               className="relative w-full aspect-square md:aspect-[4/3] rounded-2xl overflow-hidden border border-white/10 shadow-2xl bg-zinc-900 cursor-ew-resize"
+              style={{ touchAction: 'pan-y' }}
               onMouseDown={handleMouseDown}
-              onTouchStart={handleMouseDown}
+              onTouchStart={handleTouchStart}
               onMouseMove={handleMouseMove}
               onTouchMove={handleTouchMove}
             >
@@ -153,7 +161,7 @@ export const ComparisonSection: React.FC = () => {
                 />
 
                 {/* Shine/Reflection Effect */}
-                <div className="absolute inset-0 bg-gradient-to-tr from-blue-500/10 to-transparent mix-blend-overlay pointer-events-none"></div>
+                <div className="absolute inset-0 bg-gradient-to-tr from-[#00FFBD]/10 to-transparent mix-blend-overlay pointer-events-none"></div>
 
                 {/* Cut Line */}
                 <div className="absolute right-0 top-0 bottom-0 w-[2px] bg-white/80 shadow-[0_0_20px_rgba(255,255,255,0.8)] z-20"></div>
@@ -187,19 +195,19 @@ export const ComparisonSection: React.FC = () => {
             {/* Text Content */}
             <div className="pl-0 lg:pl-12">
               <div className="mb-6 flex items-center gap-3">
-                <div className="h-[2px] w-8 bg-[#00FFBD]"></div>
-                <span className="text-[#00FFBD] text-xs font-bold uppercase tracking-widest">Edge Retention Technology</span>
+                <span className="block w-8 h-px bg-[#00FFBD]" />
+                <span className="font-mono text-[10px] uppercase tracking-[0.4em] text-[#00FFBD]">※ Edge Retention</span>
               </div>
 
-              <h2 className="text-3xl md:text-5xl font-bold text-white mb-6 font-space leading-tight">
+              <h2 className="text-3xl md:text-5xl font-black uppercase tracking-tight text-white mb-6 font-space leading-tight">
                 Protect Your Critical <br />
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-white to-zinc-600">
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-white via-[#9affde] to-[#00FFBD]">
                   Dimensions.
                 </span>
               </h2>
 
               <p className="text-lg text-zinc-400 mb-8 leading-relaxed font-light">
-                Deburring should never change your tolerances. Our process removes burrs with controlled precision while holding corner radii to within <span className="text-white font-medium">0.002"</span>, keeping your part true to its design.
+                Deburring should never change your tolerances. We remove the burr only — edge breaks and radii held to your print callouts, keeping your part true to its design.
               </p>
 
               <div className="space-y-8">

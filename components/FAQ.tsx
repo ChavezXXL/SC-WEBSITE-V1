@@ -137,17 +137,6 @@ const FaqRow: React.FC<{ item: FaqItem; index: number; isOpen: boolean; onToggle
   </div>
 );
 
-// FAQ Schema (JSON-LD) for Google rich-result eligibility
-const faqSchema = {
-  '@context': 'https://schema.org',
-  '@type': 'FAQPage',
-  mainEntity: faqs.map((f) => ({
-    '@type': 'Question',
-    name: f.question,
-    acceptedAnswer: { '@type': 'Answer', text: f.answer },
-  })),
-};
-
 export const FAQ: React.FC = () => {
   const [openIdx, setOpenIdx] = useState<number | null>(null);
 
@@ -155,12 +144,7 @@ export const FAQ: React.FC = () => {
 
   return (
     <>
-      {/* SEO: FAQ schema in DOM at all times for Google rich snippets */}
-      <script
-        type="application/ld+json"
-        // eslint-disable-next-line react/no-danger
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
-      />
+      {/* FAQ JSON-LD lives in index.html — single source of truth, no duplicate schema */}
 
       {/* Inline FAQ — questions live right on the page, no popup to open/close */}
       <section id="faq" className="relative py-20 md:py-28 bg-[#030305] border-t border-white/[0.05] scroll-mt-24">

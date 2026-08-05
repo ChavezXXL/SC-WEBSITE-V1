@@ -10,7 +10,14 @@ export default {
     './services/**/*.{ts,tsx}',
   ],
   theme: {
-    extend: {},
+    extend: {
+      fontFamily: {
+        // Makes `font-sans` actually mean Inter (loaded in index.html) and
+        // gives `font-space` a real definition instead of silently no-opping.
+        sans: ['Inter', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+        space: ['"Space Grotesk"', 'Inter', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+      },
+    },
   },
   plugins: [],
 };

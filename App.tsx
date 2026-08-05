@@ -19,7 +19,7 @@ const Contact = lazy(() => import('./components/Contact').then(m => ({ default: 
 const FAQ = lazy(() => import('./components/FAQ').then(m => ({ default: m.FAQ })));
 const Gallery = lazy(() => import('./components/Gallery').then(m => ({ default: m.Gallery })));
 const AdminDashboard = lazy(() => import('./components/AdminDashboard').then(m => ({ default: m.AdminDashboard })));
-import { Facebook, Instagram, Youtube, Lock, ArrowRight } from 'lucide-react';
+import { Facebook, Instagram, Youtube } from 'lucide-react';
 import { motion, useInView, animate } from 'framer-motion';
 
 // Animated Counter Component
@@ -59,6 +59,22 @@ function App() {
   useEffect(() => {
     window.scrollTo({ top: 0, left: 0, behavior: 'instant' as ScrollBehavior });
   }, [view]);
+
+  // Staff access lives at /#admin (off the public footer). Works on load and
+  // when the hash is typed later.
+  useEffect(() => {
+    const checkHash = () => {
+      if (window.location.hash === '#admin') {
+        // clear the hash so cancelling the prompt doesn't retrigger on refresh
+        history.replaceState(null, '', window.location.pathname);
+        handleAdminAccess();
+      }
+    };
+    checkHash();
+    window.addEventListener('hashchange', checkHash);
+    return () => window.removeEventListener('hashchange', checkHash);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const handleAdminAccess = () => {
     // Cosmetic, owner-only gate (all admin data is per-browser localStorage, so
@@ -110,15 +126,15 @@ function App() {
                   </div>
                   <div className="space-y-3">
                      <Counter from={0} to={45} suffix="+" />
-                     <div className="text-xs md:text-sm text-zinc-500 uppercase tracking-widest font-medium">Industry Years</div>
+                     <div className="text-xs md:text-sm text-zinc-500 uppercase tracking-widest font-medium">Years Combined Experience</div>
                   </div>
                   <div className="space-y-3">
                      <Counter from={0} to={100} suffix="+" />
-                     <div className="text-xs md:text-sm text-zinc-500 uppercase tracking-widest font-medium">Satisfied Clients</div>
+                     <div className="text-xs md:text-sm text-zinc-500 uppercase tracking-widest font-medium">Shops Served</div>
                   </div>
                   <div className="space-y-3">
                      <Counter from={0} to={100} suffix="%" />
-                     <div className="text-xs md:text-sm text-zinc-500 uppercase tracking-widest font-medium">Scope-Inspected</div>
+                     <div className="text-xs md:text-sm text-zinc-500 uppercase tracking-widest font-medium">Microscope-Inspected</div>
                   </div>
                 </div>
               </section>
@@ -175,12 +191,27 @@ function App() {
           )}
         </main>
 
-        <footer className="bg-[#020202] py-12 border-t border-white/5 text-center relative group">
-          <div className="container mx-auto px-6 flex flex-col items-center justify-center gap-6 text-zinc-600 text-sm">
-            
+        <footer className="bg-[#020202] py-14 border-t border-white/5 text-center relative">
+          <div className="container mx-auto px-6 flex flex-col items-center justify-center gap-8 text-zinc-600 text-sm">
+
             <div className="flex flex-col items-center gap-2">
-              <span className="block font-bold text-zinc-400 text-lg tracking-wide">SC DEBURRING</span>
-              <p>© {new Date().getFullYear()} SC Precision Deburring. All rights reserved.</p>
+              <span className="block font-bold text-zinc-300 text-lg tracking-wide">SC DEBURRING</span>
+              <span className="font-mono text-[10px] uppercase tracking-[0.3em] text-zinc-600">Precision Deburring &amp; Finishing</span>
+            </div>
+
+            {/* NAP block — matches the LocalBusiness schema exactly */}
+            <div className="flex flex-col items-center gap-2.5 text-zinc-400">
+              <a
+                href="https://www.google.com/maps/search/?api=1&query=12734+Branford+St+Unit+17+Pacoima+CA+91331"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:text-[#00FFBD] transition-colors"
+              >
+                12734 Branford St, Unit 17, Pacoima, CA 91331
+              </a>
+              <a href="tel:+18183894234" className="hover:text-[#00FFBD] transition-colors">(818) 389-4234</a>
+              <a href="mailto:quotes@scprecisiondeburring.com" className="hover:text-[#00FFBD] transition-colors">quotes@scprecisiondeburring.com</a>
+              <span className="text-zinc-500">Mon–Fri · 6:00 AM – 5:00 PM</span>
             </div>
 
             <div className="flex items-center gap-6">
@@ -195,13 +226,8 @@ function App() {
                     </svg>
                  </a>
             </div>
-          </div>
-          
-          {/* Hidden Admin Trigger */}
-          <div className="absolute bottom-2 right-2 opacity-5 hover:opacity-50 transition-opacity duration-300">
-             <button onClick={handleAdminAccess} className="p-2" title="Staff Access" aria-label="Staff Access">
-                <Lock className="w-3 h-3 text-zinc-500" />
-             </button>
+
+            <p className="text-zinc-600">© {new Date().getFullYear()} SC Precision Deburring. All rights reserved.</p>
           </div>
         </footer>
       </div>

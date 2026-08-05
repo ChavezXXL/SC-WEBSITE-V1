@@ -1,0 +1,13 @@
+# Old GoDaddy-era URLs still indexed by search engines — permanent redirects
+# so link equity flows to the live single-page site instead of a 404.
+/about       /            301
+/services    /#services   301
+/service     /#services   301
+/contact     /#contact    301
+/contact-us  /#contact    301
+/gallery     /            301
+/quality     /#process    301
+/quote       /#contact    301
+/faq         /#faq        301
+/home        /            301
+/index.html  /            301

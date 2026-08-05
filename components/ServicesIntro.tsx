@@ -44,7 +44,7 @@ export const ServicesIntro: React.FC = () => {
         />
       </div>
 
-      {/* GIANT outline 03 — background flair */}
+      {/* GIANT outline SC — background flair */}
       <div
         aria-hidden
         className="absolute inset-0 pointer-events-none flex items-center justify-center select-none"
@@ -56,7 +56,7 @@ export const ServicesIntro: React.FC = () => {
             WebkitTextStroke: '1px rgba(0, 255, 189, 0.06)',
           }}
         >
-          03
+          SC
         </span>
       </div>
 
@@ -85,7 +85,7 @@ export const ServicesIntro: React.FC = () => {
               <span className="absolute inset-0 inline-flex h-full w-full rounded-full bg-[#00FFBD] opacity-75 animate-ping" />
               <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-[#00FFBD]" />
             </span>
-            <span>Section 03 — Trades of the Bench</span>
+            <span>Our Services — Three Precision Trades</span>
           </div>
           <div className="font-mono text-[10px] uppercase tracking-[0.3em] text-zinc-500 hidden sm:block">
             SC-PRECISION-DEBURRING
@@ -106,7 +106,7 @@ export const ServicesIntro: React.FC = () => {
             >
               <span className="block w-8 h-px bg-[#00FFBD]" />
               <span className="font-mono text-[11px] uppercase tracking-[0.4em] text-[#00FFBD]">
-                Section 03
+                What We Do
               </span>
             </motion.div>
 
