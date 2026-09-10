@@ -126,7 +126,7 @@ function App() {
                 <div className="container mx-auto px-6 grid grid-cols-2 md:grid-cols-4 gap-12 text-center">
                   <div className="space-y-3">
                      <Counter from={0} to={10} suffix="+" />
-                     <div className="text-xs md:text-sm text-zinc-400 uppercase tracking-widest font-medium">Trained Precision Finishers</div>
+                     <div className="text-xs md:text-sm text-zinc-400 uppercase tracking-widest font-medium">Deburr Technicians</div>
                   </div>
                   <div className="space-y-3">
                      <Counter from={0} to={45} suffix="+" />
