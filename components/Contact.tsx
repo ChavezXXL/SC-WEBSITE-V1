@@ -341,7 +341,7 @@ export const Contact: React.FC = () => {
                         >
                         <option>Microscope Deburring</option>
                         <option>Manual Deburring</option>
-                        <option>Blending &amp; Surface Finishing</option>
+                        <option>Blending</option>
                         <option>Dot-Peen Part Marking</option>
                         <option>Deburr &amp; Mark (both)</option>
                         <option>General Inquiry</option>

@@ -55,7 +55,7 @@ const INITIAL_GALLERY_ITEMS: GalleryItem[] = [
   {
     id: 2,
     url: '/img/work/work-02.jpg',
-    title: 'Precision Surface Finishing'
+    title: 'Blending & Tool-Mark Removal'
   },
   {
     id: 3,
