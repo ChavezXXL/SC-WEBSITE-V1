@@ -35,11 +35,8 @@ const overlays: Overlay[] = [
 const hud: Hud = {
   vignette: 'scope',
   reticle: false,
-  live: true,
-  topLeft: 'BENCH 01 — SCOPE',
   topRight: 'INSPECTION · UNDER MAGNIFICATION',
   bottomRight: 'OPERATOR · SC-PRECISION',
-  frameCounter: true,
 };
 
 export const MicroscopeSection: React.FC = () => {
@@ -52,7 +49,6 @@ export const MicroscopeSection: React.FC = () => {
       introBody="Complicated parts. Tight tolerances. Verified under magnification."
       frameBase="/frames/microscope"
       frameCount={121}
-      virtualFrames={596}
       scrollVH={5}
       overlays={overlays}
       hud={hud}

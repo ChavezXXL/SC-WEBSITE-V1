@@ -31,7 +31,7 @@ export class ErrorBoundary extends React.Component<Props, State> {
           <p className="text-zinc-300 text-sm">Something went wrong loading this section.</p>
           <button
             onClick={() => window.location.reload()}
-            className="px-5 py-2.5 rounded-full border border-[#00FFBD]/40 text-[#00FFBD] text-xs uppercase tracking-widest hover:bg-[#00FFBD]/10 transition-colors"
+            className="px-5 py-2.5 rounded-full border border-[#B49A66]/40 text-[#B49A66] text-xs uppercase tracking-widest hover:bg-[#B49A66]/10 transition-colors"
           >
             Reload
           </button>

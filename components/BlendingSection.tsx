@@ -35,11 +35,8 @@ const overlays: Overlay[] = [
 const hud: Hud = {
   vignette: 'soft',
   reticle: false,
-  live: true,
-  topLeft: 'BENCH 03 — BLEND',
   topRight: 'TECHNIQUE · SURFACE BLEND',
   bottomRight: 'OPERATOR · SC-PRECISION',
-  frameCounter: true,
 };
 
 export const BlendingSection: React.FC = () => {
@@ -52,7 +49,6 @@ export const BlendingSection: React.FC = () => {
       introBody="Tool marks erased. Surface continuous. Built for the parts where it matters."
       frameBase="/frames/blending"
       frameCount={193}
-      virtualFrames={956}
       scrollVH={8}
       overlays={overlays}
       hud={hud}

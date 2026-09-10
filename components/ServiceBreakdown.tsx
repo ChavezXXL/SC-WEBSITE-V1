@@ -69,7 +69,12 @@ export const ServiceBreakdown: React.FC<ServiceBreakdownProps> = ({
   const paintedRef = useRef(false);
   const [painted, setPainted] = useState(false);
   const [shouldLoad, setShouldLoad] = useState(false);
-  const [isMobile, setIsMobile] = useState(false);
+  // Resolved synchronously on the first render, not after an effect: the frame
+  // loader below branches on it, and a false first pass would fetch the whole
+  // sequence before the media query ever reported back.
+  const [isMobile, setIsMobile] = useState(
+    () => typeof window !== 'undefined' && window.matchMedia('(max-width: 767px)').matches
+  );
 
   // On phones the pinned scrub runs ~45% shorter — same footage, less thumb
   // work (three of these sections stack up fast on a small screen).
@@ -155,7 +160,19 @@ export const ServiceBreakdown: React.FC<ServiceBreakdownProps> = ({
     for (let step = 2; step <= 16; step *= 2) {
       for (let k = 1; k < step; k++) push(Math.round((frameCount * k) / step));
     }
-    for (let i = 0; i < frameCount; i++) push(i);
+
+    // The full sequence is ~17MB across the three sections. That is fine on a
+    // desktop connection and punishing on cellular, so phones (and anyone who
+    // asked their browser to save data, or is on a 2g/3g link) get every third
+    // frame instead. nearestLoaded() covers the gaps, so the scrub still works
+    // — just in coarser steps nobody notices at that screen size.
+    const conn = (navigator as any).connection;
+    const frugal =
+      isMobile ||
+      !!conn?.saveData ||
+      /^(slow-)?2g$|^3g$/.test(conn?.effectiveType ?? '');
+    const stride = frugal ? 3 : 1;
+    for (let i = 0; i < frameCount; i += stride) push(i);
 
     let lastDrawn = -1;
 
@@ -267,7 +284,7 @@ export const ServiceBreakdown: React.FC<ServiceBreakdownProps> = ({
       window.removeEventListener('resize', resize);
       images.length = 0;
     };
-  }, [shouldLoad, frameBase, frameCount, progress]);
+  }, [shouldLoad, frameBase, frameCount, progress, isMobile]);
 
   return (
     <section
@@ -288,11 +305,11 @@ export const ServiceBreakdown: React.FC<ServiceBreakdownProps> = ({
 
         {!painted && shouldLoad && (
           <div className="absolute bottom-16 left-1/2 -translate-x-1/2 z-50 flex flex-col items-center">
-            <div className="font-mono text-[10px] uppercase tracking-[0.35em] text-zinc-400 mb-3">
+            <div className="font-mono text-[10px] uppercase tracking-[0.35em] text-zinc-300 mb-3">
               Loading
             </div>
             <div className="w-48 h-px bg-zinc-800 overflow-hidden">
-              <div className="h-full bg-[#00FFBD] animate-pulse w-1/3" />
+              <div className="h-full bg-[#B49A66] animate-pulse w-1/3" />
             </div>
           </div>
         )}
@@ -309,25 +326,25 @@ export const ServiceBreakdown: React.FC<ServiceBreakdownProps> = ({
         {hud?.reticle && (
           <div className="pointer-events-none absolute inset-0 z-[5] flex items-center justify-center">
             <svg width="180" height="180" viewBox="0 0 180 180" className="opacity-40">
-              <circle cx="90" cy="90" r="78" fill="none" stroke="#00FFBD" strokeWidth="1" strokeDasharray="2 4" />
-              <circle cx="90" cy="90" r="50" fill="none" stroke="#00FFBD" strokeWidth="1" />
-              <line x1="90" y1="20" x2="90" y2="70" stroke="#00FFBD" strokeWidth="1" />
-              <line x1="90" y1="110" x2="90" y2="160" stroke="#00FFBD" strokeWidth="1" />
-              <line x1="20" y1="90" x2="70" y2="90" stroke="#00FFBD" strokeWidth="1" />
-              <line x1="110" y1="90" x2="160" y2="90" stroke="#00FFBD" strokeWidth="1" />
-              <circle cx="90" cy="90" r="2" fill="#00FFBD" />
+              <circle cx="90" cy="90" r="78" fill="none" stroke="#B49A66" strokeWidth="1" strokeDasharray="2 4" />
+              <circle cx="90" cy="90" r="50" fill="none" stroke="#B49A66" strokeWidth="1" />
+              <line x1="90" y1="20" x2="90" y2="70" stroke="#B49A66" strokeWidth="1" />
+              <line x1="90" y1="110" x2="90" y2="160" stroke="#B49A66" strokeWidth="1" />
+              <line x1="20" y1="90" x2="70" y2="90" stroke="#B49A66" strokeWidth="1" />
+              <line x1="110" y1="90" x2="160" y2="90" stroke="#B49A66" strokeWidth="1" />
+              <circle cx="90" cy="90" r="2" fill="#B49A66" />
             </svg>
           </div>
         )}
 
         {/* HUD: top-left status */}
         {(hud?.topLeft || hud?.live || hud?.frameCounter) && (
-          <div className="absolute top-5 left-12 z-10 flex items-center gap-2.5 font-mono text-[9px] uppercase tracking-[0.3em] text-[#00FFBD]/55">
+          <div className="absolute top-5 left-12 z-10 flex items-center gap-2.5 font-mono text-[9px] uppercase tracking-[0.3em] text-[#B49A66]/55">
             {hud?.live && (
               <span className="flex items-center gap-1.5">
                 <span className="relative flex h-1 w-1">
-                  <span className="absolute inset-0 inline-flex h-full w-full rounded-full bg-[#00FFBD] opacity-60 animate-ping" />
-                  <span className="relative inline-flex rounded-full h-1 w-1 bg-[#00FFBD]" />
+                  <span className="absolute inset-0 inline-flex h-full w-full rounded-full bg-[#B49A66] opacity-60 animate-ping" />
+                  <span className="relative inline-flex rounded-full h-1 w-1 bg-[#B49A66]" />
                 </span>
                 LIVE
               </span>
@@ -340,7 +357,7 @@ export const ServiceBreakdown: React.FC<ServiceBreakdownProps> = ({
         {/* HUD: top-right status */}
         {hud?.topRight && (
           <div className="hidden md:block absolute top-5 right-12 z-10">
-            <span className="font-mono text-[9px] uppercase tracking-[0.3em] text-[#00FFBD]/55">
+            <span className="font-mono text-[9px] uppercase tracking-[0.3em] text-[#B49A66]/55">
               {hud.topRight}
             </span>
           </div>
@@ -348,7 +365,7 @@ export const ServiceBreakdown: React.FC<ServiceBreakdownProps> = ({
 
         {/* HUD: bottom-right status */}
         {hud?.bottomRight && (
-          <div className="hidden md:block absolute bottom-5 right-12 z-10 font-mono text-[9px] uppercase tracking-[0.3em] text-[#00FFBD]/45">
+          <div className="hidden md:block absolute bottom-5 right-12 z-10 font-mono text-[9px] uppercase tracking-[0.3em] text-[#B49A66]/45">
             {hud.bottomRight}
           </div>
         )}
@@ -356,30 +373,30 @@ export const ServiceBreakdown: React.FC<ServiceBreakdownProps> = ({
         {hud?.scaleBar && (
           <div className="pointer-events-none absolute bottom-10 left-1/2 -translate-x-1/2 z-10 flex flex-col items-center gap-1.5">
             <div className="flex items-end h-3">
-              <span className="block w-px h-3 bg-[#00FFBD]" />
-              <span className="block w-20 h-px bg-[#00FFBD] mb-0" />
-              <span className="block w-px h-2 bg-[#00FFBD]/60" />
-              <span className="block w-20 h-px bg-[#00FFBD] mb-0" />
-              <span className="block w-px h-3 bg-[#00FFBD]" />
+              <span className="block w-px h-3 bg-[#B49A66]" />
+              <span className="block w-20 h-px bg-[#B49A66] mb-0" />
+              <span className="block w-px h-2 bg-[#B49A66]/60" />
+              <span className="block w-20 h-px bg-[#B49A66] mb-0" />
+              <span className="block w-px h-3 bg-[#B49A66]" />
             </div>
-            <span className="font-mono text-[9px] uppercase tracking-[0.35em] text-[#00FFBD]">
+            <span className="font-mono text-[9px] uppercase tracking-[0.35em] text-[#B49A66]">
               {hud.scaleBar}
             </span>
           </div>
         )}
 
-        <span aria-hidden className="pointer-events-none absolute top-6 left-6 w-4 h-px bg-[#00FFBD]" />
-        <span aria-hidden className="pointer-events-none absolute top-6 left-6 w-px h-4 bg-[#00FFBD]" />
-        <span aria-hidden className="pointer-events-none absolute top-6 right-6 w-4 h-px bg-[#00FFBD]" />
-        <span aria-hidden className="pointer-events-none absolute top-6 right-6 w-px h-4 bg-[#00FFBD]" />
-        <span aria-hidden className="pointer-events-none absolute bottom-6 left-6 w-4 h-px bg-[#00FFBD]" />
-        <span aria-hidden className="pointer-events-none absolute bottom-6 left-6 w-px h-4 bg-[#00FFBD]" />
-        <span aria-hidden className="pointer-events-none absolute bottom-6 right-6 w-4 h-px bg-[#00FFBD]" />
-        <span aria-hidden className="pointer-events-none absolute bottom-6 right-6 w-px h-4 bg-[#00FFBD]" />
+        <span aria-hidden className="pointer-events-none absolute top-6 left-6 w-4 h-px bg-[#B49A66]" />
+        <span aria-hidden className="pointer-events-none absolute top-6 left-6 w-px h-4 bg-[#B49A66]" />
+        <span aria-hidden className="pointer-events-none absolute top-6 right-6 w-4 h-px bg-[#B49A66]" />
+        <span aria-hidden className="pointer-events-none absolute top-6 right-6 w-px h-4 bg-[#B49A66]" />
+        <span aria-hidden className="pointer-events-none absolute bottom-6 left-6 w-4 h-px bg-[#B49A66]" />
+        <span aria-hidden className="pointer-events-none absolute bottom-6 left-6 w-px h-4 bg-[#B49A66]" />
+        <span aria-hidden className="pointer-events-none absolute bottom-6 right-6 w-4 h-px bg-[#B49A66]" />
+        <span aria-hidden className="pointer-events-none absolute bottom-6 right-6 w-px h-4 bg-[#B49A66]" />
 
         {drawingRef && (
           <div className="absolute bottom-5 left-12 z-10">
-            <span className="font-mono text-[9px] uppercase tracking-[0.3em] text-[#00FFBD]/55">
+            <span className="font-mono text-[9px] uppercase tracking-[0.3em] text-[#B49A66]/55">
               {drawingRef}
             </span>
           </div>
@@ -428,17 +445,17 @@ const OverlayBlock: React.FC<{ ov: Overlay; progress: ReturnType<typeof useMotio
       className={`pointer-events-none absolute z-20 ${positionClasses[ov.position]}`}
     >
       <div className={`relative flex flex-col gap-2 p-5 bg-black/70 border border-white/10 ${align}`}>
-        <span aria-hidden className="absolute top-0 left-0 w-2 h-px bg-[#00FFBD]/70" />
-        <span aria-hidden className="absolute top-0 left-0 w-px h-2 bg-[#00FFBD]/70" />
-        <span aria-hidden className="absolute top-0 right-0 w-2 h-px bg-[#00FFBD]/70" />
-        <span aria-hidden className="absolute top-0 right-0 w-px h-2 bg-[#00FFBD]/70" />
-        <span aria-hidden className="absolute bottom-0 left-0 w-2 h-px bg-[#00FFBD]/70" />
-        <span aria-hidden className="absolute bottom-0 left-0 w-px h-2 bg-[#00FFBD]/70" />
-        <span aria-hidden className="absolute bottom-0 right-0 w-2 h-px bg-[#00FFBD]/70" />
-        <span aria-hidden className="absolute bottom-0 right-0 w-px h-2 bg-[#00FFBD]/70" />
+        <span aria-hidden className="absolute top-0 left-0 w-2 h-px bg-[#B49A66]/70" />
+        <span aria-hidden className="absolute top-0 left-0 w-px h-2 bg-[#B49A66]/70" />
+        <span aria-hidden className="absolute top-0 right-0 w-2 h-px bg-[#B49A66]/70" />
+        <span aria-hidden className="absolute top-0 right-0 w-px h-2 bg-[#B49A66]/70" />
+        <span aria-hidden className="absolute bottom-0 left-0 w-2 h-px bg-[#B49A66]/70" />
+        <span aria-hidden className="absolute bottom-0 left-0 w-px h-2 bg-[#B49A66]/70" />
+        <span aria-hidden className="absolute bottom-0 right-0 w-2 h-px bg-[#B49A66]/70" />
+        <span aria-hidden className="absolute bottom-0 right-0 w-px h-2 bg-[#B49A66]/70" />
 
         {ov.kicker && (
-          <div className="font-mono text-[9px] uppercase tracking-[0.3em] text-[#00FFBD]">
+          <div className="font-mono text-[9px] uppercase tracking-[0.3em] text-[#B49A66]">
             {ov.kicker}
           </div>
         )}
@@ -458,8 +475,8 @@ const OverlayBlock: React.FC<{ ov: Overlay; progress: ReturnType<typeof useMotio
         )}
         {ov.stat && (
           <div className="flex items-center gap-2 mt-1">
-            <span className="block w-6 h-px bg-[#00FFBD]" />
-            <span className="font-mono text-[10px] uppercase tracking-[0.25em] text-[#00FFBD]">
+            <span className="block w-6 h-px bg-[#B49A66]" />
+            <span className="font-mono text-[10px] uppercase tracking-[0.25em] text-[#B49A66]">
               {ov.stat}
             </span>
           </div>

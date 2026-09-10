@@ -35,11 +35,8 @@ const overlays: Overlay[] = [
 const hud: Hud = {
   vignette: 'soft',
   reticle: false,
-  live: true,
-  topLeft: 'BENCH 02 — HAND',
   topRight: 'TECHNIQUE · MANUAL DEBURR',
   bottomRight: 'OPERATOR · SC-PRECISION',
-  frameCounter: true,
 };
 
 export const ManualSection: React.FC = () => {
@@ -52,7 +49,6 @@ export const ManualSection: React.FC = () => {
       introBody="Cut, radius, buff, inspect — every tool, every part, by hand."
       frameBase="/frames/manual"
       frameCount={121}
-      virtualFrames={447}
       scrollVH={5}
       overlays={overlays}
       hud={hud}

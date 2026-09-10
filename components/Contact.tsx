@@ -21,6 +21,9 @@ export const Contact: React.FC = () => {
     phone: '',
     service: 'Microscope Deburring',
     quantity: '',
+    partNumber: '',
+    material: '',
+    needBy: '',
     details: ''
   });
 
@@ -99,7 +102,7 @@ export const Contact: React.FC = () => {
     setSubmitStatus('idle');
 
     const resetForm = () => {
-      setFormData({ name: '', company: '', email: '', phone: '', service: 'Microscope Deburring', quantity: '', details: '' });
+      setFormData({ name: '', company: '', email: '', phone: '', service: 'Microscope Deburring', quantity: '', partNumber: '', material: '', needBy: '', details: '' });
       setFileName(null);
       clearPreview();
       if (fileInputRef.current) fileInputRef.current.value = '';
@@ -152,22 +155,22 @@ export const Contact: React.FC = () => {
         {/* Centered hero heading */}
         <div className="max-w-4xl mx-auto text-center mb-20 md:mb-24">
           <div className="flex items-center justify-center gap-3 mb-6">
-            <span className="block w-8 h-px bg-[#00FFBD]" />
-            <span className="font-mono text-[10px] uppercase tracking-[0.4em] text-[#00FFBD]">
+            <span className="block w-8 h-px bg-[#B49A66]" />
+            <span className="font-mono text-[10px] uppercase tracking-[0.4em] text-[#B49A66]">
               Get In Touch
             </span>
-            <span className="block w-8 h-px bg-[#00FFBD]" />
+            <span className="block w-8 h-px bg-[#B49A66]" />
           </div>
           <h2
             className="font-black text-white uppercase tracking-tight leading-[0.9] mb-6"
             style={{ fontSize: 'clamp(2.75rem, 7vw, 6rem)' }}
           >
             Let's discuss your{' '}
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-white via-[#9affde] to-[#00FFBD]">
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-white via-[#D9C89E] to-[#B49A66]">
               project.
             </span>
           </h2>
-          <p className="text-lg md:text-xl text-zinc-400 max-w-2xl mx-auto font-light leading-relaxed">
+          <p className="text-lg md:text-xl text-zinc-300 max-w-2xl mx-auto font-light leading-relaxed">
             Reach out to our team for technical specs, lead times, or a custom quote. Most quotes back within 24 hours.
           </p>
         </div>
@@ -192,7 +195,7 @@ export const Contact: React.FC = () => {
                 }}
                 title="Tap to call or click to copy"
               >
-                <div className="w-10 h-10 rounded-full bg-zinc-900 flex items-center justify-center border border-zinc-800 text-[#00FFBD] group-hover:border-[#00FFBD]/60 transition-colors">
+                <div className="w-10 h-10 rounded-full bg-zinc-900 flex items-center justify-center border border-zinc-800 text-[#B49A66] group-hover:border-[#B49A66]/60 transition-colors">
                   <Phone className="w-5 h-5" />
                 </div>
                 <div>
@@ -200,8 +203,8 @@ export const Contact: React.FC = () => {
                     Call Us
                     {copiedPhone && <span className="text-xs text-green-400 font-normal flex items-center animate-in fade-in slide-in-from-left-2"><Check className="w-3 h-3 mr-1"/> Copied</span>}
                   </h4>
-                  <p className="text-zinc-400 group-hover:text-[#00FFBD] transition-colors">(818) 389-4234</p>
-                  <p className="text-zinc-500 text-xs mt-1">Mon–Fri · 6:00 AM – 5:00 PM</p>
+                  <p className="text-zinc-300 group-hover:text-[#B49A66] transition-colors">(818) 389-4234</p>
+                  <p className="text-zinc-400 text-xs mt-1">Mon–Fri · 6:00 AM – 5:00 PM</p>
                 </div>
               </a>
 
@@ -212,7 +215,7 @@ export const Contact: React.FC = () => {
                 onClick={() => handleCopy('quotes@scprecisiondeburring.com', 'email')}
                 title="Email us (click also copies the address)"
               >
-                <div className="w-10 h-10 rounded-full bg-zinc-900 flex items-center justify-center border border-zinc-800 text-[#00FFBD] group-hover:border-[#00FFBD]/60 transition-colors">
+                <div className="w-10 h-10 rounded-full bg-zinc-900 flex items-center justify-center border border-zinc-800 text-[#B49A66] group-hover:border-[#B49A66]/60 transition-colors">
                   <Mail className="w-5 h-5" />
                 </div>
                 <div>
@@ -220,7 +223,7 @@ export const Contact: React.FC = () => {
                     Email Us
                     {copiedEmail && <span className="text-xs text-green-400 font-normal flex items-center animate-in fade-in slide-in-from-left-2"><Check className="w-3 h-3 mr-1"/> Copied</span>}
                   </h4>
-                  <p className="text-zinc-400 group-hover:text-[#00FFBD] transition-colors break-all">quotes@scprecisiondeburring.com</p>
+                  <p className="text-zinc-300 group-hover:text-[#B49A66] transition-colors break-all">quotes@scprecisiondeburring.com</p>
                 </div>
               </a>
 
@@ -232,15 +235,15 @@ export const Contact: React.FC = () => {
                 className="flex items-start gap-4 cursor-pointer group no-underline"
                 title="Open in Google Maps"
               >
-                <div className="w-10 h-10 rounded-full bg-zinc-900 flex items-center justify-center border border-zinc-800 text-[#00FFBD] group-hover:border-[#00FFBD]/60 transition-colors">
+                <div className="w-10 h-10 rounded-full bg-zinc-900 flex items-center justify-center border border-zinc-800 text-[#B49A66] group-hover:border-[#B49A66]/60 transition-colors">
                   <MapPin className="w-5 h-5" />
                 </div>
                 <div>
                   <h4 className="text-white font-medium flex items-center gap-2">
                       Visit HQ
                   </h4>
-                  <p className="text-zinc-400 group-hover:text-[#00FFBD] transition-colors">12734 Branford St, Unit 17, Pacoima, CA 91331</p>
-                  <p className="text-zinc-500 text-xs mt-1">Mon–Fri · 6:00 AM – 5:00 PM</p>
+                  <p className="text-zinc-300 group-hover:text-[#B49A66] transition-colors">12734 Branford St, Unit 17, Pacoima, CA 91331</p>
+                  <p className="text-zinc-400 text-xs mt-1">Mon–Fri · 6:00 AM – 5:00 PM</p>
                 </div>
               </a>
             </div>
@@ -269,7 +272,7 @@ export const Contact: React.FC = () => {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="space-y-2">
-                    <label htmlFor="contact-name" className="text-xs font-semibold text-zinc-500 uppercase tracking-wider">Full Name</label>
+                    <label htmlFor="contact-name" className="text-xs font-semibold text-zinc-400 uppercase tracking-wider">Full Name</label>
                     <input
                       id="contact-name"
                       name="name"
@@ -277,12 +280,12 @@ export const Contact: React.FC = () => {
                       onChange={handleChange}
                       type="text"
                       required
-                      className="w-full bg-zinc-900/50 border border-zinc-700 rounded-lg px-4 py-3 text-white focus:border-[#00FFBD]/70 focus:outline-none focus:ring-1 focus:ring-[#00FFBD]/50 transition-all placeholder-zinc-600"
+                      className="w-full bg-zinc-900/50 border border-zinc-700 rounded-lg px-4 py-3 text-white focus:border-[#B49A66]/70 focus:outline-none focus:ring-1 focus:ring-[#B49A66]/50 transition-all placeholder-zinc-600"
                       placeholder="John Doe"
                     />
                   </div>
                   <div className="space-y-2">
-                    <label htmlFor="contact-company" className="text-xs font-semibold text-zinc-500 uppercase tracking-wider">Company</label>
+                    <label htmlFor="contact-company" className="text-xs font-semibold text-zinc-400 uppercase tracking-wider">Company</label>
                     <input
                       id="contact-company"
                       name="company"
@@ -290,7 +293,7 @@ export const Contact: React.FC = () => {
                       onChange={handleChange}
                       type="text"
                       required
-                      className="w-full bg-zinc-900/50 border border-zinc-700 rounded-lg px-4 py-3 text-white focus:border-[#00FFBD]/70 focus:outline-none focus:ring-1 focus:ring-[#00FFBD]/50 transition-all placeholder-zinc-600"
+                      className="w-full bg-zinc-900/50 border border-zinc-700 rounded-lg px-4 py-3 text-white focus:border-[#B49A66]/70 focus:outline-none focus:ring-1 focus:ring-[#B49A66]/50 transition-all placeholder-zinc-600"
                       placeholder="Acme Machining"
                     />
                   </div>
@@ -298,7 +301,7 @@ export const Contact: React.FC = () => {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="space-y-2">
-                    <label htmlFor="contact-email" className="text-xs font-semibold text-zinc-500 uppercase tracking-wider">Email Address</label>
+                    <label htmlFor="contact-email" className="text-xs font-semibold text-zinc-400 uppercase tracking-wider">Email Address</label>
                     <input
                       id="contact-email"
                       name="email"
@@ -306,12 +309,12 @@ export const Contact: React.FC = () => {
                       onChange={handleChange}
                       type="email"
                       required
-                      className="w-full bg-zinc-900/50 border border-zinc-700 rounded-lg px-4 py-3 text-white focus:border-[#00FFBD]/70 focus:outline-none focus:ring-1 focus:ring-[#00FFBD]/50 transition-all placeholder-zinc-600"
+                      className="w-full bg-zinc-900/50 border border-zinc-700 rounded-lg px-4 py-3 text-white focus:border-[#B49A66]/70 focus:outline-none focus:ring-1 focus:ring-[#B49A66]/50 transition-all placeholder-zinc-600"
                       placeholder="john@company.com"
                     />
                   </div>
                   <div className="space-y-2">
-                    <label htmlFor="contact-phone" className="text-xs font-semibold text-zinc-500 uppercase tracking-wider">Phone <span className="text-zinc-600 normal-case">(optional)</span></label>
+                    <label htmlFor="contact-phone" className="text-xs font-semibold text-zinc-400 uppercase tracking-wider">Phone <span className="text-zinc-500 normal-case">(optional)</span></label>
                     <input
                       id="contact-phone"
                       name="phone"
@@ -319,7 +322,7 @@ export const Contact: React.FC = () => {
                       onChange={handleChange}
                       type="tel"
                       autoComplete="tel"
-                      className="w-full bg-zinc-900/50 border border-zinc-700 rounded-lg px-4 py-3 text-white focus:border-[#00FFBD]/70 focus:outline-none focus:ring-1 focus:ring-[#00FFBD]/50 transition-all placeholder-zinc-600"
+                      className="w-full bg-zinc-900/50 border border-zinc-700 rounded-lg px-4 py-3 text-white focus:border-[#B49A66]/70 focus:outline-none focus:ring-1 focus:ring-[#B49A66]/50 transition-all placeholder-zinc-600"
                       placeholder="(818) 555-0100"
                     />
                   </div>
@@ -327,28 +330,30 @@ export const Contact: React.FC = () => {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="space-y-2">
-                    <label htmlFor="contact-service" className="text-xs font-semibold text-zinc-500 uppercase tracking-wider">Service Interest</label>
+                    <label htmlFor="contact-service" className="text-xs font-semibold text-zinc-400 uppercase tracking-wider">Service Interest</label>
                     <div className="relative">
                         <select
                             id="contact-service"
                             name="service"
                             value={formData.service}
                             onChange={handleChange}
-                            className="w-full bg-zinc-900/50 border border-zinc-700 rounded-lg px-4 py-3 text-white focus:border-[#00FFBD]/70 focus:outline-none focus:ring-1 focus:ring-[#00FFBD]/50 transition-all appearance-none cursor-pointer hover:bg-zinc-900"
+                            className="w-full bg-zinc-900/50 border border-zinc-700 rounded-lg px-4 py-3 text-white focus:border-[#B49A66]/70 focus:outline-none focus:ring-1 focus:ring-[#B49A66]/50 transition-all appearance-none cursor-pointer hover:bg-zinc-900"
                         >
                         <option>Microscope Deburring</option>
                         <option>Manual Deburring</option>
-                        <option>Sand Blasting</option>
-                        <option>Blending</option>
+                        <option>Blending &amp; Surface Finishing</option>
+                        <option>Dot-Peen Part Marking</option>
+                        <option>Deburr &amp; Mark (both)</option>
+                        <option>Inspection / Kitting / Packaging</option>
                         <option>General Inquiry</option>
                         </select>
                         <div className="absolute inset-y-0 right-0 flex items-center px-4 pointer-events-none">
-                            <svg className="w-4 h-4 text-zinc-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
+                            <svg className="w-4 h-4 text-zinc-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
                         </div>
                     </div>
                   </div>
                   <div className="space-y-2">
-                    <label htmlFor="contact-quantity" className="text-xs font-semibold text-zinc-500 uppercase tracking-wider">Approx. Quantity</label>
+                    <label htmlFor="contact-quantity" className="text-xs font-semibold text-zinc-400 uppercase tracking-wider">Approx. Quantity</label>
                     <input
                       id="contact-quantity"
                       name="quantity"
@@ -356,14 +361,54 @@ export const Contact: React.FC = () => {
                       onChange={handleChange}
                       type="text"
                       inputMode="numeric"
-                      className="w-full bg-zinc-900/50 border border-zinc-700 rounded-lg px-4 py-3 text-white focus:border-[#00FFBD]/70 focus:outline-none focus:ring-1 focus:ring-[#00FFBD]/50 transition-all placeholder-zinc-600"
+                      className="w-full bg-zinc-900/50 border border-zinc-700 rounded-lg px-4 py-3 text-white focus:border-[#B49A66]/70 focus:outline-none focus:ring-1 focus:ring-[#B49A66]/50 transition-all placeholder-zinc-600"
                       placeholder="e.g. 250 pcs"
                     />
                   </div>
                 </div>
 
+                {/* Print-level detail — what a real RFQ needs to be quoted without
+                    a follow-up phone call. */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                  <div className="space-y-2">
+                    <label htmlFor="contact-partno" className="text-xs font-semibold text-zinc-400 uppercase tracking-wider">Part No. / Rev</label>
+                    <input
+                      id="contact-partno"
+                      name="partNumber"
+                      value={formData.partNumber}
+                      onChange={handleChange}
+                      type="text"
+                      className="w-full bg-zinc-900/50 border border-zinc-700 rounded-lg px-4 py-3 text-white focus:border-[#B49A66]/70 focus:outline-none focus:ring-1 focus:ring-[#B49A66]/50 transition-all placeholder-zinc-600"
+                      placeholder="e.g. AS5406T03 Rev B"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <label htmlFor="contact-material" className="text-xs font-semibold text-zinc-400 uppercase tracking-wider">Material</label>
+                    <input
+                      id="contact-material"
+                      name="material"
+                      value={formData.material}
+                      onChange={handleChange}
+                      type="text"
+                      className="w-full bg-zinc-900/50 border border-zinc-700 rounded-lg px-4 py-3 text-white focus:border-[#B49A66]/70 focus:outline-none focus:ring-1 focus:ring-[#B49A66]/50 transition-all placeholder-zinc-600"
+                      placeholder="e.g. 6061-T6, 17-4 PH"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <label htmlFor="contact-needby" className="text-xs font-semibold text-zinc-400 uppercase tracking-wider">Need-By Date</label>
+                    <input
+                      id="contact-needby"
+                      name="needBy"
+                      value={formData.needBy}
+                      onChange={handleChange}
+                      type="date"
+                      className="w-full bg-zinc-900/50 border border-zinc-700 rounded-lg px-4 py-3 text-white focus:border-[#B49A66]/70 focus:outline-none focus:ring-1 focus:ring-[#B49A66]/50 transition-all [color-scheme:dark]"
+                    />
+                  </div>
+                </div>
+
                 <div className="space-y-2">
-                  <label htmlFor="contact-details" className="text-xs font-semibold text-zinc-500 uppercase tracking-wider">Project Details</label>
+                  <label htmlFor="contact-details" className="text-xs font-semibold text-zinc-400 uppercase tracking-wider">Project Details</label>
                   <textarea
                       id="contact-details"
                       name="details"
@@ -371,14 +416,14 @@ export const Contact: React.FC = () => {
                       onChange={handleChange}
                       rows={4}
                       required
-                      className="w-full bg-zinc-900/50 border border-zinc-700 rounded-lg px-4 py-3 text-white focus:border-[#00FFBD]/70 focus:outline-none focus:ring-1 focus:ring-[#00FFBD]/50 transition-all placeholder-zinc-600 resize-none"
+                      className="w-full bg-zinc-900/50 border border-zinc-700 rounded-lg px-4 py-3 text-white focus:border-[#B49A66]/70 focus:outline-none focus:ring-1 focus:ring-[#B49A66]/50 transition-all placeholder-zinc-600 resize-none"
                       placeholder="Tell us about part materials, volumes, and requirements..."
                   ></textarea>
                 </div>
 
                 {/* File Upload Section */}
                 <div className="space-y-2">
-                    <label htmlFor="contact-attachment" className="text-xs font-semibold text-zinc-500 uppercase tracking-wider">Attach Drawing/Print/Photo</label>
+                    <label htmlFor="contact-attachment" className="text-xs font-semibold text-zinc-400 uppercase tracking-wider">Attach Drawing/Print/Photo</label>
                     <div
                         role="button"
                         tabIndex={0}
@@ -388,7 +433,7 @@ export const Contact: React.FC = () => {
                         onDragOver={(e) => { e.preventDefault(); setIsDragging(true); }}
                         onDragLeave={(e) => { e.preventDefault(); setIsDragging(false); }}
                         onDrop={handleDrop}
-                        className={`border-2 border-dashed rounded-lg p-6 flex flex-col items-center justify-center cursor-pointer transition-all group focus:outline-none focus:ring-1 focus:ring-[#00FFBD] ${isDragging ? 'border-[#00FFBD] bg-zinc-900/60' : 'border-zinc-700 hover:border-[#00FFBD]/50 hover:bg-zinc-900/50'}`}
+                        className={`border-2 border-dashed rounded-lg p-6 flex flex-col items-center justify-center cursor-pointer transition-all group focus:outline-none focus:ring-1 focus:ring-[#B49A66] ${isDragging ? 'border-[#B49A66] bg-zinc-900/60' : 'border-zinc-700 hover:border-[#B49A66]/50 hover:bg-zinc-900/50'}`}
                     >
                         <input
                             id="contact-attachment"
@@ -400,13 +445,13 @@ export const Contact: React.FC = () => {
                             onChange={handleFileChange}
                         />
                         {fileName ? (
-                            <div className="flex items-center gap-3 bg-[#00FFBD]/10 px-4 py-2 rounded-full border border-[#00FFBD]/20">
+                            <div className="flex items-center gap-3 bg-[#B49A66]/10 px-4 py-2 rounded-full border border-[#B49A66]/20">
                                 {previewUrl ? (
-                                    <img src={previewUrl} alt="Attachment preview" className="w-8 h-8 rounded object-cover border border-[#00FFBD]/30" />
+                                    <img src={previewUrl} alt="Attachment preview" className="w-8 h-8 rounded object-cover border border-[#B49A66]/30" />
                                 ) : (
-                                    <FileText className="w-4 h-4 text-[#00FFBD]" />
+                                    <FileText className="w-4 h-4 text-[#B49A66]" />
                                 )}
-                                <span className="text-sm text-[#00FFBD] font-medium max-w-[12rem] truncate">{fileName}</span>
+                                <span className="text-sm text-[#B49A66] font-medium max-w-[12rem] truncate">{fileName}</span>
                                 <button
                                     type="button"
                                     aria-label="Remove attachment"
@@ -423,10 +468,10 @@ export const Contact: React.FC = () => {
                             </div>
                         ) : (
                             <>
-                                <UploadCloud className="w-8 h-8 text-zinc-500 mb-2 group-hover:text-[#00FFBD] transition-colors" />
-                                <p className="text-sm text-zinc-400 group-hover:text-zinc-300 text-center">
+                                <UploadCloud className="w-8 h-8 text-zinc-400 mb-2 group-hover:text-[#B49A66] transition-colors" />
+                                <p className="text-sm text-zinc-300 group-hover:text-zinc-300 text-center">
                                     Drag &amp; drop or click to attach one file <br/>
-                                    <span className="text-xs text-zinc-600">Drawings, prints, photos, PDF/CAD · have several? Email the rest to quotes@scprecisiondeburring.com</span>
+                                    <span className="text-xs text-zinc-500">Drawings, prints, photos, PDF/CAD · have several? Email the rest to quotes@scprecisiondeburring.com</span>
                                 </p>
                             </>
                         )}
@@ -463,7 +508,7 @@ export const Contact: React.FC = () => {
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="w-full bg-[#00FFBD] hover:bg-white disabled:bg-[#00FFBD]/40 disabled:cursor-not-allowed text-black font-black uppercase tracking-[0.15em] py-4 rounded-lg transition-all transform active:scale-[0.98] shadow-[0_0_40px_rgba(0,255,189,0.25)] hover:shadow-[0_0_60px_rgba(0,255,189,0.4)] flex items-center justify-center gap-2 group"
+                  className="w-full bg-[#B49A66] hover:bg-white disabled:bg-[#B49A66]/40 disabled:cursor-not-allowed text-black font-black uppercase tracking-[0.15em] py-4 rounded-lg transition-all transform active:scale-[0.98] shadow-[0_0_40px_rgba(180,154,102,0.25)] hover:shadow-[0_0_60px_rgba(180,154,102,0.4)] flex items-center justify-center gap-2 group"
                 >
                   {isSubmitting ? (
                     <>
@@ -473,12 +518,12 @@ export const Contact: React.FC = () => {
                   ) : (
                     <>
                       <Send className="w-5 h-5" />
-                      Request My Free Quote
+                      Request a Technical Review
                       <ArrowRight className="w-4 h-4 opacity-60 group-hover:translate-x-1 transition-transform" />
                     </>
                   )}
                 </button>
-                <p className="text-center text-xs text-zinc-400">
+                <p className="text-center text-xs text-zinc-300">
                     Quotes back within 24 hours. Prints and drawings are kept confidential and shared only with the team quoting your job — NDA available on request.
                 </p>
               </form>

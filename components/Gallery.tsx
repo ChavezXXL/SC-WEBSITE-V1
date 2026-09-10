@@ -26,27 +26,27 @@ const GalleryCard: React.FC<{ item: GalleryItem; index: number; total: number; o
       viewport={{ once: true, margin: '-50px' }}
       transition={{ duration: 0.6, delay: (index % 9) * 0.05, ease: [0.16, 1, 0.3, 1] }}
       onClick={onClick}
-      className="group relative bg-[#06080a] border border-white/[0.08] hover:border-[#00FFBD]/40 transition-colors duration-500 overflow-hidden cursor-pointer"
+      className="group relative bg-[#06080a] border border-white/[0.08] hover:border-[#B49A66]/40 transition-colors duration-500 overflow-hidden cursor-pointer"
     >
       {/* Drafting corner ticks */}
-      <span aria-hidden className="absolute top-0 left-0 w-3 h-px bg-[#00FFBD]/50 group-hover:bg-[#00FFBD] transition-colors duration-500 z-30" />
-      <span aria-hidden className="absolute top-0 left-0 w-px h-3 bg-[#00FFBD]/50 group-hover:bg-[#00FFBD] transition-colors duration-500 z-30" />
-      <span aria-hidden className="absolute top-0 right-0 w-3 h-px bg-[#00FFBD]/50 group-hover:bg-[#00FFBD] transition-colors duration-500 z-30" />
-      <span aria-hidden className="absolute top-0 right-0 w-px h-3 bg-[#00FFBD]/50 group-hover:bg-[#00FFBD] transition-colors duration-500 z-30" />
-      <span aria-hidden className="absolute bottom-0 left-0 w-3 h-px bg-[#00FFBD]/50 group-hover:bg-[#00FFBD] transition-colors duration-500 z-30" />
-      <span aria-hidden className="absolute bottom-0 left-0 w-px h-3 bg-[#00FFBD]/50 group-hover:bg-[#00FFBD] transition-colors duration-500 z-30" />
-      <span aria-hidden className="absolute bottom-0 right-0 w-3 h-px bg-[#00FFBD]/50 group-hover:bg-[#00FFBD] transition-colors duration-500 z-30" />
-      <span aria-hidden className="absolute bottom-0 right-0 w-px h-3 bg-[#00FFBD]/50 group-hover:bg-[#00FFBD] transition-colors duration-500 z-30" />
+      <span aria-hidden className="absolute top-0 left-0 w-3 h-px bg-[#B49A66]/50 group-hover:bg-[#B49A66] transition-colors duration-500 z-30" />
+      <span aria-hidden className="absolute top-0 left-0 w-px h-3 bg-[#B49A66]/50 group-hover:bg-[#B49A66] transition-colors duration-500 z-30" />
+      <span aria-hidden className="absolute top-0 right-0 w-3 h-px bg-[#B49A66]/50 group-hover:bg-[#B49A66] transition-colors duration-500 z-30" />
+      <span aria-hidden className="absolute top-0 right-0 w-px h-3 bg-[#B49A66]/50 group-hover:bg-[#B49A66] transition-colors duration-500 z-30" />
+      <span aria-hidden className="absolute bottom-0 left-0 w-3 h-px bg-[#B49A66]/50 group-hover:bg-[#B49A66] transition-colors duration-500 z-30" />
+      <span aria-hidden className="absolute bottom-0 left-0 w-px h-3 bg-[#B49A66]/50 group-hover:bg-[#B49A66] transition-colors duration-500 z-30" />
+      <span aria-hidden className="absolute bottom-0 right-0 w-3 h-px bg-[#B49A66]/50 group-hover:bg-[#B49A66] transition-colors duration-500 z-30" />
+      <span aria-hidden className="absolute bottom-0 right-0 w-px h-3 bg-[#B49A66]/50 group-hover:bg-[#B49A66] transition-colors duration-500 z-30" />
 
       {/* Image area */}
       <div className="relative aspect-square w-full overflow-hidden">
         {/* Skeleton */}
         <div className={`absolute inset-0 flex items-center justify-center bg-[#06080a] transition-opacity duration-500 z-10 ${loaded ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}>
-          <Loader2 className="w-5 h-5 text-zinc-700 animate-spin" />
+          <Loader2 className="w-5 h-5 text-zinc-500 animate-spin" />
         </div>
 
         {/* Mint duotone tint */}
-        <div className="absolute inset-0 bg-[#00FFBD]/0 group-hover:bg-[#00FFBD]/15 mix-blend-color transition-all duration-700 z-10 pointer-events-none" />
+        <div className="absolute inset-0 bg-[#B49A66]/0 group-hover:bg-[#B49A66]/15 mix-blend-color transition-all duration-700 z-10 pointer-events-none" />
         {/* Bottom gradient fade */}
         <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-[#06080a] via-[#06080a]/40 to-transparent z-10 pointer-events-none" />
         {/* Scanline overlay */}
@@ -67,24 +67,24 @@ const GalleryCard: React.FC<{ item: GalleryItem; index: number; total: number; o
 
         {/* Drawing reference stamp (top-left) — subtle */}
         <div className="absolute top-2.5 left-3 z-20">
-          <span className="font-mono text-[8px] uppercase tracking-[0.3em] text-[#00FFBD]/55 mix-blend-screen">
+          <span className="font-mono text-[8px] uppercase tracking-[0.3em] text-[#B49A66]/55 mix-blend-screen">
             {pad3(index + 1)} / {pad3(total)}
           </span>
         </div>
 
         {/* Zoom icon (top-right, on hover) */}
-        <div className="absolute top-3 right-3 z-20 p-2 bg-[#030305]/85 backdrop-blur-md border border-white/10 group-hover:border-[#00FFBD]/40 opacity-0 group-hover:opacity-100 transition-all duration-300">
-          <Maximize2 className="w-3.5 h-3.5 text-[#00FFBD]" strokeWidth={1.5} />
+        <div className="absolute top-3 right-3 z-20 p-2 bg-[#030305]/85 backdrop-blur-md border border-white/10 group-hover:border-[#B49A66]/40 opacity-0 group-hover:opacity-100 transition-all duration-300">
+          <Maximize2 className="w-3.5 h-3.5 text-[#B49A66]" strokeWidth={1.5} />
         </div>
       </div>
 
       {/* Caption strip — always visible */}
-      <div className="relative px-4 py-4 border-t border-white/[0.06] group-hover:border-[#00FFBD]/20 transition-colors duration-500">
+      <div className="relative px-4 py-4 border-t border-white/[0.06] group-hover:border-[#B49A66]/20 transition-colors duration-500">
         <div className="flex items-center justify-between gap-3">
-          <span className="text-sm md:text-base font-bold text-white uppercase tracking-[0.1em] truncate group-hover:text-[#00FFBD] transition-colors duration-300">
+          <span className="text-sm md:text-base font-bold text-white uppercase tracking-[0.1em] truncate group-hover:text-[#B49A66] transition-colors duration-300">
             {item.title}
           </span>
-          <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-zinc-500 group-hover:text-[#00FFBD]/70 transition-colors flex-shrink-0">
+          <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-zinc-400 group-hover:text-[#B49A66]/90 transition-colors flex-shrink-0">
             View →
           </span>
         </div>
@@ -127,11 +127,11 @@ export const Gallery: React.FC<GalleryProps> = ({ onBack }) => {
       <div className="fixed inset-0 pointer-events-none">
         <div
           className="absolute top-[10%] left-[-10%] w-[600px] h-[600px] rounded-full"
-          style={{ background: 'radial-gradient(circle, rgba(0,255,189,0.08) 0%, rgba(0,255,189,0.03) 35%, transparent 70%)' }}
+          style={{ background: 'radial-gradient(circle, rgba(180,154,102,0.08) 0%, rgba(180,154,102,0.03) 35%, transparent 70%)' }}
         />
         <div
           className="absolute bottom-[10%] right-[-10%] w-[500px] h-[500px] rounded-full"
-          style={{ background: 'radial-gradient(circle, rgba(0,255,189,0.06) 0%, rgba(0,255,189,0.02) 35%, transparent 70%)' }}
+          style={{ background: 'radial-gradient(circle, rgba(180,154,102,0.06) 0%, rgba(180,154,102,0.02) 35%, transparent 70%)' }}
         />
       </div>
 
@@ -140,13 +140,13 @@ export const Gallery: React.FC<GalleryProps> = ({ onBack }) => {
         <div className="container mx-auto px-6 py-5 flex items-center justify-between">
           <button
             onClick={onBack}
-            className="group flex items-center gap-2.5 text-zinc-400 hover:text-[#00FFBD] transition-colors duration-300"
+            className="group flex items-center gap-2.5 text-zinc-300 hover:text-[#B49A66] transition-colors duration-300"
           >
             <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" strokeWidth={1.75} />
             <span className="font-mono text-[10px] uppercase tracking-[0.3em]">Return Home</span>
           </button>
 
-          <div className="font-mono text-[10px] uppercase tracking-[0.3em] text-zinc-600 hidden md:block">
+          <div className="font-mono text-[10px] uppercase tracking-[0.3em] text-zinc-500 hidden md:block">
             SC-PRECISION-DEBURRING
           </div>
         </div>
@@ -161,8 +161,8 @@ export const Gallery: React.FC<GalleryProps> = ({ onBack }) => {
             transition={{ duration: 0.6 }}
             className="flex items-center gap-3 mb-6"
           >
-            <span className="block w-8 h-px bg-[#00FFBD]" />
-            <span className="font-mono text-[11px] uppercase tracking-[0.4em] text-[#00FFBD]">
+            <span className="block w-8 h-px bg-[#B49A66]" />
+            <span className="font-mono text-[11px] uppercase tracking-[0.4em] text-[#B49A66]">
               ※ Selected Work
             </span>
           </motion.div>
@@ -183,7 +183,7 @@ export const Gallery: React.FC<GalleryProps> = ({ onBack }) => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7, delay: 0.1 }}
-              className="text-zinc-400 text-base md:text-lg font-light leading-relaxed mt-6 md:mt-0 md:max-w-md"
+              className="text-zinc-300 text-base md:text-lg font-light leading-relaxed mt-6 md:mt-0 md:max-w-md"
             >
               A working library of parts that came across the bench — manifolds, valve bodies, airfoils, and the rest. Click any to view full size.
             </motion.p>
@@ -195,7 +195,7 @@ export const Gallery: React.FC<GalleryProps> = ({ onBack }) => {
       <div className="relative">
         <div className="container mx-auto px-6 max-w-7xl pb-24 md:pb-32">
           {galleryItems.length === 0 ? (
-            <div className="text-center text-zinc-700 py-32 font-mono uppercase tracking-[0.3em] text-xs">
+            <div className="text-center text-zinc-500 py-32 font-mono uppercase tracking-[0.3em] text-xs">
               [ Gallery Empty — Awaiting Upload ]
             </div>
           ) : (
@@ -227,30 +227,30 @@ export const Gallery: React.FC<GalleryProps> = ({ onBack }) => {
           >
             {/* Top bar */}
             <div className="absolute top-0 left-0 right-0 px-6 md:px-10 py-6 flex items-center justify-between font-mono text-[10px] uppercase tracking-[0.3em] z-[101]">
-              <div className="flex items-center gap-3 text-[#00FFBD]/85">
+              <div className="flex items-center gap-3 text-[#B49A66]/85">
                 <span className="relative flex h-1.5 w-1.5">
-                  <span className="absolute inset-0 inline-flex h-full w-full rounded-full bg-[#00FFBD] opacity-75 animate-ping" />
-                  <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-[#00FFBD]" />
+                  <span className="absolute inset-0 inline-flex h-full w-full rounded-full bg-[#B49A66] opacity-75 animate-ping" />
+                  <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-[#B49A66]" />
                 </span>
                 <span>REF-{pad3((selectedIdx ?? 0) + 1)} / {pad3(galleryItems.length)}</span>
               </div>
               <button
                 onClick={(e) => { e.stopPropagation(); close(); }}
-                className="text-zinc-400 hover:text-[#00FFBD] transition-colors"
+                className="text-zinc-300 hover:text-[#B49A66] transition-colors"
               >
                 <X className="w-6 h-6" strokeWidth={1.5} />
               </button>
             </div>
 
             {/* Drafting tick corners */}
-            <span aria-hidden className="absolute top-6 left-6 w-4 h-px bg-[#00FFBD]" />
-            <span aria-hidden className="absolute top-6 left-6 w-px h-4 bg-[#00FFBD]" />
-            <span aria-hidden className="absolute top-6 right-6 w-4 h-px bg-[#00FFBD]" />
-            <span aria-hidden className="absolute top-6 right-6 w-px h-4 bg-[#00FFBD]" />
-            <span aria-hidden className="absolute bottom-6 left-6 w-4 h-px bg-[#00FFBD]" />
-            <span aria-hidden className="absolute bottom-6 left-6 w-px h-4 bg-[#00FFBD]" />
-            <span aria-hidden className="absolute bottom-6 right-6 w-4 h-px bg-[#00FFBD]" />
-            <span aria-hidden className="absolute bottom-6 right-6 w-px h-4 bg-[#00FFBD]" />
+            <span aria-hidden className="absolute top-6 left-6 w-4 h-px bg-[#B49A66]" />
+            <span aria-hidden className="absolute top-6 left-6 w-px h-4 bg-[#B49A66]" />
+            <span aria-hidden className="absolute top-6 right-6 w-4 h-px bg-[#B49A66]" />
+            <span aria-hidden className="absolute top-6 right-6 w-px h-4 bg-[#B49A66]" />
+            <span aria-hidden className="absolute bottom-6 left-6 w-4 h-px bg-[#B49A66]" />
+            <span aria-hidden className="absolute bottom-6 left-6 w-px h-4 bg-[#B49A66]" />
+            <span aria-hidden className="absolute bottom-6 right-6 w-4 h-px bg-[#B49A66]" />
+            <span aria-hidden className="absolute bottom-6 right-6 w-px h-4 bg-[#B49A66]" />
 
             <motion.div
               key={selectedIdx}
@@ -270,7 +270,7 @@ export const Gallery: React.FC<GalleryProps> = ({ onBack }) => {
                 <h3 className="text-white text-2xl md:text-3xl font-black uppercase tracking-[0.08em]">
                   {selected.title}
                 </h3>
-                <div className="mt-3 flex items-center justify-center gap-3 font-mono text-[10px] uppercase tracking-[0.3em] text-zinc-500">
+                <div className="mt-3 flex items-center justify-center gap-3 font-mono text-[10px] uppercase tracking-[0.3em] text-zinc-400">
                   <span className="block w-8 h-px bg-zinc-700" />
                   <span>SC Precision Deburring</span>
                   <span className="block w-8 h-px bg-zinc-700" />
@@ -283,13 +283,13 @@ export const Gallery: React.FC<GalleryProps> = ({ onBack }) => {
               <>
                 <button
                   onClick={(e) => { e.stopPropagation(); prev(); }}
-                  className="absolute left-4 md:left-8 top-1/2 -translate-y-1/2 px-3 py-3 text-zinc-400 hover:text-[#00FFBD] hover:bg-[#00FFBD]/[0.06] transition-all duration-300 font-mono text-xs uppercase tracking-widest"
+                  className="absolute left-4 md:left-8 top-1/2 -translate-y-1/2 px-3 py-3 text-zinc-300 hover:text-[#B49A66] hover:bg-[#B49A66]/[0.06] transition-all duration-300 font-mono text-xs uppercase tracking-widest"
                 >
                   ← Prev
                 </button>
                 <button
                   onClick={(e) => { e.stopPropagation(); next(); }}
-                  className="absolute right-4 md:right-8 top-1/2 -translate-y-1/2 px-3 py-3 text-zinc-400 hover:text-[#00FFBD] hover:bg-[#00FFBD]/[0.06] transition-all duration-300 font-mono text-xs uppercase tracking-widest"
+                  className="absolute right-4 md:right-8 top-1/2 -translate-y-1/2 px-3 py-3 text-zinc-300 hover:text-[#B49A66] hover:bg-[#B49A66]/[0.06] transition-all duration-300 font-mono text-xs uppercase tracking-widest"
                 >
                   Next →
                 </button>
@@ -297,7 +297,7 @@ export const Gallery: React.FC<GalleryProps> = ({ onBack }) => {
             )}
 
             {/* Bottom helper */}
-            <div className="absolute bottom-6 left-1/2 -translate-x-1/2 font-mono text-[9px] uppercase tracking-[0.3em] text-zinc-600">
+            <div className="absolute bottom-6 left-1/2 -translate-x-1/2 font-mono text-[9px] uppercase tracking-[0.3em] text-zinc-500">
               ESC to close · ← → to navigate
             </div>
           </motion.div>

@@ -119,7 +119,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onExit }) => {
             </div>
             <div>
                 <h1 className="text-xl font-bold tracking-tight">Admin Command Center</h1>
-                <p className="text-xs text-zinc-500">Authorized Personnel Only</p>
+                <p className="text-xs text-zinc-400">Authorized Personnel Only</p>
             </div>
         </div>
         <button 
@@ -139,7 +139,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onExit }) => {
               className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all ${
                 activeTab === 'gallery' 
                   ? 'bg-blue-600/10 text-blue-400 border border-blue-600/20' 
-                  : 'text-zinc-400 hover:bg-zinc-900 hover:text-white'
+                  : 'text-zinc-300 hover:bg-zinc-900 hover:text-white'
               }`}
             >
               <Image className="w-5 h-5" />
@@ -149,8 +149,8 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onExit }) => {
               onClick={() => setActiveTab('home')}
               className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all ${
                 activeTab === 'home' 
-                  ? 'bg-teal-600/10 text-teal-400 border border-teal-600/20' 
-                  : 'text-zinc-400 hover:bg-zinc-900 hover:text-white'
+                  ? 'bg-[#9A8354]/10 text-[#C9B282] border border-[#9A8354]/20' 
+                  : 'text-zinc-300 hover:bg-zinc-900 hover:text-white'
               }`}
             >
               <Layout className="w-5 h-5" />
@@ -166,7 +166,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onExit }) => {
                         window.location.reload(); // Force reload to clear inputs
                     }
                 }}
-                className="flex items-center gap-2 text-xs text-zinc-600 hover:text-red-400 transition-colors"
+                className="flex items-center gap-2 text-xs text-zinc-500 hover:text-red-400 transition-colors"
              >
                 <RotateCcw className="w-3 h-3" /> Reset Data to Default
              </button>
@@ -188,13 +188,13 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onExit }) => {
           <div className="md:hidden flex mb-6 bg-zinc-900 p-1 rounded-lg">
             <button 
                 onClick={() => setActiveTab('gallery')}
-                className={`flex-1 py-2 text-sm font-medium rounded-md ${activeTab === 'gallery' ? 'bg-zinc-800 text-white' : 'text-zinc-500'}`}
+                className={`flex-1 py-2 text-sm font-medium rounded-md ${activeTab === 'gallery' ? 'bg-zinc-800 text-white' : 'text-zinc-400'}`}
             >
                 Gallery
             </button>
             <button 
                 onClick={() => setActiveTab('home')}
-                className={`flex-1 py-2 text-sm font-medium rounded-md ${activeTab === 'home' ? 'bg-zinc-800 text-white' : 'text-zinc-500'}`}
+                className={`flex-1 py-2 text-sm font-medium rounded-md ${activeTab === 'home' ? 'bg-zinc-800 text-white' : 'text-zinc-400'}`}
             >
                 Home
             </button>
@@ -215,7 +215,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onExit }) => {
                   </h2>
                   <form onSubmit={handleAddImage} className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div className="md:col-span-2 space-y-2">
-                      <label className="text-xs uppercase text-zinc-500 font-semibold">Image Source</label>
+                      <label className="text-xs uppercase text-zinc-400 font-semibold">Image Source</label>
                       <div className="flex gap-2">
                         <input 
                             type="text" 
@@ -242,7 +242,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onExit }) => {
                       </div>
                     </div>
                     <div className="space-y-2">
-                      <label className="text-xs uppercase text-zinc-500 font-semibold">Title</label>
+                      <label className="text-xs uppercase text-zinc-400 font-semibold">Title</label>
                       <input 
                         type="text" 
                         required
@@ -285,11 +285,11 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onExit }) => {
                            <img src={item.url} alt={item.title} className="w-20 h-20 object-cover rounded-md bg-zinc-800" />
                            <div className="flex-1 min-w-0">
                               <h3 className="font-medium truncate">{item.title}</h3>
-                              <p className="text-xs text-zinc-500 truncate">Image ID: {item.id}</p>
+                              <p className="text-xs text-zinc-400 truncate">Image ID: {item.id}</p>
                            </div>
                            <button 
                               onClick={() => removeGalleryItem(item.id)}
-                              className="p-2 text-zinc-500 hover:text-red-400 hover:bg-red-400/10 rounded-md transition-all"
+                              className="p-2 text-zinc-400 hover:text-red-400 hover:bg-red-400/10 rounded-md transition-all"
                               title="Remove Image"
                            >
                               <Trash2 className="w-5 h-5" />
@@ -307,15 +307,15 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onExit }) => {
                     <div className="flex justify-between items-start mb-6">
                         <div>
                             <h2 className="text-lg font-bold flex items-center gap-2">
-                                <Layout className="w-5 h-5 text-teal-400" /> Comparison Slider Images
+                                <Layout className="w-5 h-5 text-[#C9B282]" /> Comparison Slider Images
                             </h2>
-                            <p className="text-sm text-zinc-400 mt-1">
-                                Upload specific images for the slider. <span className="text-teal-400">Left</span> is Finish, <span className="text-zinc-400">Right</span> is Raw.
+                            <p className="text-sm text-zinc-300 mt-1">
+                                Upload specific images for the slider. <span className="text-[#C9B282]">Left</span> is Finish, <span className="text-zinc-300">Right</span> is Raw.
                             </p>
                         </div>
                         <button 
                             onClick={handleSaveHome}
-                            className="flex items-center gap-2 bg-teal-600 hover:bg-teal-500 text-white px-4 py-2 rounded-lg font-medium transition-colors"
+                            className="flex items-center gap-2 bg-[#9A8354] hover:bg-[#B49A66] text-white px-4 py-2 rounded-lg font-medium transition-colors"
                         >
                             <Save className="w-4 h-4" /> Save Changes
                         </button>
@@ -324,14 +324,14 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onExit }) => {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                         {/* Left Image Input */}
                         <div className="space-y-4">
-                            <label className="block text-xs uppercase text-[#00FFBD] font-bold tracking-widest">Left Image (Finished)</label>
+                            <label className="block text-xs uppercase text-[#B49A66] font-bold tracking-widest">Left Image (Finished)</label>
                             
                             <div className="flex gap-2">
                                 <input 
                                     type="text" 
                                     value={tempLeftImage.startsWith('data:') ? '(Uploaded Image)' : tempLeftImage}
                                     onChange={(e) => !tempLeftImage.startsWith('data:') && setTempLeftImage(e.target.value)}
-                                    className="flex-1 bg-zinc-950 border border-zinc-700 rounded-lg px-4 py-2 text-sm focus:outline-none focus:border-teal-500 text-zinc-400"
+                                    className="flex-1 bg-zinc-950 border border-zinc-700 rounded-lg px-4 py-2 text-sm focus:outline-none focus:border-[#B49A66] text-zinc-300"
                                     placeholder="Paste URL or Upload ->"
                                     readOnly={tempLeftImage.startsWith('data:')}
                                 />
@@ -361,14 +361,14 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onExit }) => {
 
                         {/* Right Image Input */}
                         <div className="space-y-4">
-                            <label className="block text-xs uppercase text-zinc-500 font-bold tracking-widest">Right Image (Raw)</label>
+                            <label className="block text-xs uppercase text-zinc-400 font-bold tracking-widest">Right Image (Raw)</label>
                             
                             <div className="flex gap-2">
                                 <input 
                                     type="text" 
                                     value={tempRightImage.startsWith('data:') ? '(Uploaded Image)' : tempRightImage}
                                     onChange={(e) => !tempRightImage.startsWith('data:') && setTempRightImage(e.target.value)}
-                                    className="flex-1 bg-zinc-950 border border-zinc-700 rounded-lg px-4 py-2 text-sm focus:outline-none focus:border-zinc-500 text-zinc-400"
+                                    className="flex-1 bg-zinc-950 border border-zinc-700 rounded-lg px-4 py-2 text-sm focus:outline-none focus:border-zinc-500 text-zinc-300"
                                     placeholder="Paste URL or Upload ->"
                                     readOnly={tempRightImage.startsWith('data:')}
                                 />

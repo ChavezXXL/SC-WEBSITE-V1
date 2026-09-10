@@ -4,7 +4,6 @@ import { Navbar } from './components/Navbar';
 import { Hero } from './components/Hero';
 import { Industries } from './components/Industries';
 import { Process } from './components/Process';
-import { Preloader } from './components/Preloader';
 import { ComparisonSection } from './components/ComparisonSection';
 import { MicroscopeSection } from './components/MicroscopeSection';
 import { ManualSection } from './components/ManualSection';
@@ -48,7 +47,7 @@ const Counter = ({ from, to, duration = 2, suffix = "" }: { from: number; to: nu
 // Visual breath between scroll-driven service sections
 const SectionGap: React.FC = () => (
   <div className="relative h-32 md:h-40 bg-[#030305] flex items-center justify-center">
-    <div className="absolute left-1/2 -translate-x-1/2 top-0 bottom-0 w-px bg-gradient-to-b from-transparent via-[#00FFBD]/30 to-transparent" />
+    <div className="absolute left-1/2 -translate-x-1/2 top-0 bottom-0 w-px bg-gradient-to-b from-transparent via-[#B49A66]/30 to-transparent" />
   </div>
 );
 
@@ -105,8 +104,7 @@ function App() {
 
   return (
     <DataProvider>
-      <Preloader />
-      <div className="min-h-screen bg-[#030305] text-white selection:bg-blue-500/30 selection:text-blue-200 font-sans">
+      <div className="min-h-screen bg-[#030305] text-white selection:bg-[#B49A66]/30 selection:text-[#D9C89E] font-sans">
         <Navbar 
           currentView={view === 'gallery' ? 'gallery' : 'home'} 
           onChangeView={(v) => setView(v)} 
@@ -207,12 +205,12 @@ function App() {
                 href="https://www.google.com/maps/search/?api=1&query=12734+Branford+St+Unit+17+Pacoima+CA+91331"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="hover:text-[#00FFBD] transition-colors"
+                className="hover:text-[#B49A66] transition-colors"
               >
                 12734 Branford St, Unit 17, Pacoima, CA 91331
               </a>
-              <a href="tel:+18183894234" className="hover:text-[#00FFBD] transition-colors">(818) 389-4234</a>
-              <a href="mailto:quotes@scprecisiondeburring.com" className="hover:text-[#00FFBD] transition-colors">quotes@scprecisiondeburring.com</a>
+              <a href="tel:+18183894234" className="hover:text-[#B49A66] transition-colors">(818) 389-4234</a>
+              <a href="mailto:quotes@scprecisiondeburring.com" className="hover:text-[#B49A66] transition-colors">quotes@scprecisiondeburring.com</a>
               <span className="text-zinc-500">Mon–Fri · 6:00 AM – 5:00 PM</span>
             </div>
 

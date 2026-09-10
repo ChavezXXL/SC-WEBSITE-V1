@@ -24,8 +24,8 @@ const features: Feature[] = [
     stat: "24",
     statSuffix: "HR",
     statLabel: "Quote Turnaround",
-    title: "Rapid Processing",
-    description: "Fast turnaround times without sacrificing quality. We maintain your supply chain velocity.",
+    title: "Quoted In One Day",
+    description: "Send a print and a quantity — a real number comes back the next business day. Not a callback asking what you need.",
   },
   {
     id: 2,
@@ -35,8 +35,8 @@ const features: Feature[] = [
     stat: "100",
     statSuffix: "%",
     statLabel: "Inspection Rate",
-    title: "Precision Focus",
-    description: "Every part inspected under magnification. Every edge held to your print — nothing passes that we wouldn't ship on our own name.",
+    title: "Verified Under Magnification",
+    description: "Every critical edge inspected under the scope before pass-off, with written sign-off on the batch. Nothing passes that we wouldn't ship on our own name.",
   },
   {
     id: 3,
@@ -46,8 +46,8 @@ const features: Feature[] = [
     stat: "1-50K",
     statSuffix: "",
     statLabel: "Volume Range",
-    title: "Adaptive Solutions",
-    description: "Tailored processes for unique specifications, material types, and production volumes.",
+    title: "One Piece Or Fifty Thousand",
+    description: "Prototype lots and production runs move through the same controlled process. Nothing is too small to matter, or too large to keep in order.",
   },
   {
     id: 4,
@@ -57,8 +57,8 @@ const features: Feature[] = [
     stat: "3-5",
     statSuffix: "DAY",
     statLabel: "Typical Turnaround",
-    title: "Reliable Delivery",
-    description: "Quoted in 24 hours, run in 3–5 business days, delivered on schedule. Faster when your timeline calls for it.",
+    title: "Back On The Date We Said",
+    description: "Counted in on arrival, counted out before it ships, packaged to protect the finish. Rush lanes when your line is waiting.",
   },
 ];
 
@@ -76,17 +76,17 @@ const SpecCard: React.FC<{ feature: Feature; index: number }> = ({ feature, inde
     >
       {/* Hairline frame — solid fill (no backdrop-blur: it sat over the moving
           video and forced a full re-blur every frame while scrolling) */}
-      <div className="relative h-full p-7 md:p-8 bg-[#06080a]/90 border border-white/[0.09] group-hover:border-[#00FFBD]/40 transition-colors duration-500 overflow-hidden">
+      <div className="relative h-full p-7 md:p-8 bg-[#06080a]/90 border border-white/[0.09] group-hover:border-[#B49A66]/40 transition-colors duration-500 overflow-hidden">
 
         {/* Drafting corner ticks */}
-        <span aria-hidden className="absolute top-0 left-0 w-3 h-px bg-[#00FFBD]/50 group-hover:bg-[#00FFBD] transition-colors duration-500" />
-        <span aria-hidden className="absolute top-0 left-0 w-px h-3 bg-[#00FFBD]/50 group-hover:bg-[#00FFBD] transition-colors duration-500" />
-        <span aria-hidden className="absolute top-0 right-0 w-3 h-px bg-[#00FFBD]/50 group-hover:bg-[#00FFBD] transition-colors duration-500" />
-        <span aria-hidden className="absolute top-0 right-0 w-px h-3 bg-[#00FFBD]/50 group-hover:bg-[#00FFBD] transition-colors duration-500" />
-        <span aria-hidden className="absolute bottom-0 left-0 w-3 h-px bg-[#00FFBD]/50 group-hover:bg-[#00FFBD] transition-colors duration-500" />
-        <span aria-hidden className="absolute bottom-0 left-0 w-px h-3 bg-[#00FFBD]/50 group-hover:bg-[#00FFBD] transition-colors duration-500" />
-        <span aria-hidden className="absolute bottom-0 right-0 w-3 h-px bg-[#00FFBD]/50 group-hover:bg-[#00FFBD] transition-colors duration-500" />
-        <span aria-hidden className="absolute bottom-0 right-0 w-px h-3 bg-[#00FFBD]/50 group-hover:bg-[#00FFBD] transition-colors duration-500" />
+        <span aria-hidden className="absolute top-0 left-0 w-3 h-px bg-[#B49A66]/50 group-hover:bg-[#B49A66] transition-colors duration-500" />
+        <span aria-hidden className="absolute top-0 left-0 w-px h-3 bg-[#B49A66]/50 group-hover:bg-[#B49A66] transition-colors duration-500" />
+        <span aria-hidden className="absolute top-0 right-0 w-3 h-px bg-[#B49A66]/50 group-hover:bg-[#B49A66] transition-colors duration-500" />
+        <span aria-hidden className="absolute top-0 right-0 w-px h-3 bg-[#B49A66]/50 group-hover:bg-[#B49A66] transition-colors duration-500" />
+        <span aria-hidden className="absolute bottom-0 left-0 w-3 h-px bg-[#B49A66]/50 group-hover:bg-[#B49A66] transition-colors duration-500" />
+        <span aria-hidden className="absolute bottom-0 left-0 w-px h-3 bg-[#B49A66]/50 group-hover:bg-[#B49A66] transition-colors duration-500" />
+        <span aria-hidden className="absolute bottom-0 right-0 w-3 h-px bg-[#B49A66]/50 group-hover:bg-[#B49A66] transition-colors duration-500" />
+        <span aria-hidden className="absolute bottom-0 right-0 w-px h-3 bg-[#B49A66]/50 group-hover:bg-[#B49A66] transition-colors duration-500" />
 
         {/* Faint registration grid behind content */}
         <div
@@ -101,14 +101,14 @@ const SpecCard: React.FC<{ feature: Feature; index: number }> = ({ feature, inde
         {/* Top row: glyph + drawing ref */}
         <div className="flex items-start justify-between mb-8 relative">
           <div className="flex flex-col items-start">
-            <span className="font-space text-5xl md:text-6xl text-[#00FFBD] leading-none select-none">
+            <span className="font-space text-5xl md:text-6xl text-[#B49A66] leading-none select-none">
               {feature.glyph}
             </span>
-            <span className="mt-2 font-mono text-[9px] uppercase tracking-[0.3em] text-zinc-600">
+            <span className="mt-2 font-mono text-[9px] uppercase tracking-[0.3em] text-zinc-500">
               {feature.glyphLabel}
             </span>
           </div>
-          <span className="font-mono text-[10px] uppercase tracking-[0.25em] text-zinc-600">
+          <span className="font-mono text-[10px] uppercase tracking-[0.25em] text-zinc-500">
             {feature.ref}
           </span>
         </div>
@@ -119,13 +119,13 @@ const SpecCard: React.FC<{ feature: Feature; index: number }> = ({ feature, inde
             <span className="text-[3.25rem] md:text-[3.75rem] font-black text-white tracking-tighter leading-none tabular-nums font-sans">
               {feature.stat}
             </span>
-            <span className="text-2xl md:text-3xl font-bold text-[#00FFBD] tracking-tight">
+            <span className="text-2xl md:text-3xl font-bold text-[#B49A66] tracking-tight">
               {feature.statSuffix}
             </span>
           </div>
           <div className="mt-3 flex items-center gap-2">
-            <span className="block w-6 h-px bg-[#00FFBD]/60 group-hover:w-12 transition-all duration-500" />
-            <span className="font-mono text-[10px] uppercase tracking-[0.3em] text-zinc-500">
+            <span className="block w-6 h-px bg-[#B49A66]/60 group-hover:w-12 transition-all duration-500" />
+            <span className="font-mono text-[10px] uppercase tracking-[0.3em] text-zinc-400">
               {feature.statLabel}
             </span>
           </div>
@@ -133,10 +133,10 @@ const SpecCard: React.FC<{ feature: Feature; index: number }> = ({ feature, inde
 
         {/* Title + description */}
         <div className="space-y-2.5">
-          <h3 className="text-base font-bold text-white uppercase tracking-[0.15em] group-hover:text-[#00FFBD] transition-colors duration-300">
+          <h3 className="text-base font-bold text-white uppercase tracking-[0.15em] group-hover:text-[#B49A66] transition-colors duration-300">
             {feature.title}
           </h3>
-          <p className="text-sm text-zinc-400 leading-relaxed font-light group-hover:text-zinc-300 transition-colors">
+          <p className="text-sm text-zinc-300 leading-relaxed font-light group-hover:text-zinc-300 transition-colors">
             {feature.description}
           </p>
         </div>
@@ -163,14 +163,14 @@ export const Process: React.FC = () => {
           loop
           preload="metadata"
           poster={VIDEO_POSTER}
-          className="absolute inset-0 w-full h-full object-cover"
+          className="absolute inset-0 w-full h-full object-cover video-warm"
         />
 
         {/* Vignette + brand-tint overlay */}
         <div className="absolute inset-0 bg-[#030305]/55" />
         <div className="absolute inset-0 bg-gradient-to-b from-[#030305] via-[#030305]/40 to-[#030305]" />
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_transparent_0%,_rgba(3,3,5,0.6)_70%,_#030305_100%)]" />
-        <div className="absolute inset-0 bg-gradient-to-r from-[#00FFBD]/[0.04] via-transparent to-[#00FFBD]/[0.04] mix-blend-screen" />
+        <div className="absolute inset-0 bg-gradient-to-r from-[#B49A66]/[0.04] via-transparent to-[#B49A66]/[0.04] mix-blend-screen" />
 
         {/* Subtle tech grid */}
         <div
@@ -185,11 +185,11 @@ export const Process: React.FC = () => {
             140px GPU blur sitting over the moving video) */}
         <div
           className="absolute top-[20%] left-[-15%] w-[600px] h-[600px] rounded-full"
-          style={{ background: 'radial-gradient(circle, rgba(0,255,189,0.10) 0%, rgba(0,255,189,0.04) 35%, transparent 70%)' }}
+          style={{ background: 'radial-gradient(circle, rgba(180,154,102,0.10) 0%, rgba(180,154,102,0.04) 35%, transparent 70%)' }}
         />
         <div
           className="absolute bottom-[10%] right-[-15%] w-[500px] h-[500px] rounded-full"
-          style={{ background: 'radial-gradient(circle, rgba(0,255,189,0.08) 0%, rgba(0,255,189,0.03) 35%, transparent 70%)' }}
+          style={{ background: 'radial-gradient(circle, rgba(180,154,102,0.08) 0%, rgba(180,154,102,0.03) 35%, transparent 70%)' }}
         />
       </div>
 
@@ -205,7 +205,7 @@ export const Process: React.FC = () => {
             className="text-5xl md:text-7xl lg:text-8xl font-black text-white leading-[0.95] uppercase tracking-tight font-sans mb-6"
           >
             Precision and Reliability.<br />
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-white via-[#9affde] to-[#00FFBD]">
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-white via-[#D9C89E] to-[#B49A66]">
               Every Single Part.
             </span>
           </motion.h2>

@@ -94,8 +94,8 @@ export const Navbar: React.FC<NavbarProps> = ({ currentView, onChangeView }) => 
                   className={`object-contain transition-all duration-300 ${scrolled ? 'h-10' : 'h-12 md:h-14'}`}
                 />
               ) : (
-                <span className="font-space font-bold text-white text-lg tracking-wide group-hover:text-[#00FFBD] transition-colors">
-                  SC<span className="text-[#00FFBD]">DEBURRING</span>
+                <span className="font-space font-bold text-white text-lg tracking-wide group-hover:text-[#B49A66] transition-colors">
+                  SC<span className="text-[#B49A66]">DEBURRING</span>
                 </span>
               )}
             </div>
@@ -114,7 +114,7 @@ export const Navbar: React.FC<NavbarProps> = ({ currentView, onChangeView }) => 
                   className={`relative px-5 py-2 text-xs font-medium uppercase tracking-widest rounded-full transition-all duration-300 group overflow-hidden ${
                     currentView === item.view && !item.id && item.view === 'gallery'
                       ? 'text-black bg-white' 
-                      : 'text-zinc-400 hover:text-white'
+                      : 'text-zinc-300 hover:text-white'
                   }`}
                 >
                   <span className="relative z-10">{item.name}</span>
@@ -128,14 +128,14 @@ export const Navbar: React.FC<NavbarProps> = ({ currentView, onChangeView }) => 
               <a
                 href="tel:+18183894234"
                 onClick={() => trackPhoneClick()}
-                className="hidden lg:block px-4 py-2 text-xs font-bold uppercase tracking-widest rounded-full text-zinc-300 hover:text-[#00FFBD] transition-colors whitespace-nowrap"
+                className="hidden lg:block px-4 py-2 text-xs font-bold uppercase tracking-widest rounded-full text-zinc-300 hover:text-[#B49A66] transition-colors whitespace-nowrap"
               >
                 (818) 389-4234
               </a>
 
               <button
                 onClick={() => handleNavClick('contact', 'home')}
-                className="px-5 py-2 bg-[#00FFBD] text-black text-xs font-bold uppercase tracking-widest rounded-full hover:bg-white transition-all shadow-[0_0_20px_rgba(0,255,189,0.35)] hover:shadow-[0_0_30px_rgba(0,255,189,0.5)] transform hover:scale-105"
+                className="px-5 py-2 bg-[#B49A66] text-black text-xs font-bold uppercase tracking-widest rounded-full hover:bg-white transition-all shadow-[0_0_20px_rgba(180,154,102,0.35)] hover:shadow-[0_0_30px_rgba(180,154,102,0.5)] transform hover:scale-105"
               >
                 Get Quote
               </button>
@@ -179,7 +179,7 @@ export const Navbar: React.FC<NavbarProps> = ({ currentView, onChangeView }) => 
                 <button
                   key={item.name}
                   onClick={() => handleNavClick(item.id, item.view as 'home' | 'gallery')}
-                  className="text-2xl font-light text-white tracking-widest uppercase hover:text-[#00FFBD] transition-colors"
+                  className="text-2xl font-light text-white tracking-widest uppercase hover:text-[#B49A66] transition-colors"
                 >
                   {item.name}
                 </button>
@@ -189,14 +189,14 @@ export const Navbar: React.FC<NavbarProps> = ({ currentView, onChangeView }) => 
               <div className="flex flex-col items-center gap-4 mt-6 pt-8 border-t border-white/10 w-64">
                 <button
                   onClick={() => handleNavClick('contact', 'home')}
-                  className="w-full py-4 bg-[#00FFBD] text-black text-sm font-black uppercase tracking-[0.2em] rounded-full shadow-[0_0_30px_rgba(0,255,189,0.3)]"
+                  className="w-full py-4 bg-[#B49A66] text-black text-sm font-black uppercase tracking-[0.2em] rounded-full shadow-[0_0_30px_rgba(180,154,102,0.3)]"
                 >
-                  Get a Free Quote
+                  Request a Technical Review
                 </button>
                 <a
                   href="tel:+18183894234"
                   onClick={() => trackPhoneClick()}
-                  className="w-full py-4 text-center border border-white/20 text-white text-sm font-bold uppercase tracking-[0.2em] rounded-full hover:border-[#00FFBD]/50 hover:text-[#00FFBD] transition-colors"
+                  className="w-full py-4 text-center border border-white/20 text-white text-sm font-bold uppercase tracking-[0.2em] rounded-full hover:border-[#B49A66]/50 hover:text-[#B49A66] transition-colors"
                 >
                   Call (818) 389-4234
                 </a>
