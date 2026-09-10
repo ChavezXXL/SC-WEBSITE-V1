@@ -107,23 +107,12 @@ export const Hero: React.FC = () => {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.7, delay: 0.62 }}
-          className="text-[13.5px] md:text-[17px] font-light tracking-[0.02em] text-zinc-200 max-w-lg leading-snug mb-4 md:mb-5 px-1"
+          className="text-[13.5px] md:text-[17px] font-light tracking-[0.02em] text-zinc-200 max-w-lg leading-snug mb-9 md:mb-12 px-1"
           style={{ textShadow: '0 2px 20px rgba(0,0,0,0.6)' }}
         >
           Precision deburring and micro-finishing for aerospace parts.
         </motion.p>
 
-        {/* The promise, stated plainly. An earlier line leaned on FOD ending
-            flights — that reads as fear-mongering, not confidence. */}
-        <motion.p
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.7, delay: 0.72 }}
-          className="text-[12.5px] md:text-[15px] font-light text-zinc-400 max-w-md leading-relaxed mb-8 md:mb-11 px-1"
-          style={{ textShadow: '0 2px 20px rgba(0,0,0,0.6)' }}
-        >
-          The burr comes off. Every dimension stays exactly as drawn.
-        </motion.p>
 
         <motion.div
           initial={{ opacity: 0 }}
