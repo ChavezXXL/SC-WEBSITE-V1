@@ -123,7 +123,7 @@ function App() {
                   final inspection, and the critical features are the ones
                   verified under magnification. Stated as two separate facts. */}
               <section className="py-32 border-b border-white/5 bg-[#030305] relative z-20">
-                <div className="container mx-auto px-6 grid grid-cols-2 md:grid-cols-4 gap-12 text-center">
+                <div className="container mx-auto px-6 grid grid-cols-1 sm:grid-cols-3 gap-12 text-center">
                   <div className="space-y-3">
                      <Counter from={0} to={10} suffix="+" />
                      <div className="text-xs md:text-sm text-zinc-400 uppercase tracking-widest font-medium">Deburr Technicians</div>
@@ -131,10 +131,6 @@ function App() {
                   <div className="space-y-3">
                      <Counter from={0} to={45} suffix="+" />
                      <div className="text-xs md:text-sm text-zinc-400 uppercase tracking-widest font-medium">Years Combined Experience</div>
-                  </div>
-                  <div className="space-y-3">
-                     <Counter from={0} to={100} suffix="+" />
-                     <div className="text-xs md:text-sm text-zinc-400 uppercase tracking-widest font-medium">Shops Served</div>
                   </div>
                   <div className="space-y-3">
                      <Counter from={0} to={100} suffix="%" />
