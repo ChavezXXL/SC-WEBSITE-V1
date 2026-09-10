@@ -164,8 +164,8 @@ export const ServiceBreakdown: React.FC<ServiceBreakdownProps> = ({
     // The full sequence is ~17MB across the three sections. That is fine on a
     // desktop connection and punishing on cellular, so phones (and anyone who
     // asked their browser to save data, or is on a 2g/3g link) get every third
-    // frame instead. nearestLoaded() covers the gaps, so the scrub still works
-    // — just in coarser steps nobody notices at that screen size.
+    // frame instead. The cross-fade in draw() interpolates across those gaps,
+    // so a sparser set still reads as continuous motion.
     const conn = (navigator as any).connection;
     const frugal =
       isMobile ||
@@ -185,22 +185,19 @@ export const ServiceBreakdown: React.FC<ServiceBreakdownProps> = ({
       lastDrawn = -1; // force redraw at new size
     };
 
-    // While frames stream in, draw the nearest loaded frame so partial loads
-    // still scrub instead of freezing.
-    const nearestLoaded = (i: number) => {
-      if (images[i]) return i;
-      for (let d = 1; d < frameCount; d++) {
-        if (i - d >= 0 && images[i - d]) return i - d;
-        if (i + d < frameCount && images[i + d]) return i + d;
-      }
+    // Nearest loaded frame at or before / at or after a position. With the
+    // mobile stride these gaps can be a few frames wide, so the blend below
+    // interpolates across whatever actually made it into memory.
+    const prevLoaded = (i: number) => {
+      for (let k = Math.min(i, frameCount - 1); k >= 0; k--) if (images[k]) return k;
+      return -1;
+    };
+    const nextLoaded = (i: number) => {
+      for (let k = Math.max(i, 0); k < frameCount; k++) if (images[k]) return k;
       return -1;
     };
 
-    const draw = (i: number) => {
-      const idx = nearestLoaded(i);
-      if (idx < 0 || idx === lastDrawn) return;
-      const img = images[idx]!;
-      lastDrawn = idx;
+    const paint = (img: HTMLImageElement, alpha: number) => {
       const cw = canvas.width;
       const ch = canvas.height;
       // object-cover math: fill the canvas, crop overflow, center
@@ -209,7 +206,36 @@ export const ServiceBreakdown: React.FC<ServiceBreakdownProps> = ({
       let dw: number, dh: number, dx: number, dy: number;
       if (cr > ir) { dw = cw; dh = cw / ir; dx = 0; dy = (ch - dh) / 2; }
       else { dh = ch; dw = ch * ir; dy = 0; dx = (cw - dw) / 2; }
+      ctx.globalAlpha = alpha;
       ctx.drawImage(img, dx, dy, dw, dh);
+      ctx.globalAlpha = 1;
+    };
+
+    // `t` is a CONTINUOUS frame position, not an integer. At ~30px of scroll
+    // per frame, snapping to whole frames makes every wheel notch jump about
+    // three frames — visible stepping. Cross-fading the two bracketing frames
+    // by the fractional remainder turns that into continuous motion without
+    // needing a denser sequence.
+    const draw = (t: number) => {
+      const i = Math.floor(t);
+      const a = prevLoaded(i);
+      if (a < 0) {
+        const only = nextLoaded(0);
+        if (only < 0) return;
+        paint(images[only]!, 1);
+        if (!paintedRef.current) { paintedRef.current = true; setPainted(true); }
+        return;
+      }
+      const b = nextLoaded(i + 1);
+      const frac = b > a ? Math.min(1, Math.max(0, (t - a) / (b - a))) : 0;
+
+      // Quantise the blend so a still scroll position doesn't repaint forever.
+      const key = a * 100000 + (b < 0 ? 0 : b) * 100 + Math.round(frac * 24);
+      if (key === lastDrawn) return;
+      lastDrawn = key;
+
+      paint(images[a]!, 1);
+      if (b > a && frac > 0.02) paint(images[b]!, frac);
       if (!paintedRef.current) { paintedRef.current = true; setPainted(true); }
     };
 
@@ -254,7 +280,7 @@ export const ServiceBreakdown: React.FC<ServiceBreakdownProps> = ({
       progress.set(target);
       current += (target - current) * 0.22;
       if (Math.abs(target - current) < 0.0005) current = target;
-      draw(Math.round(current * (frameCount - 1)));
+      draw(current * (frameCount - 1));
       raf = requestAnimationFrame(tick);
     };
     const startLoop = () => {
