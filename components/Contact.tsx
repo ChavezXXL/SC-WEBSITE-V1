@@ -247,6 +247,56 @@ export const Contact: React.FC = () => {
                 </div>
               </a>
             </div>
+
+            {/* The form column runs much longer than the contact details, leaving
+                this side empty on desktop. Rather than padding it out, set the
+                buyer's expectations — every claim here already appears on the
+                site (24-hour quotes, local pickup, NDA on request). */}
+            <div className="mt-14 md:mt-16 pt-10 border-t border-white/[0.07]">
+              <div className="flex items-center gap-3 mb-8">
+                <span className="block w-6 h-px bg-[#CCFF00]" />
+                <span className="font-mono text-[10px] uppercase tracking-[0.34em] text-[#CCFF00]">
+                  What Happens Next
+                </span>
+              </div>
+
+              <ol className="space-y-7">
+                {[
+                  {
+                    n: '01',
+                    t: 'You send the print',
+                    b: 'A drawing or a photo, a rough quantity, and any spec callouts. That is enough to price most jobs.',
+                  },
+                  {
+                    n: '02',
+                    t: 'We quote inside one business day',
+                    b: 'Priced per print and per callout — not a range, and not a callback asking what you need.',
+                  },
+                  {
+                    n: '03',
+                    t: 'We collect it, or you ship it',
+                    b: 'We already run the Valley, Valencia and Fullerton. Everywhere else goes standard freight.',
+                  },
+                ].map((s) => (
+                  <li key={s.n} className="flex gap-5">
+                    <span className="font-mono text-[11px] tracking-[0.2em] text-[#CCFF00] tabular-nums pt-[3px] flex-shrink-0">
+                      {s.n}
+                    </span>
+                    <div>
+                      <h4 className="text-white font-medium text-[15px] md:text-base leading-snug">{s.t}</h4>
+                      <p className="mt-1.5 text-[13.5px] md:text-sm text-zinc-400 font-light leading-relaxed max-w-sm">
+                        {s.b}
+                      </p>
+                    </div>
+                  </li>
+                ))}
+              </ol>
+
+              <p className="mt-9 text-[13px] text-zinc-500 font-light leading-relaxed max-w-sm">
+                Prints and drawings stay between you and the people quoting your job.
+                An NDA is available on request.
+              </p>
+            </div>
           </div>
 
           {/* Right Column - Form */}

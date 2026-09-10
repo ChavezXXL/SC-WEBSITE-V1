@@ -76,17 +76,7 @@ const SpecCard: React.FC<{ feature: Feature; index: number }> = ({ feature, inde
     >
       {/* Hairline frame — solid fill (no backdrop-blur: it sat over the moving
           video and forced a full re-blur every frame while scrolling) */}
-      <div className="relative h-full p-7 md:p-8 bg-[#06080a]/90 border border-white/[0.09] group-hover:border-[#CCFF00]/40 transition-colors duration-500 overflow-hidden rounded-2xl">
-
-        {/* Drafting corner ticks */}
-        <span aria-hidden className="absolute top-0 left-0 w-3 h-px bg-[#CCFF00]/50 group-hover:bg-[#CCFF00] transition-colors duration-500" />
-        <span aria-hidden className="absolute top-0 left-0 w-px h-3 bg-[#CCFF00]/50 group-hover:bg-[#CCFF00] transition-colors duration-500" />
-        <span aria-hidden className="absolute top-0 right-0 w-3 h-px bg-[#CCFF00]/50 group-hover:bg-[#CCFF00] transition-colors duration-500" />
-        <span aria-hidden className="absolute top-0 right-0 w-px h-3 bg-[#CCFF00]/50 group-hover:bg-[#CCFF00] transition-colors duration-500" />
-        <span aria-hidden className="absolute bottom-0 left-0 w-3 h-px bg-[#CCFF00]/50 group-hover:bg-[#CCFF00] transition-colors duration-500" />
-        <span aria-hidden className="absolute bottom-0 left-0 w-px h-3 bg-[#CCFF00]/50 group-hover:bg-[#CCFF00] transition-colors duration-500" />
-        <span aria-hidden className="absolute bottom-0 right-0 w-3 h-px bg-[#CCFF00]/50 group-hover:bg-[#CCFF00] transition-colors duration-500" />
-        <span aria-hidden className="absolute bottom-0 right-0 w-px h-3 bg-[#CCFF00]/50 group-hover:bg-[#CCFF00] transition-colors duration-500" />
+      <div className="relative h-full p-7 md:p-8 bg-[#06080a]/90 group-hover:bg-[#0a0e12]/95 border border-white/[0.09] group-hover:border-[#CCFF00]/30 transition-[background-color,border-color] duration-500 ease-out overflow-hidden rounded-2xl">
 
         {/* Faint registration grid behind content */}
         <div
