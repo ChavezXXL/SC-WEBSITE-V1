@@ -9,6 +9,7 @@ import { MicroscopeSection } from './components/MicroscopeSection';
 import { ManualSection } from './components/ManualSection';
 import { BlendingSection } from './components/BlendingSection';
 import { ServicesIntro } from './components/ServicesIntro';
+import { AlsoOffered } from './components/AlsoOffered';
 import { PrecisionCTA } from './components/PrecisionCTA';
 import { DataProvider } from './components/DataContext';
 import { ErrorBoundary } from './components/ErrorBoundary';
@@ -115,26 +116,34 @@ function App() {
             <>
               <Hero />
               
-              {/* Intro / Stats Section */}
+              {/* Intro / Stats Section
+                  "100% Microscope-Inspected" was ambiguous — it read as though
+                  every square millimetre of every part goes under a scope. The
+                  defensible version is the one we actually run: every lot gets a
+                  final inspection, and the critical features are the ones
+                  verified under magnification. Stated as two separate facts. */}
               <section className="py-32 border-b border-white/5 bg-[#030305] relative z-20">
                 <div className="container mx-auto px-6 grid grid-cols-2 md:grid-cols-4 gap-12 text-center">
                   <div className="space-y-3">
                      <Counter from={0} to={10} suffix="+" />
-                     <div className="text-xs md:text-sm text-zinc-500 uppercase tracking-widest font-medium">Expert Employees</div>
+                     <div className="text-xs md:text-sm text-zinc-400 uppercase tracking-widest font-medium">Trained Precision Finishers</div>
                   </div>
                   <div className="space-y-3">
                      <Counter from={0} to={45} suffix="+" />
-                     <div className="text-xs md:text-sm text-zinc-500 uppercase tracking-widest font-medium">Years Combined Experience</div>
+                     <div className="text-xs md:text-sm text-zinc-400 uppercase tracking-widest font-medium">Years Combined Experience</div>
                   </div>
                   <div className="space-y-3">
                      <Counter from={0} to={100} suffix="+" />
-                     <div className="text-xs md:text-sm text-zinc-500 uppercase tracking-widest font-medium">Shops Served</div>
+                     <div className="text-xs md:text-sm text-zinc-400 uppercase tracking-widest font-medium">Shops Served</div>
                   </div>
                   <div className="space-y-3">
                      <Counter from={0} to={100} suffix="%" />
-                     <div className="text-xs md:text-sm text-zinc-500 uppercase tracking-widest font-medium">Microscope-Inspected</div>
+                     <div className="text-xs md:text-sm text-zinc-400 uppercase tracking-widest font-medium">Final Inspection</div>
                   </div>
                 </div>
+                <p className="container mx-auto px-6 mt-10 text-center text-xs md:text-sm text-zinc-500 font-light tracking-wide">
+                  Critical features verified under magnification.
+                </p>
               </section>
 
               {/* Comparison Section - New Addition */}
@@ -162,6 +171,9 @@ function App() {
                 <SectionGap />
                 <BlendingSection />
               </div>
+
+              {/* Secondary capabilities — marking, inspection, kitting, packaging */}
+              <AlsoOffered />
 
               {/* Call to Action Strip */}
               <PrecisionCTA />

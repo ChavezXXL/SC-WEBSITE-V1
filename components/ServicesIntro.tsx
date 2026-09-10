@@ -1,5 +1,6 @@
 
 import React from 'react';
+import { scrollToSection } from './scrollToSection';
 import { motion } from 'framer-motion';
 
 const services = [
@@ -26,7 +27,7 @@ const services = [
 export const ServicesIntro: React.FC = () => {
   const scrollTo = (anchor: string) => {
     const el = document.getElementById(anchor);
-    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    if (el) scrollToSection(el.id);
   };
 
   return (

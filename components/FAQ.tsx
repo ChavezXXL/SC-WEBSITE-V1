@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
+import { scrollToSection } from './scrollToSection';
 import { motion, AnimatePresence } from 'framer-motion';
 
 type FaqItem = {
@@ -342,7 +343,7 @@ export const FAQ: React.FC = () => {
             </p>
             <a
               href="#contact"
-              onClick={(e) => { e.preventDefault(); document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' }); }}
+              onClick={(e) => { e.preventDefault(); scrollToSection('contact'); }}
               className="inline-flex items-center gap-2 text-[#B49A66] font-mono text-xs uppercase tracking-[0.3em] hover:text-white transition-colors duration-300 group"
             >
               <span className="relative">

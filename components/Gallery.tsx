@@ -80,11 +80,13 @@ const GalleryCard: React.FC<{ item: GalleryItem; index: number; total: number; o
 
       {/* Caption strip — always visible */}
       <div className="relative px-4 py-4 border-t border-white/[0.06] group-hover:border-[#B49A66]/20 transition-colors duration-500">
-        <div className="flex items-center justify-between gap-3">
-          <span className="text-sm md:text-base font-bold text-white uppercase tracking-[0.1em] truncate group-hover:text-[#B49A66] transition-colors duration-300">
+        {/* Titles wrap to a second line rather than truncating — a part name
+            cut to "Cross-Drilled Manifold…" tells a buyer nothing. */}
+        <div className="flex items-start justify-between gap-3">
+          <span className="text-sm md:text-base font-bold text-white uppercase tracking-[0.1em] leading-snug group-hover:text-[#B49A66] transition-colors duration-300">
             {item.title}
           </span>
-          <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-zinc-400 group-hover:text-[#B49A66]/90 transition-colors flex-shrink-0">
+          <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-zinc-400 group-hover:text-[#B49A66]/90 transition-colors flex-shrink-0 mt-0.5">
             View →
           </span>
         </div>

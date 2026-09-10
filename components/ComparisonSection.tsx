@@ -1,5 +1,6 @@
 
 import React, { useState, useRef, useEffect, useCallback } from 'react';
+import { scrollToSection } from './scrollToSection';
 import { CheckCircle2, ChevronsLeftRight, ArrowRight } from 'lucide-react';
 import { useData } from './DataContext';
 
@@ -94,7 +95,7 @@ export const ComparisonSection: React.FC = () => {
     e.preventDefault();
     const element = document.getElementById('process');
     if (element) {
-        element.scrollIntoView({ behavior: 'smooth' });
+        scrollToSection(element.id);
     }
   };
 

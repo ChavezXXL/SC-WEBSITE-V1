@@ -120,7 +120,7 @@ export const Hero: React.FC = () => {
           <a
             href="#contact"
             className="group w-full sm:w-auto text-center px-8 py-4 bg-[#B49A66] border border-[#B49A66] text-black font-black rounded-full transition-all hover:bg-transparent hover:text-[#B49A66] md:hover:scale-105 shadow-[0_0_40px_rgba(180,154,102,0.25)]"
-            onClick={(e) => { e.preventDefault(); document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' }); }}
+            onClick={(e) => { e.preventDefault(); scrollToSection('contact'); }}
           >
             <span className="text-sm uppercase tracking-widest flex items-center gap-2">
               Request a Technical Review
