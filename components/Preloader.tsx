@@ -66,30 +66,30 @@ export const Preloader = () => {
           <div className="absolute inset-0 pointer-events-none">
             <div
               className="absolute top-[20%] left-[20%] w-[400px] h-[400px] rounded-full"
-              style={{ background: 'radial-gradient(circle, rgba(180,154,102,0.10) 0%, rgba(180,154,102,0.04) 35%, transparent 70%)' }}
+              style={{ background: 'radial-gradient(circle, rgba(204,255,0,0.10) 0%, rgba(204,255,0,0.04) 35%, transparent 70%)' }}
             />
             <div
               className="absolute bottom-[20%] right-[20%] w-[400px] h-[400px] rounded-full"
-              style={{ background: 'radial-gradient(circle, rgba(180,154,102,0.08) 0%, rgba(180,154,102,0.03) 35%, transparent 70%)' }}
+              style={{ background: 'radial-gradient(circle, rgba(204,255,0,0.08) 0%, rgba(204,255,0,0.03) 35%, transparent 70%)' }}
             />
           </div>
 
           {/* Drafting corner ticks */}
-          <span aria-hidden className="absolute top-8 left-8 w-5 h-px bg-[#B49A66]" />
-          <span aria-hidden className="absolute top-8 left-8 w-px h-5 bg-[#B49A66]" />
-          <span aria-hidden className="absolute top-8 right-8 w-5 h-px bg-[#B49A66]" />
-          <span aria-hidden className="absolute top-8 right-8 w-px h-5 bg-[#B49A66]" />
-          <span aria-hidden className="absolute bottom-8 left-8 w-5 h-px bg-[#B49A66]" />
-          <span aria-hidden className="absolute bottom-8 left-8 w-px h-5 bg-[#B49A66]" />
-          <span aria-hidden className="absolute bottom-8 right-8 w-5 h-px bg-[#B49A66]" />
-          <span aria-hidden className="absolute bottom-8 right-8 w-px h-5 bg-[#B49A66]" />
+          <span aria-hidden className="absolute top-8 left-8 w-5 h-px bg-[#CCFF00]" />
+          <span aria-hidden className="absolute top-8 left-8 w-px h-5 bg-[#CCFF00]" />
+          <span aria-hidden className="absolute top-8 right-8 w-5 h-px bg-[#CCFF00]" />
+          <span aria-hidden className="absolute top-8 right-8 w-px h-5 bg-[#CCFF00]" />
+          <span aria-hidden className="absolute bottom-8 left-8 w-5 h-px bg-[#CCFF00]" />
+          <span aria-hidden className="absolute bottom-8 left-8 w-px h-5 bg-[#CCFF00]" />
+          <span aria-hidden className="absolute bottom-8 right-8 w-5 h-px bg-[#CCFF00]" />
+          <span aria-hidden className="absolute bottom-8 right-8 w-px h-5 bg-[#CCFF00]" />
 
           {/* Top status bar */}
-          <div className="absolute top-8 left-0 right-0 px-16 flex items-center justify-between font-mono text-[10px] uppercase tracking-[0.3em] text-[#B49A66]/85">
+          <div className="absolute top-8 left-0 right-0 px-16 flex items-center justify-between font-mono text-[10px] uppercase tracking-[0.3em] text-[#CCFF00]/85">
             <div className="flex items-center gap-2.5">
               <span className="relative flex h-1.5 w-1.5">
-                <span className="absolute inset-0 inline-flex h-full w-full rounded-full bg-[#B49A66] opacity-75 animate-ping" />
-                <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-[#B49A66]" />
+                <span className="absolute inset-0 inline-flex h-full w-full rounded-full bg-[#CCFF00] opacity-75 animate-ping" />
+                <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-[#CCFF00]" />
               </span>
               <span>System Boot</span>
             </div>
@@ -99,7 +99,7 @@ export const Preloader = () => {
           {/* Bottom status bar */}
           <div className="absolute bottom-8 left-0 right-0 px-16 flex items-center justify-between font-mono text-[10px] uppercase tracking-[0.3em] text-zinc-400">
             <div>BENCH 01 / 03</div>
-            <div className="tabular-nums text-[#B49A66]/90">{String(pct).padStart(3, '0')} / 100</div>
+            <div className="tabular-nums text-[#CCFF00]/90">{String(pct).padStart(3, '0')} / 100</div>
           </div>
 
           {/* Center stack */}
@@ -110,7 +110,7 @@ export const Preloader = () => {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.1 }}
-              className="font-mono text-[10px] uppercase tracking-[0.4em] text-[#B49A66] mb-6"
+              className="font-mono text-[10px] uppercase tracking-[0.4em] text-[#CCFF00] mb-6"
             >
               ※ Precision Bench
             </motion.div>
@@ -122,7 +122,7 @@ export const Preloader = () => {
               transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
               className="text-3xl md:text-5xl font-black text-white font-sans tracking-tight uppercase mb-3"
             >
-              SC<span className="text-[#B49A66]">·</span>Deburring
+              SC<span className="text-[#CCFF00]">·</span>Deburring
             </motion.div>
 
             {/* Subtitle */}
@@ -139,7 +139,7 @@ export const Preloader = () => {
             <div className="w-full max-w-md">
               {/* Phase label */}
               <div className="flex items-center justify-between mb-3">
-                <span className="font-mono text-[11px] uppercase tracking-[0.3em] text-[#B49A66]">
+                <span className="font-mono text-[11px] uppercase tracking-[0.3em] text-[#CCFF00]">
                   {phases[phaseIdx]}
                 </span>
                 <span className="font-mono text-[11px] tabular-nums text-zinc-400">
@@ -150,7 +150,7 @@ export const Preloader = () => {
               {/* Bar */}
               <div className="relative h-px w-full bg-white/[0.08] overflow-hidden mb-3">
                 <motion.div
-                  className="absolute inset-y-0 left-0 bg-[#B49A66]"
+                  className="absolute inset-y-0 left-0 bg-[#CCFF00]"
                   style={{ width: `${pct}%` }}
                 />
               </div>
@@ -159,8 +159,8 @@ export const Preloader = () => {
               <div className="flex items-center justify-between">
                 {[0, 25, 50, 75, 100].map((t) => (
                   <div key={t} className="flex flex-col items-center gap-1">
-                    <span className={`block w-px h-2 ${pct >= t ? 'bg-[#B49A66]' : 'bg-white/15'}`} />
-                    <span className={`font-mono text-[9px] tabular-nums tracking-widest ${pct >= t ? 'text-[#B49A66]/90' : 'text-zinc-500'}`}>
+                    <span className={`block w-px h-2 ${pct >= t ? 'bg-[#CCFF00]' : 'bg-white/15'}`} />
+                    <span className={`font-mono text-[9px] tabular-nums tracking-widest ${pct >= t ? 'text-[#CCFF00]/90' : 'text-zinc-500'}`}>
                       {String(t).padStart(2, '0')}
                     </span>
                   </div>

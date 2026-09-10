@@ -149,7 +149,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onExit }) => {
               onClick={() => setActiveTab('home')}
               className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all ${
                 activeTab === 'home' 
-                  ? 'bg-[#9A8354]/10 text-[#C9B282] border border-[#9A8354]/20' 
+                  ? 'bg-[#9BC400]/10 text-[#D9FF52] border border-[#9BC400]/20' 
                   : 'text-zinc-300 hover:bg-zinc-900 hover:text-white'
               }`}
             >
@@ -210,7 +210,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onExit }) => {
               <div className="space-y-8">
                 {/* Add New Image */}
                 <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-6">
-                  <h2 className="text-lg font-bold mb-4 flex items-center gap-2">
+                  <h2 className="text-lg font-medium mb-4 flex items-center gap-2">
                     <Plus className="w-5 h-5 text-green-400" /> Add New Image
                   </h2>
                   <form onSubmit={handleAddImage} className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -278,7 +278,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onExit }) => {
 
                 {/* Existing Images */}
                 <div>
-                   <h2 className="text-lg font-bold mb-4">Current Gallery Items ({galleryItems.length})</h2>
+                   <h2 className="text-lg font-medium mb-4">Current Gallery Items ({galleryItems.length})</h2>
                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                       {galleryItems.map((item) => (
                         <div key={item.id} className="bg-zinc-900 border border-zinc-800 rounded-lg p-3 flex gap-4 items-center group hover:border-zinc-600 transition-colors">
@@ -306,16 +306,16 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onExit }) => {
                  <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-6">
                     <div className="flex justify-between items-start mb-6">
                         <div>
-                            <h2 className="text-lg font-bold flex items-center gap-2">
-                                <Layout className="w-5 h-5 text-[#C9B282]" /> Comparison Slider Images
+                            <h2 className="text-lg font-medium flex items-center gap-2">
+                                <Layout className="w-5 h-5 text-[#D9FF52]" /> Comparison Slider Images
                             </h2>
                             <p className="text-sm text-zinc-300 mt-1">
-                                Upload specific images for the slider. <span className="text-[#C9B282]">Left</span> is Finish, <span className="text-zinc-300">Right</span> is Raw.
+                                Upload specific images for the slider. <span className="text-[#D9FF52]">Left</span> is Finish, <span className="text-zinc-300">Right</span> is Raw.
                             </p>
                         </div>
                         <button 
                             onClick={handleSaveHome}
-                            className="flex items-center gap-2 bg-[#9A8354] hover:bg-[#B49A66] text-white px-4 py-2 rounded-lg font-medium transition-colors"
+                            className="flex items-center gap-2 bg-[#9BC400] hover:bg-[#CCFF00] text-white px-4 py-2 rounded-lg font-medium transition-colors"
                         >
                             <Save className="w-4 h-4" /> Save Changes
                         </button>
@@ -324,14 +324,14 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onExit }) => {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                         {/* Left Image Input */}
                         <div className="space-y-4">
-                            <label className="block text-xs uppercase text-[#B49A66] font-bold tracking-widest">Left Image (Finished)</label>
+                            <label className="block text-xs uppercase text-[#CCFF00] font-bold tracking-widest">Left Image (Finished)</label>
                             
                             <div className="flex gap-2">
                                 <input 
                                     type="text" 
                                     value={tempLeftImage.startsWith('data:') ? '(Uploaded Image)' : tempLeftImage}
                                     onChange={(e) => !tempLeftImage.startsWith('data:') && setTempLeftImage(e.target.value)}
-                                    className="flex-1 bg-zinc-950 border border-zinc-700 rounded-lg px-4 py-2 text-sm focus:outline-none focus:border-[#B49A66] text-zinc-300"
+                                    className="flex-1 bg-zinc-950 border border-zinc-700 rounded-lg px-4 py-2 text-sm focus:outline-none focus:border-[#CCFF00] text-zinc-300"
                                     placeholder="Paste URL or Upload ->"
                                     readOnly={tempLeftImage.startsWith('data:')}
                                 />

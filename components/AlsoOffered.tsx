@@ -37,8 +37,8 @@ export const AlsoOffered: React.FC = () => (
     <div className="container mx-auto px-6 max-w-6xl">
 
       <div className="flex items-center gap-4 mb-12 md:mb-14">
-        <span className="block w-8 h-px bg-[#B49A66] flex-shrink-0" />
-        <h2 className="font-mono text-[10px] uppercase tracking-[0.34em] text-[#B49A66] whitespace-nowrap">
+        <span className="block w-8 h-px bg-[#CCFF00] flex-shrink-0" />
+        <h2 className="font-mono text-[10px] uppercase tracking-[0.34em] text-[#CCFF00] whitespace-nowrap">
           Also Offered
         </h2>
         <span className="block h-px flex-1 bg-white/[0.08]" />
@@ -56,12 +56,12 @@ export const AlsoOffered: React.FC = () => (
           >
             <span
               aria-hidden="true"
-              className="absolute top-0 left-0 h-px w-0 group-hover:w-12 bg-[#B49A66] transition-all duration-700"
+              className="absolute top-0 left-0 h-px w-0 group-hover:w-12 bg-[#CCFF00] transition-all duration-700"
             />
             <span className="font-mono text-[9.5px] tracking-[0.28em] text-zinc-500 tabular-nums">
               {String(i + 1).padStart(2, '0')}
             </span>
-            <h3 className="mt-4 mb-3 text-base font-bold text-white uppercase tracking-[0.08em] leading-snug group-hover:text-[#B49A66] transition-colors duration-300">
+            <h3 className="mt-4 mb-3 text-base font-medium text-white tracking-normal leading-snug group-hover:text-[#CCFF00] transition-colors duration-300">
               {item.label}
             </h3>
             <p className="text-[13.5px] leading-relaxed font-light text-zinc-400 group-hover:text-zinc-300 transition-colors duration-300">
@@ -75,11 +75,11 @@ export const AlsoOffered: React.FC = () => (
         <a
           href="#contact"
           onClick={(e) => { e.preventDefault(); scrollToSection('contact'); }}
-          className="group inline-flex items-center gap-2 min-h-[44px] py-3 text-[#B49A66] font-mono text-xs uppercase tracking-[0.3em] hover:text-white transition-colors duration-300"
+          className="group inline-flex items-center gap-2 min-h-[44px] py-3 text-[#CCFF00] font-mono text-xs uppercase tracking-[0.3em] hover:text-white transition-colors duration-300"
         >
           <span className="relative">
             Ask About Combining Operations
-            <span className="absolute -bottom-1 left-0 right-0 h-px bg-[#B49A66] group-hover:bg-white transition-colors" />
+            <span className="absolute -bottom-1 left-0 right-0 h-px bg-[#CCFF00] group-hover:bg-white transition-colors" />
           </span>
           <span className="text-base translate-y-[-1px]">→</span>
         </a>

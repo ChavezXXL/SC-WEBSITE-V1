@@ -338,7 +338,7 @@ export const ServiceBreakdown: React.FC<ServiceBreakdownProps> = ({
               Loading
             </div>
             <div className="w-48 h-px bg-zinc-800 overflow-hidden">
-              <div className="h-full bg-[#B49A66] animate-pulse w-1/3" />
+              <div className="h-full bg-[#CCFF00] animate-pulse w-1/3" />
             </div>
           </div>
         )}
@@ -355,25 +355,25 @@ export const ServiceBreakdown: React.FC<ServiceBreakdownProps> = ({
         {hud?.reticle && (
           <div className="pointer-events-none absolute inset-0 z-[5] flex items-center justify-center">
             <svg width="180" height="180" viewBox="0 0 180 180" className="opacity-40">
-              <circle cx="90" cy="90" r="78" fill="none" stroke="#B49A66" strokeWidth="1" strokeDasharray="2 4" />
-              <circle cx="90" cy="90" r="50" fill="none" stroke="#B49A66" strokeWidth="1" />
-              <line x1="90" y1="20" x2="90" y2="70" stroke="#B49A66" strokeWidth="1" />
-              <line x1="90" y1="110" x2="90" y2="160" stroke="#B49A66" strokeWidth="1" />
-              <line x1="20" y1="90" x2="70" y2="90" stroke="#B49A66" strokeWidth="1" />
-              <line x1="110" y1="90" x2="160" y2="90" stroke="#B49A66" strokeWidth="1" />
-              <circle cx="90" cy="90" r="2" fill="#B49A66" />
+              <circle cx="90" cy="90" r="78" fill="none" stroke="#CCFF00" strokeWidth="1" strokeDasharray="2 4" />
+              <circle cx="90" cy="90" r="50" fill="none" stroke="#CCFF00" strokeWidth="1" />
+              <line x1="90" y1="20" x2="90" y2="70" stroke="#CCFF00" strokeWidth="1" />
+              <line x1="90" y1="110" x2="90" y2="160" stroke="#CCFF00" strokeWidth="1" />
+              <line x1="20" y1="90" x2="70" y2="90" stroke="#CCFF00" strokeWidth="1" />
+              <line x1="110" y1="90" x2="160" y2="90" stroke="#CCFF00" strokeWidth="1" />
+              <circle cx="90" cy="90" r="2" fill="#CCFF00" />
             </svg>
           </div>
         )}
 
         {/* HUD: top-left status */}
         {(hud?.topLeft || hud?.live || hud?.frameCounter) && (
-          <div className="absolute top-5 left-12 z-10 flex items-center gap-2.5 font-mono text-[9px] uppercase tracking-[0.3em] text-[#B49A66]/55">
+          <div className="absolute top-5 left-12 z-10 flex items-center gap-2.5 font-mono text-[9px] uppercase tracking-[0.3em] text-[#CCFF00]/55">
             {hud?.live && (
               <span className="flex items-center gap-1.5">
                 <span className="relative flex h-1 w-1">
-                  <span className="absolute inset-0 inline-flex h-full w-full rounded-full bg-[#B49A66] opacity-60 animate-ping" />
-                  <span className="relative inline-flex rounded-full h-1 w-1 bg-[#B49A66]" />
+                  <span className="absolute inset-0 inline-flex h-full w-full rounded-full bg-[#CCFF00] opacity-60 animate-ping" />
+                  <span className="relative inline-flex rounded-full h-1 w-1 bg-[#CCFF00]" />
                 </span>
                 LIVE
               </span>
@@ -386,7 +386,7 @@ export const ServiceBreakdown: React.FC<ServiceBreakdownProps> = ({
         {/* HUD: top-right status */}
         {hud?.topRight && (
           <div className="hidden md:block absolute top-5 right-12 z-10">
-            <span className="font-mono text-[9px] uppercase tracking-[0.3em] text-[#B49A66]/55">
+            <span className="font-mono text-[9px] uppercase tracking-[0.3em] text-[#CCFF00]/55">
               {hud.topRight}
             </span>
           </div>
@@ -394,7 +394,7 @@ export const ServiceBreakdown: React.FC<ServiceBreakdownProps> = ({
 
         {/* HUD: bottom-right status */}
         {hud?.bottomRight && (
-          <div className="hidden md:block absolute bottom-5 right-12 z-10 font-mono text-[9px] uppercase tracking-[0.3em] text-[#B49A66]/45">
+          <div className="hidden md:block absolute bottom-5 right-12 z-10 font-mono text-[9px] uppercase tracking-[0.3em] text-[#CCFF00]/45">
             {hud.bottomRight}
           </div>
         )}
@@ -402,30 +402,30 @@ export const ServiceBreakdown: React.FC<ServiceBreakdownProps> = ({
         {hud?.scaleBar && (
           <div className="pointer-events-none absolute bottom-10 left-1/2 -translate-x-1/2 z-10 flex flex-col items-center gap-1.5">
             <div className="flex items-end h-3">
-              <span className="block w-px h-3 bg-[#B49A66]" />
-              <span className="block w-20 h-px bg-[#B49A66] mb-0" />
-              <span className="block w-px h-2 bg-[#B49A66]/60" />
-              <span className="block w-20 h-px bg-[#B49A66] mb-0" />
-              <span className="block w-px h-3 bg-[#B49A66]" />
+              <span className="block w-px h-3 bg-[#CCFF00]" />
+              <span className="block w-20 h-px bg-[#CCFF00] mb-0" />
+              <span className="block w-px h-2 bg-[#CCFF00]/60" />
+              <span className="block w-20 h-px bg-[#CCFF00] mb-0" />
+              <span className="block w-px h-3 bg-[#CCFF00]" />
             </div>
-            <span className="font-mono text-[9px] uppercase tracking-[0.35em] text-[#B49A66]">
+            <span className="font-mono text-[9px] uppercase tracking-[0.35em] text-[#CCFF00]">
               {hud.scaleBar}
             </span>
           </div>
         )}
 
-        <span aria-hidden className="pointer-events-none absolute top-6 left-6 w-4 h-px bg-[#B49A66]" />
-        <span aria-hidden className="pointer-events-none absolute top-6 left-6 w-px h-4 bg-[#B49A66]" />
-        <span aria-hidden className="pointer-events-none absolute top-6 right-6 w-4 h-px bg-[#B49A66]" />
-        <span aria-hidden className="pointer-events-none absolute top-6 right-6 w-px h-4 bg-[#B49A66]" />
-        <span aria-hidden className="pointer-events-none absolute bottom-6 left-6 w-4 h-px bg-[#B49A66]" />
-        <span aria-hidden className="pointer-events-none absolute bottom-6 left-6 w-px h-4 bg-[#B49A66]" />
-        <span aria-hidden className="pointer-events-none absolute bottom-6 right-6 w-4 h-px bg-[#B49A66]" />
-        <span aria-hidden className="pointer-events-none absolute bottom-6 right-6 w-px h-4 bg-[#B49A66]" />
+        <span aria-hidden className="pointer-events-none absolute top-6 left-6 w-4 h-px bg-[#CCFF00]" />
+        <span aria-hidden className="pointer-events-none absolute top-6 left-6 w-px h-4 bg-[#CCFF00]" />
+        <span aria-hidden className="pointer-events-none absolute top-6 right-6 w-4 h-px bg-[#CCFF00]" />
+        <span aria-hidden className="pointer-events-none absolute top-6 right-6 w-px h-4 bg-[#CCFF00]" />
+        <span aria-hidden className="pointer-events-none absolute bottom-6 left-6 w-4 h-px bg-[#CCFF00]" />
+        <span aria-hidden className="pointer-events-none absolute bottom-6 left-6 w-px h-4 bg-[#CCFF00]" />
+        <span aria-hidden className="pointer-events-none absolute bottom-6 right-6 w-4 h-px bg-[#CCFF00]" />
+        <span aria-hidden className="pointer-events-none absolute bottom-6 right-6 w-px h-4 bg-[#CCFF00]" />
 
         {drawingRef && (
           <div className="absolute bottom-5 left-12 z-10">
-            <span className="font-mono text-[9px] uppercase tracking-[0.3em] text-[#B49A66]/55">
+            <span className="font-mono text-[9px] uppercase tracking-[0.3em] text-[#CCFF00]/55">
               {drawingRef}
             </span>
           </div>
@@ -474,22 +474,22 @@ const OverlayBlock: React.FC<{ ov: Overlay; progress: ReturnType<typeof useMotio
       className={`pointer-events-none absolute z-20 ${positionClasses[ov.position]}`}
     >
       <div className={`relative flex flex-col gap-2 p-5 bg-black/70 border border-white/10 ${align}`}>
-        <span aria-hidden className="absolute top-0 left-0 w-2 h-px bg-[#B49A66]/70" />
-        <span aria-hidden className="absolute top-0 left-0 w-px h-2 bg-[#B49A66]/70" />
-        <span aria-hidden className="absolute top-0 right-0 w-2 h-px bg-[#B49A66]/70" />
-        <span aria-hidden className="absolute top-0 right-0 w-px h-2 bg-[#B49A66]/70" />
-        <span aria-hidden className="absolute bottom-0 left-0 w-2 h-px bg-[#B49A66]/70" />
-        <span aria-hidden className="absolute bottom-0 left-0 w-px h-2 bg-[#B49A66]/70" />
-        <span aria-hidden className="absolute bottom-0 right-0 w-2 h-px bg-[#B49A66]/70" />
-        <span aria-hidden className="absolute bottom-0 right-0 w-px h-2 bg-[#B49A66]/70" />
+        <span aria-hidden className="absolute top-0 left-0 w-2 h-px bg-[#CCFF00]/70" />
+        <span aria-hidden className="absolute top-0 left-0 w-px h-2 bg-[#CCFF00]/70" />
+        <span aria-hidden className="absolute top-0 right-0 w-2 h-px bg-[#CCFF00]/70" />
+        <span aria-hidden className="absolute top-0 right-0 w-px h-2 bg-[#CCFF00]/70" />
+        <span aria-hidden className="absolute bottom-0 left-0 w-2 h-px bg-[#CCFF00]/70" />
+        <span aria-hidden className="absolute bottom-0 left-0 w-px h-2 bg-[#CCFF00]/70" />
+        <span aria-hidden className="absolute bottom-0 right-0 w-2 h-px bg-[#CCFF00]/70" />
+        <span aria-hidden className="absolute bottom-0 right-0 w-px h-2 bg-[#CCFF00]/70" />
 
         {ov.kicker && (
-          <div className="font-mono text-[9px] uppercase tracking-[0.3em] text-[#B49A66]">
+          <div className="font-mono text-[9px] uppercase tracking-[0.3em] text-[#CCFF00]">
             {ov.kicker}
           </div>
         )}
         <h3
-          className="font-black text-white uppercase tracking-tight leading-[1.05]"
+          className="font-normal text-white tracking-[-0.015em] leading-[1.05]"
           style={{ fontSize: 'clamp(1.4rem, 2.6vw, 2.25rem)' }}
         >
           {ov.title}
@@ -504,8 +504,8 @@ const OverlayBlock: React.FC<{ ov: Overlay; progress: ReturnType<typeof useMotio
         )}
         {ov.stat && (
           <div className="flex items-center gap-2 mt-1">
-            <span className="block w-6 h-px bg-[#B49A66]" />
-            <span className="font-mono text-[10px] uppercase tracking-[0.25em] text-[#B49A66]">
+            <span className="block w-6 h-px bg-[#CCFF00]" />
+            <span className="font-mono text-[10px] uppercase tracking-[0.25em] text-[#CCFF00]">
               {ov.stat}
             </span>
           </div>

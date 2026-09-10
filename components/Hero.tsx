@@ -50,7 +50,7 @@ export const Hero: React.FC = () => {
         <div className="absolute inset-0 bg-[#030305]/45" />
         <div className="absolute inset-0 bg-gradient-to-b from-[#030305]/30 via-transparent to-[#030305]" />
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_transparent_0%,_rgba(3,3,5,0.5)_75%,_#030305_100%)]" />
-        <div className="absolute inset-0 bg-gradient-to-r from-[#B49A66]/[0.03] via-transparent to-[#B49A66]/[0.03] mix-blend-screen" />
+        <div className="absolute inset-0 bg-gradient-to-r from-[#CCFF00]/[0.03] via-transparent to-[#CCFF00]/[0.03] mix-blend-screen" />
       </div>
 
       <motion.div
@@ -89,7 +89,7 @@ export const Hero: React.FC = () => {
             initial={shouldReduceMotion ? false : { scaleX: 0 }}
             animate={{ scaleX: 1 }}
             transition={{ duration: 0.8, delay: 0.38, ease: [0.16, 1, 0.3, 1] }}
-            className="mt-6 md:mt-8 block h-px w-[min(28rem,80vw)] bg-gradient-to-r from-transparent via-[#B49A66] to-transparent"
+            className="mt-6 md:mt-8 block h-px w-[min(28rem,80vw)] bg-gradient-to-r from-transparent via-[#CCFF00] to-transparent"
           />
 
           <motion.span
@@ -97,7 +97,7 @@ export const Hero: React.FC = () => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.7, delay: 0.52 }}
-            className="mt-5 md:mt-6 block font-mono text-[9px] md:text-[11px] uppercase tracking-[0.42em] md:tracking-[0.52em] text-[#B49A66]"
+            className="mt-5 md:mt-6 block font-mono text-[9px] md:text-[11px] uppercase tracking-[0.42em] md:tracking-[0.52em] text-[#CCFF00]"
           >
             Aerospace Micro-Finishing
           </motion.span>
@@ -122,7 +122,7 @@ export const Hero: React.FC = () => {
         >
           <a
             href="#contact"
-            className="group w-full sm:w-auto text-center px-8 py-4 bg-[#B49A66] border border-[#B49A66] text-black font-black rounded-full transition-all hover:bg-transparent hover:text-[#B49A66] md:hover:scale-105 shadow-[0_0_40px_rgba(180,154,102,0.25)]"
+            className="group w-full sm:w-auto text-center px-8 py-4 bg-[#CCFF00] border border-[#CCFF00] text-black font-black rounded-full transition-all hover:bg-transparent hover:text-[#CCFF00] md:hover:scale-105 shadow-[0_0_40px_rgba(204,255,0,0.25)]"
             onClick={(e) => { e.preventDefault(); scrollToSection('contact'); }}
           >
             <span className="text-sm uppercase tracking-widest flex items-center gap-2">
@@ -131,7 +131,7 @@ export const Hero: React.FC = () => {
           </a>
           <a
             href="#services"
-            className="group relative w-full sm:w-auto text-center px-8 py-4 bg-white/5 border border-white/10 backdrop-blur-md text-white font-medium rounded-full overflow-hidden transition-all hover:bg-white/10 hover:border-[#B49A66]/40 md:hover:scale-105"
+            className="group relative w-full sm:w-auto text-center px-8 py-4 bg-white/5 border border-white/10 backdrop-blur-md text-white font-medium rounded-full overflow-hidden transition-all hover:bg-white/10 hover:border-[#CCFF00]/40 md:hover:scale-105"
             onClick={scrollToServices}
           >
             <span className="relative z-10 text-sm uppercase tracking-widest flex items-center gap-2">

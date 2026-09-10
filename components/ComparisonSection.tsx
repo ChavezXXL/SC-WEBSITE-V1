@@ -164,17 +164,17 @@ export const ComparisonSection: React.FC = () => {
                 />
 
                 {/* Shine/Reflection Effect */}
-                <div className="absolute inset-0 bg-gradient-to-tr from-[#B49A66]/10 to-transparent mix-blend-overlay pointer-events-none"></div>
+                <div className="absolute inset-0 bg-gradient-to-tr from-[#CCFF00]/10 to-transparent mix-blend-overlay pointer-events-none"></div>
 
                 {/* Cut Line */}
                 <div className="absolute right-0 top-0 bottom-0 w-[2px] bg-white/80 shadow-[0_0_20px_rgba(255,255,255,0.8)] z-20"></div>
 
                 {/* Label - FINISH */}
                 <div
-                  className="absolute bottom-4 left-4 md:bottom-6 md:left-6 z-10 px-3 py-1.5 md:px-4 md:py-2 bg-[#B49A66]/10 backdrop-blur-md border border-[#B49A66]/30 rounded-lg transition-opacity duration-300 pointer-events-none"
+                  className="absolute bottom-4 left-4 md:bottom-6 md:left-6 z-10 px-3 py-1.5 md:px-4 md:py-2 bg-[#CCFF00]/10 backdrop-blur-md border border-[#CCFF00]/30 rounded-lg transition-opacity duration-300 pointer-events-none"
                   style={{ opacity: sliderPosition < 15 ? 0 : 1 }}
                 >
-                  <span className="text-[10px] md:text-xs font-mono text-[#B49A66] uppercase tracking-widest whitespace-nowrap">Deburred (Finish)</span>
+                  <span className="text-[10px] md:text-xs font-mono text-[#CCFF00] uppercase tracking-widest whitespace-nowrap">Deburred (Finish)</span>
                 </div>
               </div>
 
@@ -198,13 +198,13 @@ export const ComparisonSection: React.FC = () => {
             {/* Text Content */}
             <div className="pl-0 lg:pl-12">
               <div className="mb-6 flex items-center gap-3">
-                <span className="block w-8 h-px bg-[#B49A66]" />
-                <span className="font-mono text-[10px] uppercase tracking-[0.4em] text-[#B49A66]">※ Edge Retention</span>
+                <span className="block w-8 h-px bg-[#CCFF00]" />
+                <span className="font-mono text-[10px] uppercase tracking-[0.4em] text-[#CCFF00]">※ Edge Retention</span>
               </div>
 
-              <h2 className="text-3xl md:text-5xl font-black uppercase tracking-tight text-white mb-6 font-space leading-tight">
+              <h2 className="text-3xl md:text-5xl font-normal tracking-[-0.015em] text-white mb-6 font-space leading-tight">
                 Protect Your Critical <br />
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-white via-[#D9C89E] to-[#B49A66]">
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-white via-[#E4FF7A] to-[#CCFF00]">
                   Dimensions.
                 </span>
               </h2>
@@ -215,11 +215,11 @@ export const ComparisonSection: React.FC = () => {
 
               <div className="space-y-8">
                 <div className="flex gap-5 group">
-                  <div className="mt-1 flex-shrink-0 w-12 h-12 rounded-full bg-zinc-900 border border-zinc-800 flex items-center justify-center group-hover:border-[#B49A66]/50 transition-colors">
+                  <div className="mt-1 flex-shrink-0 w-12 h-12 rounded-full bg-zinc-900 border border-zinc-800 flex items-center justify-center group-hover:border-[#CCFF00]/50 transition-colors">
                     <span className="text-white font-mono text-lg font-bold">01</span>
                   </div>
                   <div>
-                    <h4 className="text-white font-bold text-lg mb-2 group-hover:text-[#B49A66] transition-colors leading-tight">
+                    <h4 className="text-white font-bold text-lg mb-2 group-hover:text-[#CCFF00] transition-colors leading-tight">
                       Controlled Burr Removal <br className="hidden md:block"/>
                       <span className="text-sm font-normal text-zinc-400 inline-block mt-1">(Microscope-Verified)</span>
                     </h4>
@@ -230,11 +230,11 @@ export const ComparisonSection: React.FC = () => {
                 </div>
 
                 <div className="flex gap-5 group">
-                  <div className="mt-1 flex-shrink-0 w-12 h-12 rounded-full bg-zinc-900 border border-zinc-800 flex items-center justify-center group-hover:border-[#B49A66]/50 transition-colors">
+                  <div className="mt-1 flex-shrink-0 w-12 h-12 rounded-full bg-zinc-900 border border-zinc-800 flex items-center justify-center group-hover:border-[#CCFF00]/50 transition-colors">
                     <span className="text-white font-mono text-lg font-bold">02</span>
                   </div>
                   <div>
-                    <h4 className="text-white font-bold text-lg mb-2 group-hover:text-[#B49A66] transition-colors leading-tight">
+                    <h4 className="text-white font-bold text-lg mb-2 group-hover:text-[#CCFF00] transition-colors leading-tight">
                       Consistent, Repeatable Quality
                     </h4>
                     <p className="text-zinc-400 text-sm leading-relaxed">
@@ -247,7 +247,7 @@ export const ComparisonSection: React.FC = () => {
               <div className="mt-12">
                 <button
                   onClick={scrollToProcess}
-                  className="group inline-flex items-center gap-3 min-h-[44px] py-3 -my-1 text-white text-sm font-bold uppercase tracking-widest hover:text-[#B49A66] transition-colors"
+                  className="group inline-flex items-center gap-3 min-h-[44px] py-3 -my-1 text-white text-sm font-bold uppercase tracking-widest hover:text-[#CCFF00] transition-colors"
                 >
                   Learn About Our Process
                   <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />

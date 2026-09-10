@@ -76,17 +76,17 @@ const SpecCard: React.FC<{ feature: Feature; index: number }> = ({ feature, inde
     >
       {/* Hairline frame — solid fill (no backdrop-blur: it sat over the moving
           video and forced a full re-blur every frame while scrolling) */}
-      <div className="relative h-full p-7 md:p-8 bg-[#06080a]/90 border border-white/[0.09] group-hover:border-[#B49A66]/40 transition-colors duration-500 overflow-hidden">
+      <div className="relative h-full p-7 md:p-8 bg-[#06080a]/90 border border-white/[0.09] group-hover:border-[#CCFF00]/40 transition-colors duration-500 overflow-hidden">
 
         {/* Drafting corner ticks */}
-        <span aria-hidden className="absolute top-0 left-0 w-3 h-px bg-[#B49A66]/50 group-hover:bg-[#B49A66] transition-colors duration-500" />
-        <span aria-hidden className="absolute top-0 left-0 w-px h-3 bg-[#B49A66]/50 group-hover:bg-[#B49A66] transition-colors duration-500" />
-        <span aria-hidden className="absolute top-0 right-0 w-3 h-px bg-[#B49A66]/50 group-hover:bg-[#B49A66] transition-colors duration-500" />
-        <span aria-hidden className="absolute top-0 right-0 w-px h-3 bg-[#B49A66]/50 group-hover:bg-[#B49A66] transition-colors duration-500" />
-        <span aria-hidden className="absolute bottom-0 left-0 w-3 h-px bg-[#B49A66]/50 group-hover:bg-[#B49A66] transition-colors duration-500" />
-        <span aria-hidden className="absolute bottom-0 left-0 w-px h-3 bg-[#B49A66]/50 group-hover:bg-[#B49A66] transition-colors duration-500" />
-        <span aria-hidden className="absolute bottom-0 right-0 w-3 h-px bg-[#B49A66]/50 group-hover:bg-[#B49A66] transition-colors duration-500" />
-        <span aria-hidden className="absolute bottom-0 right-0 w-px h-3 bg-[#B49A66]/50 group-hover:bg-[#B49A66] transition-colors duration-500" />
+        <span aria-hidden className="absolute top-0 left-0 w-3 h-px bg-[#CCFF00]/50 group-hover:bg-[#CCFF00] transition-colors duration-500" />
+        <span aria-hidden className="absolute top-0 left-0 w-px h-3 bg-[#CCFF00]/50 group-hover:bg-[#CCFF00] transition-colors duration-500" />
+        <span aria-hidden className="absolute top-0 right-0 w-3 h-px bg-[#CCFF00]/50 group-hover:bg-[#CCFF00] transition-colors duration-500" />
+        <span aria-hidden className="absolute top-0 right-0 w-px h-3 bg-[#CCFF00]/50 group-hover:bg-[#CCFF00] transition-colors duration-500" />
+        <span aria-hidden className="absolute bottom-0 left-0 w-3 h-px bg-[#CCFF00]/50 group-hover:bg-[#CCFF00] transition-colors duration-500" />
+        <span aria-hidden className="absolute bottom-0 left-0 w-px h-3 bg-[#CCFF00]/50 group-hover:bg-[#CCFF00] transition-colors duration-500" />
+        <span aria-hidden className="absolute bottom-0 right-0 w-3 h-px bg-[#CCFF00]/50 group-hover:bg-[#CCFF00] transition-colors duration-500" />
+        <span aria-hidden className="absolute bottom-0 right-0 w-px h-3 bg-[#CCFF00]/50 group-hover:bg-[#CCFF00] transition-colors duration-500" />
 
         {/* Faint registration grid behind content */}
         <div
@@ -101,7 +101,7 @@ const SpecCard: React.FC<{ feature: Feature; index: number }> = ({ feature, inde
         {/* Top row: glyph + drawing ref */}
         <div className="flex items-start justify-between mb-8 relative">
           <div className="flex flex-col items-start">
-            <span className="font-space text-5xl md:text-6xl text-[#B49A66] leading-none select-none">
+            <span className="font-space text-5xl md:text-6xl text-[#CCFF00] leading-none select-none">
               {feature.glyph}
             </span>
             <span className="mt-2 font-mono text-[9px] uppercase tracking-[0.3em] text-zinc-500">
@@ -119,12 +119,12 @@ const SpecCard: React.FC<{ feature: Feature; index: number }> = ({ feature, inde
             <span className="text-[3.25rem] md:text-[3.75rem] font-black text-white tracking-tighter leading-none tabular-nums font-sans">
               {feature.stat}
             </span>
-            <span className="text-2xl md:text-3xl font-bold text-[#B49A66] tracking-tight">
+            <span className="text-2xl md:text-3xl font-bold text-[#CCFF00] tracking-tight">
               {feature.statSuffix}
             </span>
           </div>
           <div className="mt-3 flex items-center gap-2">
-            <span className="block w-6 h-px bg-[#B49A66]/60 group-hover:w-12 transition-all duration-500" />
+            <span className="block w-6 h-px bg-[#CCFF00]/60 group-hover:w-12 transition-all duration-500" />
             <span className="font-mono text-[10px] uppercase tracking-[0.3em] text-zinc-400">
               {feature.statLabel}
             </span>
@@ -133,7 +133,7 @@ const SpecCard: React.FC<{ feature: Feature; index: number }> = ({ feature, inde
 
         {/* Title + description */}
         <div className="space-y-2.5">
-          <h3 className="text-base font-bold text-white uppercase tracking-[0.15em] group-hover:text-[#B49A66] transition-colors duration-300">
+          <h3 className="text-base font-medium text-white tracking-normal group-hover:text-[#CCFF00] transition-colors duration-300">
             {feature.title}
           </h3>
           <p className="text-sm text-zinc-300 leading-relaxed font-light group-hover:text-zinc-300 transition-colors">
@@ -170,7 +170,7 @@ export const Process: React.FC = () => {
         <div className="absolute inset-0 bg-[#030305]/55" />
         <div className="absolute inset-0 bg-gradient-to-b from-[#030305] via-[#030305]/40 to-[#030305]" />
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_transparent_0%,_rgba(3,3,5,0.6)_70%,_#030305_100%)]" />
-        <div className="absolute inset-0 bg-gradient-to-r from-[#B49A66]/[0.04] via-transparent to-[#B49A66]/[0.04] mix-blend-screen" />
+        <div className="absolute inset-0 bg-gradient-to-r from-[#CCFF00]/[0.04] via-transparent to-[#CCFF00]/[0.04] mix-blend-screen" />
 
         {/* Subtle tech grid */}
         <div
@@ -185,11 +185,11 @@ export const Process: React.FC = () => {
             140px GPU blur sitting over the moving video) */}
         <div
           className="absolute top-[20%] left-[-15%] w-[600px] h-[600px] rounded-full"
-          style={{ background: 'radial-gradient(circle, rgba(180,154,102,0.10) 0%, rgba(180,154,102,0.04) 35%, transparent 70%)' }}
+          style={{ background: 'radial-gradient(circle, rgba(204,255,0,0.10) 0%, rgba(204,255,0,0.04) 35%, transparent 70%)' }}
         />
         <div
           className="absolute bottom-[10%] right-[-15%] w-[500px] h-[500px] rounded-full"
-          style={{ background: 'radial-gradient(circle, rgba(180,154,102,0.08) 0%, rgba(180,154,102,0.03) 35%, transparent 70%)' }}
+          style={{ background: 'radial-gradient(circle, rgba(204,255,0,0.08) 0%, rgba(204,255,0,0.03) 35%, transparent 70%)' }}
         />
       </div>
 
@@ -202,10 +202,10 @@ export const Process: React.FC = () => {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.8 }}
-            className="text-5xl md:text-7xl lg:text-8xl font-black text-white leading-[0.95] uppercase tracking-tight font-sans mb-6"
+            className="text-5xl md:text-7xl lg:text-8xl font-normal text-white leading-[0.95] tracking-[-0.015em] font-sans mb-6"
           >
             Precision and Reliability.<br />
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-white via-[#D9C89E] to-[#B49A66]">
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-white via-[#E4FF7A] to-[#CCFF00]">
               Every Single Part.
             </span>
           </motion.h2>

@@ -168,24 +168,24 @@ const FaqModal: React.FC<{
         role="dialog"
         aria-modal="true"
         aria-labelledby="faq-modal-q"
-        className="relative w-full max-w-2xl bg-[#06080a] border border-[#B49A66]/25 shadow-[0_40px_120px_-20px_rgba(0,0,0,0.9)]"
+        className="relative w-full max-w-2xl bg-[#06080a] border border-[#CCFF00]/25 shadow-[0_40px_120px_-20px_rgba(0,0,0,0.9)]"
         initial={{ opacity: 0, y: 18, scale: 0.985 }}
         animate={{ opacity: 1, y: 0, scale: 1 }}
         exit={{ opacity: 0, y: 10, scale: 0.99 }}
         transition={{ duration: 0.42, ease: [0.16, 1, 0.3, 1] }}
       >
-        <span className="absolute top-0 left-0 h-px w-16 bg-[#B49A66]" aria-hidden="true" />
+        <span className="absolute top-0 left-0 h-px w-16 bg-[#CCFF00]" aria-hidden="true" />
 
         <div className="px-7 md:px-12 pt-9 md:pt-11 pb-7">
           <div className="flex items-start justify-between gap-6 mb-6">
-            <span className="font-mono text-[10px] uppercase tracking-[0.34em] text-[#B49A66]">
+            <span className="font-mono text-[10px] uppercase tracking-[0.34em] text-[#CCFF00]">
               {item.category}
             </span>
             <button
               ref={closeRef}
               onClick={onClose}
               aria-label="Close"
-              className="flex-shrink-0 -mt-1 w-8 h-8 flex items-center justify-center text-zinc-400 hover:text-[#B49A66] transition-colors duration-300 outline-none focus-visible:ring-1 focus-visible:ring-[#B49A66]/60"
+              className="flex-shrink-0 -mt-1 w-8 h-8 flex items-center justify-center text-zinc-400 hover:text-[#CCFF00] transition-colors duration-300 outline-none focus-visible:ring-1 focus-visible:ring-[#CCFF00]/60"
             >
               <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
                 <line x1="2" y1="2" x2="14" y2="14" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />
@@ -204,7 +204,7 @@ const FaqModal: React.FC<{
             >
               <h3
                 id="faq-modal-q"
-                className="text-white font-bold uppercase tracking-tight leading-[1.15] mb-5"
+                className="text-white font-medium tracking-[-0.015em] leading-[1.15] mb-5"
                 style={{ fontSize: 'clamp(1.35rem, 2.8vw, 1.95rem)' }}
               >
                 {item.question}
@@ -219,7 +219,7 @@ const FaqModal: React.FC<{
         <div className="flex items-center justify-between gap-4 px-7 md:px-12 py-5 border-t border-white/[0.07]">
           <button
             onClick={prev}
-            className="font-mono text-[10px] uppercase tracking-[0.28em] text-zinc-400 hover:text-[#B49A66] transition-colors duration-300 outline-none focus-visible:ring-1 focus-visible:ring-[#B49A66]/60"
+            className="font-mono text-[10px] uppercase tracking-[0.28em] text-zinc-400 hover:text-[#CCFF00] transition-colors duration-300 outline-none focus-visible:ring-1 focus-visible:ring-[#CCFF00]/60"
           >
             ← Prev
           </button>
@@ -228,7 +228,7 @@ const FaqModal: React.FC<{
           </span>
           <button
             onClick={next}
-            className="font-mono text-[10px] uppercase tracking-[0.28em] text-zinc-400 hover:text-[#B49A66] transition-colors duration-300 outline-none focus-visible:ring-1 focus-visible:ring-[#B49A66]/60"
+            className="font-mono text-[10px] uppercase tracking-[0.28em] text-zinc-400 hover:text-[#CCFF00] transition-colors duration-300 outline-none focus-visible:ring-1 focus-visible:ring-[#CCFF00]/60"
           >
             Next →
           </button>
@@ -249,14 +249,14 @@ const FaqGroupCard: React.FC<{
   items: { item: FaqItem; idx: number }[];
   onOpen: (idx: number) => void;
 }> = ({ label, items, onOpen }) => (
-  <div className="group relative bg-[#06080a] border border-white/[0.07] hover:border-[#B49A66]/35 transition-colors duration-500 p-6 md:p-7">
+  <div className="group relative bg-[#06080a] border border-white/[0.07] hover:border-[#CCFF00]/35 transition-colors duration-500 p-6 md:p-7">
     <span
-      className="absolute top-0 left-0 h-px w-0 group-hover:w-14 bg-[#B49A66] transition-all duration-700"
+      className="absolute top-0 left-0 h-px w-0 group-hover:w-14 bg-[#CCFF00] transition-all duration-700"
       aria-hidden="true"
     />
 
     <div className="flex items-baseline justify-between gap-4 mb-5">
-      <h3 className="font-mono text-[10px] uppercase tracking-[0.32em] text-[#B49A66]">
+      <h3 className="font-mono text-[10px] uppercase tracking-[0.32em] text-[#CCFF00]">
         {label}
       </h3>
       <span className="font-mono text-[10px] tracking-[0.26em] text-zinc-500 tabular-nums">
@@ -269,11 +269,11 @@ const FaqGroupCard: React.FC<{
         <li key={idx}>
           <button
             onClick={() => onOpen(idx)}
-            className="w-full text-left min-h-[44px] py-3 flex items-start gap-3 text-zinc-300 hover:text-white transition-colors duration-300 outline-none focus-visible:ring-1 focus-visible:ring-[#B49A66]/60"
+            className="w-full text-left min-h-[44px] py-3 flex items-start gap-3 text-zinc-300 hover:text-white transition-colors duration-300 outline-none focus-visible:ring-1 focus-visible:ring-[#CCFF00]/60"
           >
             <span
               aria-hidden="true"
-              className="mt-[11px] block w-3 h-px bg-zinc-600 flex-shrink-0 transition-all duration-300 group-hover:bg-[#B49A66]/50"
+              className="mt-[11px] block w-3 h-px bg-zinc-600 flex-shrink-0 transition-all duration-300 group-hover:bg-[#CCFF00]/50"
             />
             <span className="text-[14px] leading-snug font-light">{item.question}</span>
           </button>
@@ -296,19 +296,19 @@ export const FAQ: React.FC = () => {
 
           <div className="text-center mb-12 md:mb-16">
             <div className="flex items-center justify-center gap-3 mb-5">
-              <span className="block w-8 h-px bg-[#B49A66]" />
-              <span className="font-mono text-[10px] uppercase tracking-[0.4em] text-[#B49A66]">
+              <span className="block w-8 h-px bg-[#CCFF00]" />
+              <span className="font-mono text-[10px] uppercase tracking-[0.4em] text-[#CCFF00]">
                 ※ Common Questions
               </span>
-              <span className="block w-8 h-px bg-[#B49A66]" />
+              <span className="block w-8 h-px bg-[#CCFF00]" />
             </div>
 
             <h2
-              className="font-black text-white uppercase tracking-tight leading-[0.95] mb-4"
+              className="font-normal text-white tracking-[-0.015em] leading-[0.95] mb-4"
               style={{ fontSize: 'clamp(2rem, 5vw, 3.75rem)' }}
             >
               Frequently asked.{' '}
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-white via-[#D9C89E] to-[#B49A66]">
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-white via-[#E4FF7A] to-[#CCFF00]">
                 We've got answers.
               </span>
             </h2>
@@ -344,11 +344,11 @@ export const FAQ: React.FC = () => {
             <a
               href="#contact"
               onClick={(e) => { e.preventDefault(); scrollToSection('contact'); }}
-              className="inline-flex items-center gap-2 text-[#B49A66] font-mono text-xs uppercase tracking-[0.3em] hover:text-white transition-colors duration-300 group"
+              className="inline-flex items-center gap-2 text-[#CCFF00] font-mono text-xs uppercase tracking-[0.3em] hover:text-white transition-colors duration-300 group"
             >
               <span className="relative">
                 Send Us A Message
-                <span className="absolute -bottom-1 left-0 right-0 h-px bg-[#B49A66] group-hover:bg-white transition-colors" />
+                <span className="absolute -bottom-1 left-0 right-0 h-px bg-[#CCFF00] group-hover:bg-white transition-colors" />
               </span>
               <span className="text-base translate-y-[-1px]">→</span>
             </a>

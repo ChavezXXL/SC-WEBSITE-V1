@@ -32,22 +32,22 @@ export const PrecisionCTA: React.FC = () => {
         <div className="absolute inset-0 bg-[#030305]/55" />
         <div className="absolute inset-0 bg-gradient-to-b from-[#030305] via-[#030305]/35 to-[#030305]" />
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_transparent_0%,_rgba(3,3,5,0.6)_75%,_#030305_100%)]" />
-        <div className="absolute inset-0 bg-gradient-to-r from-[#B49A66]/[0.04] via-transparent to-[#B49A66]/[0.04] mix-blend-screen" />
+        <div className="absolute inset-0 bg-gradient-to-r from-[#CCFF00]/[0.04] via-transparent to-[#CCFF00]/[0.04] mix-blend-screen" />
       </div>
 
       {/* Drafting corner ticks */}
-      <span aria-hidden className="absolute top-8 left-8 w-5 h-px bg-[#B49A66]" />
-      <span aria-hidden className="absolute top-8 left-8 w-px h-5 bg-[#B49A66]" />
-      <span aria-hidden className="absolute top-8 right-8 w-5 h-px bg-[#B49A66]" />
-      <span aria-hidden className="absolute top-8 right-8 w-px h-5 bg-[#B49A66]" />
-      <span aria-hidden className="absolute bottom-8 left-8 w-5 h-px bg-[#B49A66]" />
-      <span aria-hidden className="absolute bottom-8 left-8 w-px h-5 bg-[#B49A66]" />
-      <span aria-hidden className="absolute bottom-8 right-8 w-5 h-px bg-[#B49A66]" />
-      <span aria-hidden className="absolute bottom-8 right-8 w-px h-5 bg-[#B49A66]" />
+      <span aria-hidden className="absolute top-8 left-8 w-5 h-px bg-[#CCFF00]" />
+      <span aria-hidden className="absolute top-8 left-8 w-px h-5 bg-[#CCFF00]" />
+      <span aria-hidden className="absolute top-8 right-8 w-5 h-px bg-[#CCFF00]" />
+      <span aria-hidden className="absolute top-8 right-8 w-px h-5 bg-[#CCFF00]" />
+      <span aria-hidden className="absolute bottom-8 left-8 w-5 h-px bg-[#CCFF00]" />
+      <span aria-hidden className="absolute bottom-8 left-8 w-px h-5 bg-[#CCFF00]" />
+      <span aria-hidden className="absolute bottom-8 right-8 w-5 h-px bg-[#CCFF00]" />
+      <span aria-hidden className="absolute bottom-8 right-8 w-px h-5 bg-[#CCFF00]" />
 
       {/* Decorative top/bottom hairlines */}
-      <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-[#B49A66]/30 to-transparent" />
-      <div className="absolute bottom-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-[#B49A66]/30 to-transparent" />
+      <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-[#CCFF00]/30 to-transparent" />
+      <div className="absolute bottom-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-[#CCFF00]/30 to-transparent" />
 
       <div className="container mx-auto px-6 relative z-10 flex flex-col items-center text-center">
         <div className="max-w-5xl">
@@ -60,11 +60,11 @@ export const PrecisionCTA: React.FC = () => {
             transition={{ duration: 0.6 }}
             className="flex items-center justify-center gap-3 mb-8"
           >
-            <span className="block w-8 h-px bg-[#B49A66]" />
-            <span className="font-mono text-[10px] md:text-[11px] uppercase tracking-[0.4em] text-[#B49A66]">
+            <span className="block w-8 h-px bg-[#CCFF00]" />
+            <span className="font-mono text-[10px] md:text-[11px] uppercase tracking-[0.4em] text-[#CCFF00]">
               The Standard We Set
             </span>
-            <span className="block w-8 h-px bg-[#B49A66]" />
+            <span className="block w-8 h-px bg-[#CCFF00]" />
           </motion.div>
 
           <motion.h2
@@ -72,11 +72,11 @@ export const PrecisionCTA: React.FC = () => {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.8 }}
-            className="font-black mb-8 tracking-tight uppercase leading-[0.9]"
+            className="font-normal mb-8 tracking-[-0.015em] leading-[0.9]"
             style={{ fontSize: 'clamp(2.5rem, 8vw, 7.5rem)' }}
           >
             <span className="block text-white">Precision is</span>
-            <span className="block text-transparent bg-clip-text bg-gradient-to-r from-white via-[#D9C89E] to-[#B49A66]">
+            <span className="block text-transparent bg-clip-text bg-gradient-to-r from-white via-[#E4FF7A] to-[#CCFF00]">
               not an option.
             </span>
           </motion.h2>
@@ -101,11 +101,11 @@ export const PrecisionCTA: React.FC = () => {
           >
             <div className="flex flex-wrap justify-center items-center gap-x-3 md:gap-x-4 gap-y-2 font-mono text-[10px] md:text-[11px] uppercase tracking-[0.3em] text-zinc-300">
               <span>Manifolds</span>
-              <span className="text-[#B49A66]/85">·</span>
+              <span className="text-[#CCFF00]/85">·</span>
               <span>Valve Bodies</span>
-              <span className="text-[#B49A66]/85">·</span>
+              <span className="text-[#CCFF00]/85">·</span>
               <span>Airfoils</span>
-              <span className="text-[#B49A66]/85">·</span>
+              <span className="text-[#CCFF00]/85">·</span>
               <span>Hydraulic Fittings</span>
             </div>
           </motion.div>
@@ -120,7 +120,7 @@ export const PrecisionCTA: React.FC = () => {
             <a
               href="#contact"
               onClick={(e) => { e.preventDefault(); scrollToSection('contact'); }}
-              className="group inline-flex items-center gap-3 px-8 md:px-10 py-4 md:py-5 bg-[#B49A66] text-black font-black text-sm uppercase tracking-[0.2em] rounded-none border border-[#B49A66] hover:bg-transparent hover:text-[#B49A66] transition-all duration-300 shadow-[0_0_40px_rgba(180,154,102,0.25)] hover:shadow-[0_0_60px_rgba(180,154,102,0.45)]"
+              className="group inline-flex items-center gap-3 px-8 md:px-10 py-4 md:py-5 bg-[#CCFF00] text-black font-black text-sm uppercase tracking-[0.2em] rounded-none border border-[#CCFF00] hover:bg-transparent hover:text-[#CCFF00] transition-all duration-300 shadow-[0_0_40px_rgba(204,255,0,0.25)] hover:shadow-[0_0_60px_rgba(204,255,0,0.45)]"
             >
               Send Us Your Print
               <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" strokeWidth={2.5} />

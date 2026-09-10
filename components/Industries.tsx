@@ -10,7 +10,7 @@ const Dot: React.FC<{ index: number; active: MotionValue<number> }> = ({ index, 
   }, [active, index]);
   return (
     <motion.span
-      className={`block h-1.5 rounded-full transition-all duration-300 ${on ? 'w-6 bg-[#B49A66]' : 'w-1.5 bg-zinc-700'}`}
+      className={`block h-1.5 rounded-full transition-all duration-300 ${on ? 'w-6 bg-[#CCFF00]' : 'w-1.5 bg-zinc-700'}`}
     />
   );
 };
@@ -51,16 +51,16 @@ const industries = [
 ];
 
 const IndustryCard: React.FC<{ industry: (typeof industries)[number]; idx: number }> = ({ industry, idx }) => (
-  <div className="group relative h-[60vh] md:h-[70vh] w-full overflow-hidden bg-[#06080a] border border-white/[0.08] hover:border-[#B49A66]/30 transition-colors duration-500">
+  <div className="group relative h-[60vh] md:h-[70vh] w-full overflow-hidden bg-[#06080a] border border-white/[0.08] hover:border-[#CCFF00]/30 transition-colors duration-500">
     {/* Drafting corner ticks */}
-    <span aria-hidden className="absolute top-0 left-0 w-3 h-px bg-[#B49A66]/50 z-30" />
-    <span aria-hidden className="absolute top-0 left-0 w-px h-3 bg-[#B49A66]/50 z-30" />
-    <span aria-hidden className="absolute top-0 right-0 w-3 h-px bg-[#B49A66]/50 z-30" />
-    <span aria-hidden className="absolute top-0 right-0 w-px h-3 bg-[#B49A66]/50 z-30" />
-    <span aria-hidden className="absolute bottom-0 left-0 w-3 h-px bg-[#B49A66]/50 z-30" />
-    <span aria-hidden className="absolute bottom-0 left-0 w-px h-3 bg-[#B49A66]/50 z-30" />
-    <span aria-hidden className="absolute bottom-0 right-0 w-3 h-px bg-[#B49A66]/50 z-30" />
-    <span aria-hidden className="absolute bottom-0 right-0 w-px h-3 bg-[#B49A66]/50 z-30" />
+    <span aria-hidden className="absolute top-0 left-0 w-3 h-px bg-[#CCFF00]/50 z-30" />
+    <span aria-hidden className="absolute top-0 left-0 w-px h-3 bg-[#CCFF00]/50 z-30" />
+    <span aria-hidden className="absolute top-0 right-0 w-3 h-px bg-[#CCFF00]/50 z-30" />
+    <span aria-hidden className="absolute top-0 right-0 w-px h-3 bg-[#CCFF00]/50 z-30" />
+    <span aria-hidden className="absolute bottom-0 left-0 w-3 h-px bg-[#CCFF00]/50 z-30" />
+    <span aria-hidden className="absolute bottom-0 left-0 w-px h-3 bg-[#CCFF00]/50 z-30" />
+    <span aria-hidden className="absolute bottom-0 right-0 w-3 h-px bg-[#CCFF00]/50 z-30" />
+    <span aria-hidden className="absolute bottom-0 right-0 w-px h-3 bg-[#CCFF00]/50 z-30" />
 
     <div className="absolute inset-0">
       <img
@@ -74,19 +74,19 @@ const IndustryCard: React.FC<{ industry: (typeof industries)[number]; idx: numbe
     </div>
 
     {/* Drawing reference stamp — top-left, very small */}
-    <div className="absolute top-4 left-4 z-20 font-mono text-[9px] uppercase tracking-[0.3em] text-[#B49A66]/85">
+    <div className="absolute top-4 left-4 z-20 font-mono text-[9px] uppercase tracking-[0.3em] text-[#CCFF00]/85">
       IND-{String(idx + 1).padStart(2, '0')} / {String(industries.length).padStart(2, '0')}
     </div>
 
     {/* Subtitle as small mono caption — no bubble */}
     <div className="absolute bottom-0 w-full p-8 md:p-12">
       <div className="flex items-center gap-2 mb-3">
-        <span className="block w-6 h-px bg-[#B49A66]" />
-        <span className="font-mono text-[10px] uppercase tracking-[0.3em] text-[#B49A66]">
+        <span className="block w-6 h-px bg-[#CCFF00]" />
+        <span className="font-mono text-[10px] uppercase tracking-[0.3em] text-[#CCFF00]">
           {industry.subtitle}
         </span>
       </div>
-      <h3 className="mb-5 text-4xl md:text-5xl font-black text-white uppercase tracking-tight leading-[0.95]">
+      <h3 className="mb-5 text-4xl md:text-5xl font-normal text-white tracking-[-0.015em] leading-[0.95]">
         {industry.title}
       </h3>
       <p className="max-w-xl text-base md:text-lg text-zinc-200/95 leading-relaxed font-light">
@@ -99,14 +99,14 @@ const IndustryCard: React.FC<{ industry: (typeof industries)[number]; idx: numbe
 const IndustriesIntro: React.FC<{ activeDot?: MotionValue<number> }> = ({ activeDot }) => (
   <>
     <div className="flex items-center gap-3 mb-6">
-      <span className="block w-8 h-px bg-[#B49A66]" />
-      <span className="font-mono text-[10px] uppercase tracking-[0.4em] text-[#B49A66]">
+      <span className="block w-8 h-px bg-[#CCFF00]" />
+      <span className="font-mono text-[10px] uppercase tracking-[0.4em] text-[#CCFF00]">
         ※ Industries
       </span>
     </div>
-    <h2 className="text-5xl md:text-7xl font-black text-white mb-6 uppercase tracking-tight leading-[0.9]">
+    <h2 className="text-5xl md:text-7xl font-normal text-white mb-6 tracking-[-0.015em] leading-[0.9]">
       Industries <br/>
-      <span className="text-transparent bg-clip-text bg-gradient-to-r from-white via-[#D9C89E] to-[#B49A66]">We Power.</span>
+      <span className="text-transparent bg-clip-text bg-gradient-to-r from-white via-[#E4FF7A] to-[#CCFF00]">We Power.</span>
     </h2>
     <p className="text-lg text-zinc-300 max-w-md font-light leading-relaxed">
       Precision finishing for the most demanding sectors on Earth — and beyond.
