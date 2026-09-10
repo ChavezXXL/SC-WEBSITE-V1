@@ -344,7 +344,6 @@ export const Contact: React.FC = () => {
                         <option>Blending &amp; Surface Finishing</option>
                         <option>Dot-Peen Part Marking</option>
                         <option>Deburr &amp; Mark (both)</option>
-                        <option>Inspection / Kitting / Packaging</option>
                         <option>General Inquiry</option>
                         </select>
                         <div className="absolute inset-y-0 right-0 flex items-center px-4 pointer-events-none">

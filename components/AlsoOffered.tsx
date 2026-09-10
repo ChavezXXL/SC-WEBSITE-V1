@@ -5,11 +5,14 @@ import { scrollToSection } from './scrollToSection';
 /* ------------------------------------------------------------------ *
  * Secondary capabilities.
  *
- * These four are real, documented work — the quote form offers every one
- * of them and the Quality Manual scopes them — but the page sold only
- * deburring, so a buyer had no way to know a single vendor could deburr,
- * mark, inspect and kit the same lot. Deliberately quiet: a strip, not a
- * second services section competing with the three scrub breakdowns.
+ * ONLY work the shop actually performs today. Kitting and protective
+ * packaging were listed here and are NOT services SC offers — parts go
+ * back the way they arrived. They were removed rather than softened:
+ * a capability a buyer could order and we could not deliver is worse
+ * than one we never advertised.
+ *
+ * Deliberately quiet: a strip, not a second services section competing
+ * with the three scrub breakdowns.
  * ------------------------------------------------------------------ */
 
 type Item = { label: string; body: string };
@@ -20,16 +23,12 @@ const items: Item[] = [
     body: 'Permanent identification marked to your print — part numbers, serials, lot codes. Marked and deburred in one stop, so the lot never leaves for a second vendor.',
   },
   {
-    label: 'Inspection',
-    body: 'Final visual inspection on every lot, with critical features verified under magnification. Written sign-off before anything ships.',
+    label: 'Final Inspection',
+    body: 'Every lot inspected before it ships, with critical features verified under magnification and written sign-off on the batch. Included on every job, not a line item.',
   },
   {
-    label: 'Kitting',
-    body: 'Parts counted, separated and staged the way your line wants them — by assembly, by operation, or by however your traveler reads.',
-  },
-  {
-    label: 'Protective Packaging',
-    body: 'Finished surfaces protected between operations and for the trip back. A blended surface that arrives scratched was finished twice for nothing.',
+    label: 'Local Pickup & Delivery',
+    body: 'We already run the Valley, Valencia and Fullerton. For regular work we collect and return the lot ourselves, so your parts are not sitting on a freight dock.',
   },
 ];
 
@@ -45,7 +44,7 @@ export const AlsoOffered: React.FC = () => (
         <span className="block h-px flex-1 bg-white/[0.08]" />
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-px bg-white/[0.07]">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-px bg-white/[0.07]">
         {items.map((item, i) => (
           <motion.div
             key={item.label}

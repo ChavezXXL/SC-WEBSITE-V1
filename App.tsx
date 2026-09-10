@@ -172,7 +172,7 @@ function App() {
                 <BlendingSection />
               </div>
 
-              {/* Secondary capabilities — marking, inspection, kitting, packaging */}
+              {/* Secondary capabilities — marking, final inspection, local pickup & delivery */}
               <AlsoOffered />
 
               {/* Call to Action Strip */}
