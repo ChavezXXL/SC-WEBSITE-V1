@@ -113,7 +113,8 @@ export const Hero: React.FC = () => {
           Precision deburring and micro-finishing for aerospace parts.
         </motion.p>
 
-        {/* The stakes — why this work exists at all */}
+        {/* The promise, stated plainly. An earlier line leaned on FOD ending
+            flights — that reads as fear-mongering, not confidence. */}
         <motion.p
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -121,7 +122,7 @@ export const Hero: React.FC = () => {
           className="text-[12.5px] md:text-[15px] font-light text-zinc-400 max-w-md leading-relaxed mb-8 md:mb-11 px-1"
           style={{ textShadow: '0 2px 20px rgba(0,0,0,0.6)' }}
         >
-          A burr left inside a fuel manifold becomes FOD. FOD ends flights.
+          The burr comes off. Every dimension stays exactly as drawn.
         </motion.p>
 
         <motion.div
