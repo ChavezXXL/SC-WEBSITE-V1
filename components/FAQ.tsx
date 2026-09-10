@@ -92,7 +92,7 @@ const faqs: FaqItem[] = [
     group: 'CAPABILITIES',
     category: 'INDUSTRIES',
     question: 'Do you work with aerospace, defense, and medical OEMs?',
-    answer: "Yes — that's the core of our business. We deburr parts for aerospace Tier 1 and Tier 2 suppliers, defense contractors, and medical device manufacturers across Southern California. Much of our work ships into our customers' AS9100-controlled supply chains — we are not ourselves certified.",
+    answer: "Our customers are precision machine shops, and what comes off their CNC machines goes into aerospace, defense, medical and industrial programs. We deburr to the print — the end market is our customer's to know. If it was machined, we can finish it. Much of our work ships into our customers' AS9100-controlled supply chains; we are not ourselves certified.",
   },
   {
     group: 'QUOTING',
