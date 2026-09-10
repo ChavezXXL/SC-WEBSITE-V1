@@ -76,9 +76,9 @@ export const ServicesIntro: React.FC = () => {
         {/* Top status bar */}
         <motion.div
           initial={{ opacity: 0, y: 10 }}
-          whileInView={{ opacity: 1, y: 0 }}
+          whileInView={{ opacity: 1, y: 0, scale: 1 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
+          transition={{ type: 'spring', stiffness: 220, damping: 26, mass: 0.9 }}
           className="flex items-center justify-between mb-16 md:mb-24 pb-4 border-b border-[#CCFF00]/30"
         >
           <div className="flex items-center gap-3 font-mono text-[10px] uppercase tracking-[0.3em] text-[#CCFF00]/85">
@@ -102,7 +102,7 @@ export const ServicesIntro: React.FC = () => {
               initial={{ opacity: 0 }}
               whileInView={{ opacity: 1 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: 0.05 }}
+              transition={{ type: 'spring', stiffness: 220, damping: 26, mass: 0.9, delay:0.05  }}
               className="flex items-center gap-3 mb-6"
             >
               <span className="block w-8 h-px bg-[#CCFF00]" />
@@ -113,20 +113,20 @@ export const ServicesIntro: React.FC = () => {
 
             <h2 className="font-normal text-white leading-[0.82] tracking-[-0.015em]">
               <motion.span
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
+                initial={{ opacity: 0, y: 26, scale: 0.975 }}
+                whileInView={{ opacity: 1, y: 0, scale: 1 }}
                 viewport={{ once: true }}
-                transition={{ duration: 0.7, delay: 0.1 }}
+                transition={{ type: 'spring', stiffness: 220, damping: 26, mass: 0.9, delay:0.1  }}
                 className="block text-zinc-300"
                 style={{ fontSize: 'clamp(2.5rem, 6vw, 5rem)' }}
               >
                 Our
               </motion.span>
               <motion.span
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
+                initial={{ opacity: 0, y: 26, scale: 0.975 }}
+                whileInView={{ opacity: 1, y: 0, scale: 1 }}
                 viewport={{ once: true }}
-                transition={{ duration: 0.7, delay: 0.2 }}
+                transition={{ type: 'spring', stiffness: 220, damping: 26, mass: 0.9, delay:0.2  }}
                 className="block text-transparent bg-clip-text bg-gradient-to-r from-white via-[#E4FF7A] to-[#CCFF00] pr-2 pb-2"
                 style={{ fontSize: 'clamp(4rem, 11vw, 9rem)', overflow: 'visible' }}
               >
@@ -138,10 +138,10 @@ export const ServicesIntro: React.FC = () => {
           {/* RIGHT: tagline + lockup */}
           <div className="md:col-span-4 flex md:items-end">
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
+              initial={{ opacity: 0, y: 18, scale: 0.98 }}
+              whileInView={{ opacity: 1, y: 0, scale: 1 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.7, delay: 0.4 }}
+              transition={{ type: 'spring', stiffness: 220, damping: 26, mass: 0.9, delay:0.4  }}
               className="md:pb-6 md:border-l md:border-[#CCFF00]/20 md:pl-6"
             >
               <p className="text-lg md:text-xl text-zinc-300 font-light leading-relaxed mb-6">
@@ -156,10 +156,10 @@ export const ServicesIntro: React.FC = () => {
 
         {/* Service ToC */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
+          initial={{ opacity: 0, y: 18, scale: 0.98 }}
+          whileInView={{ opacity: 1, y: 0, scale: 1 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.8, delay: 0.5 }}
+          transition={{ type: 'spring', stiffness: 220, damping: 26, mass: 0.9, delay:0.5  }}
           className="border-t border-white/[0.08]"
         >
           {services.map((svc) => (
@@ -195,7 +195,7 @@ export const ServicesIntro: React.FC = () => {
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.8, delay: 0.7 }}
+          transition={{ type: 'spring', stiffness: 220, damping: 26, mass: 0.9, delay:0.7  }}
           className="mt-16 md:mt-20 flex items-center justify-center gap-3 font-mono text-[10px] uppercase tracking-[0.4em] text-zinc-400"
         >
           <span className="block w-12 h-px bg-zinc-700" />

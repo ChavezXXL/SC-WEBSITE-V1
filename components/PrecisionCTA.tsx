@@ -25,7 +25,7 @@ export const PrecisionCTA: React.FC = () => {
           loop
           preload="metadata"
           poster={VIDEO_POSTER}
-          className="absolute inset-0 w-full h-full object-cover video-warm"
+          className="absolute inset-0 w-full h-full object-cover video-neutral"
         />
 
         {/* Vignette + brand-tint overlays */}
@@ -57,7 +57,7 @@ export const PrecisionCTA: React.FC = () => {
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
+            transition={{ type: 'spring', stiffness: 220, damping: 26, mass: 0.9 }}
             className="flex items-center justify-center gap-3 mb-8"
           >
             <span className="block w-8 h-px bg-[#CCFF00]" />
@@ -68,10 +68,10 @@ export const PrecisionCTA: React.FC = () => {
           </motion.div>
 
           <motion.h2
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
+            initial={{ opacity: 0, y: 26, scale: 0.975 }}
+            whileInView={{ opacity: 1, y: 0, scale: 1 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.8 }}
+            transition={{ type: 'spring', stiffness: 220, damping: 26, mass: 0.9 }}
             className="font-normal mb-8 tracking-[-0.015em] leading-[0.9]"
             style={{ fontSize: 'clamp(2.5rem, 8vw, 7.5rem)' }}
           >
@@ -82,10 +82,10 @@ export const PrecisionCTA: React.FC = () => {
           </motion.h2>
 
           <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
+            initial={{ opacity: 0, y: 18, scale: 0.98 }}
+            whileInView={{ opacity: 1, y: 0, scale: 1 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.8, delay: 0.15 }}
+            transition={{ type: 'spring', stiffness: 220, damping: 26, mass: 0.9, delay:0.15  }}
             className="text-lg md:text-2xl text-zinc-300 mb-12 max-w-2xl mx-auto font-light leading-relaxed"
           >
             It is the absolute requirement. We handle the finishing touches that ensure safety, performance, and longevity.
@@ -93,10 +93,10 @@ export const PrecisionCTA: React.FC = () => {
 
           {/* Industry roster — engineering caption style */}
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
+            initial={{ opacity: 0, y: 18, scale: 0.98 }}
+            whileInView={{ opacity: 1, y: 0, scale: 1 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.8, delay: 0.25 }}
+            transition={{ type: 'spring', stiffness: 220, damping: 26, mass: 0.9, delay:0.25  }}
             className="mb-12"
           >
             <div className="flex flex-wrap justify-center items-center gap-x-3 md:gap-x-4 gap-y-2 font-mono text-[10px] md:text-[11px] uppercase tracking-[0.3em] text-zinc-300">
@@ -115,14 +115,14 @@ export const PrecisionCTA: React.FC = () => {
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.8, delay: 0.5 }}
+            transition={{ type: 'spring', stiffness: 220, damping: 26, mass: 0.9, delay:0.5  }}
           >
             <a
               href="#contact"
               onClick={(e) => { e.preventDefault(); scrollToSection('contact'); }}
-              className="group inline-flex items-center gap-3 px-8 md:px-10 py-4 md:py-5 bg-[#CCFF00] text-black font-black text-sm uppercase tracking-[0.2em] rounded-none border border-[#CCFF00] hover:bg-transparent hover:text-[#CCFF00] transition-all duration-300 shadow-[0_0_40px_rgba(204,255,0,0.25)] hover:shadow-[0_0_60px_rgba(204,255,0,0.45)]"
+              className="group inline-flex items-center gap-3 px-8 md:px-10 py-4 md:py-5 bg-[#CCFF00] text-black font-medium text-[15px] rounded-full border border-[#CCFF00] hover:bg-transparent hover:text-[#CCFF00] transition-all duration-300 shadow-[0_0_40px_rgba(204,255,0,0.25)] hover:shadow-[0_0_60px_rgba(204,255,0,0.45)]"
             >
-              Send Us Your Print
+              Send us your print
               <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" strokeWidth={2.5} />
             </a>
           </motion.div>

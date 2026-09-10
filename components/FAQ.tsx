@@ -168,7 +168,7 @@ const FaqModal: React.FC<{
         role="dialog"
         aria-modal="true"
         aria-labelledby="faq-modal-q"
-        className="relative w-full max-w-2xl bg-[#06080a] border border-[#CCFF00]/25 shadow-[0_40px_120px_-20px_rgba(0,0,0,0.9)]"
+        className="relative w-full max-w-2xl bg-[#06080a] border border-[#CCFF00]/25 shadow-[0_40px_120px_-20px_rgba(0,0,0,0.9)] rounded-2xl"
         initial={{ opacity: 0, y: 18, scale: 0.985 }}
         animate={{ opacity: 1, y: 0, scale: 1 }}
         exit={{ opacity: 0, y: 10, scale: 0.99 }}
@@ -249,11 +249,7 @@ const FaqGroupCard: React.FC<{
   items: { item: FaqItem; idx: number }[];
   onOpen: (idx: number) => void;
 }> = ({ label, items, onOpen }) => (
-  <div className="group relative bg-[#06080a] border border-white/[0.07] hover:border-[#CCFF00]/35 transition-colors duration-500 p-6 md:p-7">
-    <span
-      className="absolute top-0 left-0 h-px w-0 group-hover:w-14 bg-[#CCFF00] transition-all duration-700"
-      aria-hidden="true"
-    />
+  <div className="group relative bg-[#06080a] hover:bg-[#0a0e12] border border-white/[0.07] hover:border-[#CCFF00]/30 transition-[background-color,border-color] duration-500 ease-out p-6 md:p-7 rounded-2xl">
 
     <div className="flex items-baseline justify-between gap-4 mb-5">
       <h3 className="font-mono text-[10px] uppercase tracking-[0.32em] text-[#CCFF00]">

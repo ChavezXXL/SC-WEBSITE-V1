@@ -135,7 +135,7 @@ export const Navbar: React.FC<NavbarProps> = ({ currentView, onChangeView }) => 
 
               <button
                 onClick={() => handleNavClick('contact', 'home')}
-                className="px-5 py-2 bg-[#CCFF00] text-black text-xs font-bold uppercase tracking-widest rounded-full hover:bg-white transition-all shadow-[0_0_20px_rgba(204,255,0,0.35)] hover:shadow-[0_0_30px_rgba(204,255,0,0.5)] transform hover:scale-105"
+                className="px-5 py-2 bg-[#CCFF00] text-black text-[13px] font-medium rounded-full hover:bg-white transition-all shadow-[0_0_20px_rgba(204,255,0,0.35)] hover:shadow-[0_0_30px_rgba(204,255,0,0.5)] transform hover:scale-105"
               >
                 Get Quote
               </button>
@@ -189,9 +189,9 @@ export const Navbar: React.FC<NavbarProps> = ({ currentView, onChangeView }) => 
               <div className="flex flex-col items-center gap-4 mt-6 pt-8 border-t border-white/10 w-64">
                 <button
                   onClick={() => handleNavClick('contact', 'home')}
-                  className="w-full py-4 bg-[#CCFF00] text-black text-sm font-black uppercase tracking-[0.2em] rounded-full shadow-[0_0_30px_rgba(204,255,0,0.3)]"
+                  className="w-full py-4 bg-[#CCFF00] text-black text-[15px] font-medium rounded-full shadow-[0_0_30px_rgba(204,255,0,0.3)]"
                 >
-                  Send Us Your Print
+                  Send us your print
                 </button>
                 <a
                   href="tel:+18183894234"

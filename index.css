@@ -92,10 +92,12 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 /* ------------------------------------------------------------------ *
- * Background footage was shot with turquoise particulate. Desaturating
- * and warming it in the browser reads as neutral dust instead of neon,
- * without re-shooting. Tune here — applies to every background video.
+ * Background footage colour correction. The older clips carry turquoise
+ * particulate; this pulls them to near-monochrome so nothing competes
+ * with the lime accent. The sepia warmth this rule used to carry belonged
+ * to the champagne palette and reads wrong under lime, so it is gone.
+ * Tune here — applies to every background video.
  * ------------------------------------------------------------------ */
-.video-warm {
-  filter: saturate(0.22) sepia(0.40) contrast(1.06) brightness(0.94);
+.video-neutral {
+  filter: saturate(0.12) contrast(1.08) brightness(0.94);
 }

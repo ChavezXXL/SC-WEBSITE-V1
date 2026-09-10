@@ -15,18 +15,21 @@ import { scrollToSection } from './scrollToSection';
  * with the three scrub breakdowns.
  * ------------------------------------------------------------------ */
 
-type Item = { label: string; body: string };
+type Item = { label: string; body: string; icon: string };
 
 const items: Item[] = [
   {
+    icon: '/img/icons/marking.png',
     label: 'Dot-Peen Part Marking',
     body: 'Permanent identification marked to your print — part numbers, serials, lot codes. Marked and deburred in one stop, so the lot never leaves for a second vendor.',
   },
   {
+    icon: '/img/icons/inspection.png',
     label: 'Final Inspection',
     body: 'Every lot inspected before it ships, with critical features verified under magnification and written sign-off on the batch. Included on every job, not a line item.',
   },
   {
+    icon: '/img/icons/delivery.png',
     label: 'Local Pickup & Delivery',
     body: 'We already run the Valley, Valencia and Fullerton. For regular work we collect and return the lot ourselves, so your parts are not sitting on a freight dock.',
   },
@@ -44,23 +47,26 @@ export const AlsoOffered: React.FC = () => (
         <span className="block h-px flex-1 bg-white/[0.08]" />
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-px bg-white/[0.07]">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         {items.map((item, i) => (
           <motion.div
             key={item.label}
-            initial={{ opacity: 0, y: 18 }}
-            whileInView={{ opacity: 1, y: 0 }}
+            initial={{ opacity: 0, y: 18, scale: 0.98 }}
+            whileInView={{ opacity: 1, y: 0, scale: 1 }}
             viewport={{ once: true, margin: '-60px' }}
-            transition={{ duration: 0.55, delay: i * 0.07, ease: [0.16, 1, 0.3, 1] }}
-            className="group relative bg-[#06080a] p-7 md:p-8"
+            transition={{ type: 'spring', stiffness: 220, damping: 26, mass: 0.9, delay:i * 0.07 }}
+            className="group relative bg-[#06080a] hover:bg-[#0a0e12] border border-white/[0.07] hover:border-[#CCFF00]/30 transition-[background-color,border-color] duration-500 ease-out p-7 md:p-8 rounded-2xl"
           >
-            <span
+            <img
+              src={item.icon}
+              alt=""
               aria-hidden="true"
-              className="absolute top-0 left-0 h-px w-0 group-hover:w-12 bg-[#CCFF00] transition-all duration-700"
+              width={256}
+              height={256}
+              loading="lazy"
+              decoding="async"
+              className="w-12 h-12 md:w-14 md:h-14 -ml-1 opacity-90 group-hover:opacity-100 transition-opacity duration-300"
             />
-            <span className="font-mono text-[9.5px] tracking-[0.28em] text-zinc-500 tabular-nums">
-              {String(i + 1).padStart(2, '0')}
-            </span>
             <h3 className="mt-4 mb-3 text-base font-medium text-white tracking-normal leading-snug group-hover:text-[#CCFF00] transition-colors duration-300">
               {item.label}
             </h3>

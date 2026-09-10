@@ -117,7 +117,7 @@ export const Preloader = () => {
 
             {/* Logo — decorative, not a page heading */}
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 18, scale: 0.98 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
               className="text-3xl md:text-5xl font-black text-white font-sans tracking-tight uppercase mb-3"

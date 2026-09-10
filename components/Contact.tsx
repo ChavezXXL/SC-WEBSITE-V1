@@ -1,6 +1,6 @@
 
 import React, { useState, useRef, useEffect } from 'react';
-import { Mail, Phone, MapPin, Check, UploadCloud, FileText, X, ArrowRight, Send, CheckCircle } from 'lucide-react';
+import { Check, UploadCloud, FileText, X, ArrowRight, Send, CheckCircle } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { trackPhoneClick, trackFormSubmit } from '../services/analytics';
 
@@ -195,8 +195,8 @@ export const Contact: React.FC = () => {
                 }}
                 title="Tap to call or click to copy"
               >
-                <div className="w-12 h-12 md:w-14 md:h-14 flex-shrink-0 rounded-full bg-zinc-900 flex items-center justify-center border border-zinc-800 text-[#CCFF00] group-hover:border-[#CCFF00]/60 transition-colors">
-                  <Phone className="w-5 h-5 md:w-6 md:h-6" />
+                <div className="w-12 h-12 md:w-14 md:h-14 flex-shrink-0 rounded-full bg-zinc-900 flex items-center justify-center border border-zinc-800 group-hover:border-[#CCFF00]/60 transition-colors">
+                  <img src="/img/icons/phone.png" alt="" aria-hidden="true" width={256} height={256} loading="lazy" decoding="async" className="w-7 h-7 md:w-8 md:h-8" />
                 </div>
                 <div>
                   <h4 className="text-white font-medium text-[15px] md:text-base flex items-center gap-2">
@@ -215,8 +215,8 @@ export const Contact: React.FC = () => {
                 onClick={() => handleCopy('quotes@scprecisiondeburring.com', 'email')}
                 title="Email us (click also copies the address)"
               >
-                <div className="w-12 h-12 md:w-14 md:h-14 flex-shrink-0 rounded-full bg-zinc-900 flex items-center justify-center border border-zinc-800 text-[#CCFF00] group-hover:border-[#CCFF00]/60 transition-colors">
-                  <Mail className="w-5 h-5 md:w-6 md:h-6" />
+                <div className="w-12 h-12 md:w-14 md:h-14 flex-shrink-0 rounded-full bg-zinc-900 flex items-center justify-center border border-zinc-800 group-hover:border-[#CCFF00]/60 transition-colors">
+                  <img src="/img/icons/email.png" alt="" aria-hidden="true" width={256} height={256} loading="lazy" decoding="async" className="w-7 h-7 md:w-8 md:h-8" />
                 </div>
                 <div>
                   <h4 className="text-white font-medium text-[15px] md:text-base flex items-center gap-2">
@@ -235,8 +235,8 @@ export const Contact: React.FC = () => {
                 className="flex items-start gap-4 cursor-pointer group no-underline"
                 title="Open in Google Maps"
               >
-                <div className="w-12 h-12 md:w-14 md:h-14 flex-shrink-0 rounded-full bg-zinc-900 flex items-center justify-center border border-zinc-800 text-[#CCFF00] group-hover:border-[#CCFF00]/60 transition-colors">
-                  <MapPin className="w-5 h-5 md:w-6 md:h-6" />
+                <div className="w-12 h-12 md:w-14 md:h-14 flex-shrink-0 rounded-full bg-zinc-900 flex items-center justify-center border border-zinc-800 group-hover:border-[#CCFF00]/60 transition-colors">
+                  <img src="/img/icons/location.png" alt="" aria-hidden="true" width={256} height={256} loading="lazy" decoding="async" className="w-7 h-7 md:w-8 md:h-8" />
                 </div>
                 <div>
                   <h4 className="text-white font-medium text-[15px] md:text-base flex items-center gap-2">
@@ -507,7 +507,7 @@ export const Contact: React.FC = () => {
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="w-full bg-[#CCFF00] hover:bg-white disabled:bg-[#CCFF00]/40 disabled:cursor-not-allowed text-black font-black uppercase tracking-[0.15em] py-4 rounded-lg transition-all transform active:scale-[0.98] shadow-[0_0_40px_rgba(204,255,0,0.25)] hover:shadow-[0_0_60px_rgba(204,255,0,0.4)] flex items-center justify-center gap-2 group"
+                  className="w-full bg-[#CCFF00] hover:bg-white disabled:bg-[#CCFF00]/40 disabled:cursor-not-allowed text-black font-medium text-[15px] py-4 rounded-full transition-all transform active:scale-[0.98] shadow-[0_0_40px_rgba(204,255,0,0.25)] hover:shadow-[0_0_60px_rgba(204,255,0,0.4)] flex items-center justify-center gap-2 group"
                 >
                   {isSubmitting ? (
                     <>
@@ -517,7 +517,7 @@ export const Contact: React.FC = () => {
                   ) : (
                     <>
                       <Send className="w-5 h-5" />
-                      Send Us Your Print
+                      Send us your print
                       <ArrowRight className="w-4 h-4 opacity-60 group-hover:translate-x-1 transition-transform" />
                     </>
                   )}

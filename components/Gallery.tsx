@@ -21,10 +21,10 @@ const GalleryCard: React.FC<{ item: GalleryItem; index: number; total: number; o
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 30 }}
-      whileInView={{ opacity: 1, y: 0 }}
+      initial={{ opacity: 0, y: 26, scale: 0.975 }}
+      whileInView={{ opacity: 1, y: 0, scale: 1 }}
       viewport={{ once: true, margin: '-50px' }}
-      transition={{ duration: 0.6, delay: (index % 9) * 0.05, ease: [0.16, 1, 0.3, 1] }}
+      transition={{ type: 'spring', stiffness: 220, damping: 26, mass: 0.9, delay:(index % 9) * 0.05 }}
       onClick={onClick}
       className="group relative bg-[#06080a] border border-white/[0.08] hover:border-[#CCFF00]/40 transition-colors duration-500 overflow-hidden cursor-pointer"
     >
@@ -172,7 +172,7 @@ export const Gallery: React.FC<GalleryProps> = ({ onBack }) => {
           <div className="md:flex md:items-end md:justify-between gap-12 mb-12 pb-12 border-b border-white/[0.08]">
             <div>
               <motion.h1
-                initial={{ opacity: 0, y: 20 }}
+                initial={{ opacity: 0, y: 18, scale: 0.98 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.7 }}
                 className="font-black uppercase leading-[0.88] tracking-tight"
@@ -182,7 +182,7 @@ export const Gallery: React.FC<GalleryProps> = ({ onBack }) => {
               </motion.h1>
             </div>
             <motion.p
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 18, scale: 0.98 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7, delay: 0.1 }}
               className="text-zinc-300 text-base md:text-lg font-light leading-relaxed mt-6 md:mt-0 md:max-w-md"

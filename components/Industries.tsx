@@ -36,7 +36,7 @@ const industries = [
     id: 3,
     title: "Automotive",
     subtitle: "Performance Engineering",
-    description: "Valve bodies, fittings, and machined components for performance and production builds. Smooth edges. Exact chamfers. No comebacks.",
+    description: "Valve bodies, fittings, and machined components for performance and production builds. Smooth edges. Exact chamfers.",
     image: "/img/industries/automotive.jpg",
     alt: "Performance car — automotive components deburred by SC Precision Deburring"
   },
@@ -44,7 +44,7 @@ const industries = [
     id: 4,
     title: "Commercial Aviation",
     subtitle: "Global Reliability",
-    description: "Engine and cabin hardware for commercial fleets. Every edge inspected under magnification before pass-off — documented sign-off on every batch.",
+    description: "Engine and cabin hardware for commercial fleets. Every edge inspected under magnification before pass-off.",
     image: "/img/industries/aviation.jpg",
     alt: "Commercial aircraft — aviation hardware finished by SC Precision Deburring"
   }

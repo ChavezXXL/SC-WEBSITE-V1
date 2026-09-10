@@ -68,15 +68,15 @@ const VIDEO_POSTER = "/videos/posters/process-bg.jpg";
 const SpecCard: React.FC<{ feature: Feature; index: number }> = ({ feature, index }) => {
   return (
     <motion.div
-      initial={{ opacity: 0, y: 30 }}
-      whileInView={{ opacity: 1, y: 0 }}
+      initial={{ opacity: 0, y: 26, scale: 0.975 }}
+      whileInView={{ opacity: 1, y: 0, scale: 1 }}
       viewport={{ once: true }}
-      transition={{ duration: 0.6, delay: index * 0.08 }}
+      transition={{ type: 'spring', stiffness: 220, damping: 26, mass: 0.9, delay:index * 0.08  }}
       className="group relative h-full"
     >
       {/* Hairline frame — solid fill (no backdrop-blur: it sat over the moving
           video and forced a full re-blur every frame while scrolling) */}
-      <div className="relative h-full p-7 md:p-8 bg-[#06080a]/90 border border-white/[0.09] group-hover:border-[#CCFF00]/40 transition-colors duration-500 overflow-hidden">
+      <div className="relative h-full p-7 md:p-8 bg-[#06080a]/90 border border-white/[0.09] group-hover:border-[#CCFF00]/40 transition-colors duration-500 overflow-hidden rounded-2xl">
 
         {/* Drafting corner ticks */}
         <span aria-hidden className="absolute top-0 left-0 w-3 h-px bg-[#CCFF00]/50 group-hover:bg-[#CCFF00] transition-colors duration-500" />
@@ -163,7 +163,7 @@ export const Process: React.FC = () => {
           loop
           preload="metadata"
           poster={VIDEO_POSTER}
-          className="absolute inset-0 w-full h-full object-cover video-warm"
+          className="absolute inset-0 w-full h-full object-cover video-neutral"
         />
 
         {/* Vignette + brand-tint overlay */}
@@ -198,10 +198,10 @@ export const Process: React.FC = () => {
         {/* Centered Header (no pill) */}
         <div className="max-w-4xl mx-auto text-center mb-20 md:mb-24">
           <motion.h2
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
+            initial={{ opacity: 0, y: 26, scale: 0.975 }}
+            whileInView={{ opacity: 1, y: 0, scale: 1 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.8 }}
+            transition={{ type: 'spring', stiffness: 220, damping: 26, mass: 0.9 }}
             className="text-5xl md:text-7xl lg:text-8xl font-normal text-white leading-[0.95] tracking-[-0.015em] font-sans mb-6"
           >
             Precision and Reliability.<br />
@@ -211,10 +211,10 @@ export const Process: React.FC = () => {
           </motion.h2>
 
           <motion.p
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
+            initial={{ opacity: 0, y: 26, scale: 0.975 }}
+            whileInView={{ opacity: 1, y: 0, scale: 1 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.8, delay: 0.1 }}
+            transition={{ type: 'spring', stiffness: 220, damping: 26, mass: 0.9, delay:0.1  }}
             className="text-lg md:text-xl text-zinc-300/90 font-light leading-relaxed max-w-2xl mx-auto"
           >
             From aerospace components to medical devices, we engineer the finish that defines performance.

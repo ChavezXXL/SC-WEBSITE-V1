@@ -4,8 +4,8 @@ import { motion, useScroll, useTransform, useInView, useReducedMotion } from 'fr
 import { useBackgroundVideo } from './useBackgroundVideo';
 import { scrollToSection } from './scrollToSection';
 
-const VIDEO_SRC = "/videos/hero-bg.mp4";
-const VIDEO_POSTER = "/videos/posters/hero-bg.jpg";
+const VIDEO_SRC = "/videos/hero-plate.mp4";
+const VIDEO_POSTER = "/videos/posters/hero-plate.jpg";
 
 export const Hero: React.FC = () => {
   const ref = useRef<HTMLElement>(null);
@@ -34,8 +34,9 @@ export const Hero: React.FC = () => {
     >
       {/* Video Background — single looping element (poster paints instantly) */}
       <div className="absolute inset-0 pointer-events-none">
-        {/* Footage carries turquoise particulate. Desaturating and warming it in the
-            browser reads as neutral dust instead of neon — no re-shoot required. */}
+        {/* Neutral dust plate. The previous clip carried turquoise particulate and
+            leaned on a CSS warm filter to hide it; this one is already colourless,
+            loops seamlessly, and is a quarter the file size. */}
         <video
           ref={videoRef}
           muted
@@ -43,7 +44,7 @@ export const Hero: React.FC = () => {
           loop
           preload="metadata"
           poster={VIDEO_POSTER}
-          className="absolute inset-0 w-full h-full object-cover video-warm"
+          className="absolute inset-0 w-full h-full object-cover video-neutral"
         />
 
         {/* Vignette + brand-tint overlay */}
@@ -122,11 +123,11 @@ export const Hero: React.FC = () => {
         >
           <a
             href="#contact"
-            className="group w-full sm:w-auto text-center px-8 py-4 bg-[#CCFF00] border border-[#CCFF00] text-black font-black rounded-full transition-all hover:bg-transparent hover:text-[#CCFF00] md:hover:scale-105 shadow-[0_0_40px_rgba(204,255,0,0.25)]"
+            className="group w-full sm:w-auto text-center px-8 py-4 bg-[#CCFF00] border border-[#CCFF00] text-black font-medium rounded-full transition-all hover:bg-transparent hover:text-[#CCFF00] md:hover:scale-105 shadow-[0_0_40px_rgba(204,255,0,0.25)]"
             onClick={(e) => { e.preventDefault(); scrollToSection('contact'); }}
           >
-            <span className="text-sm uppercase tracking-widest flex items-center gap-2">
-              Send Us Your Print
+            <span className="text-[15px] font-medium flex items-center gap-2">
+              Send us your print
             </span>
           </a>
           <a
@@ -134,8 +135,8 @@ export const Hero: React.FC = () => {
             className="group relative w-full sm:w-auto text-center px-8 py-4 bg-white/5 border border-white/10 backdrop-blur-md text-white font-medium rounded-full overflow-hidden transition-all hover:bg-white/10 hover:border-[#CCFF00]/40 md:hover:scale-105"
             onClick={scrollToServices}
           >
-            <span className="relative z-10 text-sm uppercase tracking-widest flex items-center gap-2">
-              Explore Our Standard
+            <span className="relative z-10 text-[15px] font-medium flex items-center gap-2">
+              Explore our standard
             </span>
           </a>
         </motion.div>
