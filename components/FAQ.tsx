@@ -174,7 +174,6 @@ const FaqModal: React.FC<{
         exit={{ opacity: 0, y: 10, scale: 0.99 }}
         transition={{ duration: 0.42, ease: [0.16, 1, 0.3, 1] }}
       >
-        <span className="absolute top-0 left-0 h-px w-16 bg-[#CCFF00]" aria-hidden="true" />
 
         <div className="px-7 md:px-12 pt-9 md:pt-11 pb-7">
           <div className="flex items-start justify-between gap-6 mb-6">
