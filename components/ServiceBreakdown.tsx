@@ -92,7 +92,10 @@ export const ServiceBreakdown: React.FC<ServiceBreakdownProps> = ({
 
   const progress = useMotionValue(0);
 
-  // ---- Lazy gate: start loading frames when section is within ~20% of viewport ----
+  // ---- Lazy gate: begin fetching frames ~1.5 viewports before the section ----
+  // A tight window was fine locally, where frames come off disk instantly, but
+  // on a real connection the scrub outran the download and the scrub stepped
+  // between whatever had arrived. Wide margin buys the download a head start.
   // IntersectionObserver primary + a passive scroll-position fallback, so frame
   // loading can never be stranded by an observer that fails to deliver.
   useEffect(() => {
@@ -111,12 +114,12 @@ export const ServiceBreakdown: React.FC<ServiceBreakdownProps> = ({
     const checkByPosition = () => {
       const rect = section.getBoundingClientRect();
       const vh = window.innerHeight;
-      if (rect.top < vh * 1.2 && rect.bottom > -vh * 0.2) trigger();
+      if (rect.top < vh * 2.6 && rect.bottom > -vh * 1.5) trigger();
     };
 
     const io = new IntersectionObserver(
       ([entry]) => { if (entry.isIntersecting) trigger(); },
-      { rootMargin: '20% 0px 20% 0px' },
+      { rootMargin: '150% 0px 150% 0px' },
     );
     io.observe(section);
     window.addEventListener('scroll', checkByPosition, { passive: true });
@@ -249,7 +252,7 @@ export const ServiceBreakdown: React.FC<ServiceBreakdownProps> = ({
       });
 
     (async () => {
-      const BATCH = 12;
+      const BATCH = 24;
       for (let b = 0; b < order.length; b += BATCH) {
         if (disposed) return;
         await Promise.all(order.slice(b, b + BATCH).map(loadFrame));
