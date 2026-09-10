@@ -191,7 +191,7 @@ export const Navbar: React.FC<NavbarProps> = ({ currentView, onChangeView }) => 
                   onClick={() => handleNavClick('contact', 'home')}
                   className="w-full py-4 bg-[#B49A66] text-black text-sm font-black uppercase tracking-[0.2em] rounded-full shadow-[0_0_30px_rgba(180,154,102,0.3)]"
                 >
-                  Request a Technical Review
+                  Send Us Your Print
                 </button>
                 <a
                   href="tel:+18183894234"

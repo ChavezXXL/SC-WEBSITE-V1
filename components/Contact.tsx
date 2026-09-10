@@ -517,7 +517,7 @@ export const Contact: React.FC = () => {
                   ) : (
                     <>
                       <Send className="w-5 h-5" />
-                      Request a Technical Review
+                      Send Us Your Print
                       <ArrowRight className="w-4 h-4 opacity-60 group-hover:translate-x-1 transition-transform" />
                     </>
                   )}

@@ -122,7 +122,7 @@ export const PrecisionCTA: React.FC = () => {
               onClick={(e) => { e.preventDefault(); scrollToSection('contact'); }}
               className="group inline-flex items-center gap-3 px-8 md:px-10 py-4 md:py-5 bg-[#B49A66] text-black font-black text-sm uppercase tracking-[0.2em] rounded-none border border-[#B49A66] hover:bg-transparent hover:text-[#B49A66] transition-all duration-300 shadow-[0_0_40px_rgba(180,154,102,0.25)] hover:shadow-[0_0_60px_rgba(180,154,102,0.45)]"
             >
-              Request a Technical Review
+              Send Us Your Print
               <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" strokeWidth={2.5} />
             </a>
           </motion.div>
