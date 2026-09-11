@@ -283,3 +283,40 @@ const entries = PAGES.map((p) => `  <url>
 sm = sm.replace('</urlset>', `${entries}\n</urlset>`);
 writeFileSync(smPath, sm, 'utf8');
 console.log(`  sitemap.xml — ${PAGES.length + 1} URLs`);
+
+/* ------------------------------------------------------------------ *
+ * FAQ schema back into index.html as static markup.
+ *
+ * It previously lived in the React component, which meant it only existed
+ * after the bundle ran — and FAQ is lazy-loaded, so it only existed after
+ * the visitor scrolled far enough to mount it. Crawlers were served zero
+ * FAQPage markup. Generated here from faqData.ts so the copy shown in the
+ * UI and the copy given to Google cannot drift apart.
+ * ------------------------------------------------------------------ */
+const faqSrc = readFileSync(join(ROOT, 'components', 'faqData.ts'), 'utf8');
+const qa = [...faqSrc.matchAll(
+  /question:\s*(['"`])([\s\S]*?)\1\s*,\s*\n\s*answer:\s*(['"`])([\s\S]*?)\3\s*,/g
+)].map((m) => ({ q: m[2], a: m[4] }));
+
+if (!qa.length) {
+  console.error('  !! no Q&A parsed from faqData.ts — index.html left untouched');
+} else {
+  const faqPageLd = {
+    '@context': 'https://schema.org', '@type': 'FAQPage',
+    mainEntity: qa.map(({ q, a }) => ({
+      '@type': 'Question', name: q,
+      acceptedAnswer: { '@type': 'Answer', text: a },
+    })),
+  };
+  const MARK_A = '<!-- FAQ-SCHEMA:START -->';
+  const MARK_B = '<!-- FAQ-SCHEMA:END -->';
+  const block = `${MARK_A}\n    <script type="application/ld+json">\n${JSON.stringify(faqPageLd, null, 2)}\n    </script>\n    ${MARK_B}`;
+
+  const idxPath = join(ROOT, 'index.html');
+  let html = readFileSync(idxPath, 'utf8');
+  html = html.includes(MARK_A)
+    ? html.replace(new RegExp(`${MARK_A}[\s\S]*?${MARK_B}`), block)
+    : html.replace('</head>', `    ${block}\n  </head>`);
+  writeFileSync(idxPath, html, 'utf8');
+  console.log(`  index.html — FAQPage schema restored, ${qa.length} questions`);
+}

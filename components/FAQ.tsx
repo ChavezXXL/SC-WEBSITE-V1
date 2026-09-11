@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useFocusTrap } from './useFocusTrap';
 import { scrollToSection } from './scrollToSection';
 import { motion, AnimatePresence } from 'framer-motion';
+import { faqs } from './faqData';
 
 type FaqItem = {
   group: 'QUALITY' | 'CAPABILITIES' | 'LOGISTICS' | 'QUOTING';
@@ -10,44 +11,64 @@ type FaqItem = {
   answer: string;
 };
 
-import { faqs } from './faqData';
+type GroupKey = (typeof GROUP_ORDER)[number];
 
-/** Display order and headings for the four groups. */
+/** Display order, headings and a one-line description for each group. */
 const GROUP_ORDER = ['QUALITY', 'CAPABILITIES', 'LOGISTICS', 'QUOTING'] as const;
-const GROUP_LABEL: Record<(typeof GROUP_ORDER)[number], string> = {
+const GROUP_LABEL: Record<GroupKey, string> = {
   QUALITY: 'Quality & Verification',
   CAPABILITIES: 'Capabilities',
   LOGISTICS: 'Volume, Lead Time & Logistics',
   QUOTING: 'Quoting',
 };
+const GROUP_BLURB: Record<GroupKey, string> = {
+  QUALITY: 'How we inspect, what gets signed off, and where we stand on certification.',
+  CAPABILITIES: 'What we deburr, which materials we work in, and the features we specialise in.',
+  LOGISTICS: 'Lot sizes, turnaround, pickup and delivery, and where to find us.',
+  QUOTING: 'What to send, and how pricing works.',
+};
 
 /* ------------------------------------------------------------------ *
- * Modal — one question at a time, with prev/next so a buyer can read
- * straight through without closing and reopening.
+ * Two-step dialog.
+ *
+ * Step 1 — a group card opens to its own list of questions.
+ * Step 2 — picking one swaps the panel to the answer, with a way back.
+ *
+ * Previously every question was printed inside the card on the section
+ * itself, which made four cards carry fifteen lines of small text and
+ * left nothing for the card to do when clicked. Moving the list into the
+ * dialog lets the cards be large and legible and gives the click a job.
  * ------------------------------------------------------------------ */
-const FaqModal: React.FC<{
-  index: number;
+const FaqDialog: React.FC<{
+  group: GroupKey;
+  items: { item: FaqItem; idx: number }[];
   onClose: () => void;
-  onNav: (next: number) => void;
-}> = ({ index, onClose, onNav }) => {
-  const item = faqs[index];
-  const closeRef = useRef<HTMLButtonElement>(null);
-  const modalRef = useRef<HTMLDivElement>(null);
-  useFocusTrap(modalRef, true, onClose);
+}> = ({ group, items, onClose }) => {
+  const [openIdx, setOpenIdx] = useState<number | null>(null);
+  const panelRef = useRef<HTMLDivElement>(null);
+  useFocusTrap(panelRef, true, onClose);
 
-  const prev = useCallback(() => onNav((index - 1 + faqs.length) % faqs.length), [index, onNav]);
-  const next = useCallback(() => onNav((index + 1) % faqs.length), [index, onNav]);
+  const current = openIdx === null ? null : faqs[openIdx];
+  const pos = openIdx === null ? -1 : items.findIndex((x) => x.idx === openIdx);
 
-  // Esc closes; arrows page through.
+  const step = useCallback(
+    (dir: number) => {
+      if (pos < 0) return;
+      setOpenIdx(items[(pos + dir + items.length) % items.length].idx);
+    },
+    [pos, items],
+  );
+
+  // Esc closes; while an answer is open, arrows move within this group.
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') onClose();
-      else if (e.key === 'ArrowLeft') prev();
-      else if (e.key === 'ArrowRight') next();
+      if (e.key === 'Escape') { if (openIdx !== null) setOpenIdx(null); else onClose(); }
+      else if (openIdx !== null && e.key === 'ArrowLeft') step(-1);
+      else if (openIdx !== null && e.key === 'ArrowRight') step(1);
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, [onClose, prev, next]);
+  }, [openIdx, onClose, step]);
 
   // Lock the page behind the dialog without letting the layout jump.
   useEffect(() => {
@@ -55,7 +76,6 @@ const FaqModal: React.FC<{
     const gap = window.innerWidth - document.documentElement.clientWidth;
     document.body.style.overflow = 'hidden';
     if (gap > 0) document.body.style.paddingRight = `${gap}px`;
-    closeRef.current?.focus();
     return () => {
       document.body.style.overflow = overflow;
       document.body.style.paddingRight = paddingRight;
@@ -70,134 +90,163 @@ const FaqModal: React.FC<{
       exit={{ opacity: 0 }}
       transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
     >
-      <div
-        className="absolute inset-0 bg-black/80 backdrop-blur-md"
-        onClick={onClose}
-        aria-hidden="true"
-      />
+      <div className="absolute inset-0 bg-black/80 backdrop-blur-md" onClick={onClose} aria-hidden="true" />
 
       <motion.div
-        ref={modalRef}
+        ref={panelRef}
         role="dialog"
         aria-modal="true"
-        aria-labelledby="faq-modal-q"
-        className="relative w-full max-w-2xl bg-[#06080a] border border-[#CCFF00]/25 shadow-[0_40px_120px_-20px_rgba(0,0,0,0.9)] rounded-2xl"
+        aria-label={GROUP_LABEL[group]}
+        className="relative w-full max-w-2xl max-h-[85vh] overflow-y-auto bg-[#06080a] border border-[#CCFF00]/25 rounded-2xl shadow-[0_40px_120px_-20px_rgba(0,0,0,0.9)]"
         initial={{ opacity: 0, y: 18, scale: 0.985 }}
         animate={{ opacity: 1, y: 0, scale: 1 }}
         exit={{ opacity: 0, y: 10, scale: 0.99 }}
         transition={{ duration: 0.42, ease: [0.16, 1, 0.3, 1] }}
       >
-
-        <div className="px-7 md:px-12 pt-9 md:pt-11 pb-7">
-          <div className="flex items-start justify-between gap-6 mb-6">
-            <span className="font-mono text-[10px] uppercase tracking-[0.34em] text-[#CCFF00]">
-              {item.category}
+        <div className="sticky top-0 bg-[#06080a] flex items-start justify-between gap-6 px-7 md:px-10 pt-8 pb-5 border-b border-white/[0.07]">
+          <div>
+            <span className="block font-mono text-[10px] uppercase tracking-[0.32em] text-[#CCFF00]">
+              {GROUP_LABEL[group]}
             </span>
-            <button
-              ref={closeRef}
-              onClick={onClose}
-              aria-label="Close"
-              className="flex-shrink-0 -mt-1 w-8 h-8 flex items-center justify-center text-zinc-400 hover:text-[#CCFF00] transition-colors duration-300 outline-none focus-visible:ring-1 focus-visible:ring-[#CCFF00]/60"
-            >
-              <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                <line x1="2" y1="2" x2="14" y2="14" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />
-                <line x1="14" y1="2" x2="2" y2="14" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />
-              </svg>
-            </button>
+            <span className="mt-1.5 block text-[13px] font-light text-zinc-500">
+              {openIdx === null
+                ? `${items.length} question${items.length === 1 ? '' : 's'}`
+                : `${pos + 1} of ${items.length}`}
+            </span>
           </div>
+          <button
+            onClick={onClose}
+            aria-label="Close"
+            className="flex-shrink-0 w-9 h-9 flex items-center justify-center rounded-full text-zinc-500 hover:text-[#CCFF00] hover:bg-white/[0.04] transition-colors duration-300 outline-none focus-visible:ring-1 focus-visible:ring-[#CCFF00]/60"
+          >
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+              <line x1="2" y1="2" x2="14" y2="14" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />
+              <line x1="14" y1="2" x2="2" y2="14" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />
+            </svg>
+          </button>
+        </div>
 
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={index}
-              initial={{ opacity: 0, y: 8 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -6 }}
-              transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1] }}
+        <AnimatePresence mode="wait">
+          {openIdx === null ? (
+            /* ── step 1: the questions in this group ── */
+            <motion.ul
+              key="list"
+              initial={{ opacity: 0, x: -10 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -10 }}
+              transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
+              className="m-0 list-none p-3 md:p-4"
             >
-              <h3
-                id="faq-modal-q"
-                className="text-white font-medium tracking-[-0.015em] leading-[1.15] mb-5"
-                style={{ fontSize: 'clamp(1.35rem, 2.8vw, 1.95rem)' }}
+              {items.map(({ item, idx }, n) => (
+                <li key={idx}>
+                  <button
+                    onClick={() => setOpenIdx(idx)}
+                    className="group w-full text-left flex items-center gap-4 px-4 md:px-6 py-5 rounded-xl hover:bg-white/[0.035] transition-colors duration-300 outline-none focus-visible:ring-1 focus-visible:ring-[#CCFF00]/60"
+                  >
+                    <span className="font-mono text-[10px] tracking-[0.2em] text-zinc-600 tabular-nums flex-shrink-0">
+                      {String(n + 1).padStart(2, '0')}
+                    </span>
+                    <span className="flex-1 text-[15px] md:text-[17px] font-light text-zinc-200 group-hover:text-white leading-snug transition-colors">
+                      {item.question}
+                    </span>
+                    <span aria-hidden="true" className="text-zinc-600 group-hover:text-[#CCFF00] transition-colors flex-shrink-0">→</span>
+                  </button>
+                </li>
+              ))}
+            </motion.ul>
+          ) : (
+            /* ── step 2: the answer ── */
+            <motion.div
+              key={`a-${openIdx}`}
+              initial={{ opacity: 0, x: 12 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: 12 }}
+              transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
+              className="px-7 md:px-10 py-8"
+            >
+              <button
+                onClick={() => setOpenIdx(null)}
+                className="inline-flex items-center gap-2 mb-6 min-h-[36px] font-mono text-[10px] uppercase tracking-[0.26em] text-zinc-500 hover:text-[#CCFF00] transition-colors duration-300 outline-none focus-visible:ring-1 focus-visible:ring-[#CCFF00]/60"
               >
-                {item.question}
-              </h3>
-              <p className="text-[15px] md:text-base text-zinc-300 leading-relaxed font-light">
-                {item.answer}
-              </p>
-            </motion.div>
-          </AnimatePresence>
-        </div>
+                ← All {GROUP_LABEL[group].toLowerCase()} questions
+              </button>
 
-        <div className="flex items-center justify-between gap-4 px-7 md:px-12 py-5 border-t border-white/[0.07]">
-          <button
-            onClick={prev}
-            className="font-mono text-[10px] uppercase tracking-[0.28em] text-zinc-400 hover:text-[#CCFF00] transition-colors duration-300 outline-none focus-visible:ring-1 focus-visible:ring-[#CCFF00]/60"
-          >
-            ← Prev
-          </button>
-          <span className="font-mono text-[10px] tracking-[0.28em] text-zinc-500 tabular-nums">
-            {String(index + 1).padStart(2, '0')} / {String(faqs.length).padStart(2, '0')}
-          </span>
-          <button
-            onClick={next}
-            className="font-mono text-[10px] uppercase tracking-[0.28em] text-zinc-400 hover:text-[#CCFF00] transition-colors duration-300 outline-none focus-visible:ring-1 focus-visible:ring-[#CCFF00]/60"
-          >
-            Next →
-          </button>
-        </div>
+              <h3 className="text-white font-normal tracking-[-0.01em] leading-[1.2] mb-5" style={{ fontSize: 'clamp(1.3rem, 2.6vw, 1.85rem)' }}>
+                {current!.question}
+              </h3>
+              <p className="text-[15px] md:text-[17px] text-zinc-300 leading-relaxed font-light">
+                {current!.answer}
+              </p>
+
+              {items.length > 1 && (
+                <div className="flex items-center justify-between gap-4 mt-9 pt-6 border-t border-white/[0.07]">
+                  <button
+                    onClick={() => step(-1)}
+                    className="font-mono text-[10px] uppercase tracking-[0.26em] text-zinc-500 hover:text-[#CCFF00] transition-colors duration-300 outline-none focus-visible:ring-1 focus-visible:ring-[#CCFF00]/60"
+                  >
+                    ← Prev
+                  </button>
+                  <button
+                    onClick={() => step(1)}
+                    className="font-mono text-[10px] uppercase tracking-[0.26em] text-zinc-500 hover:text-[#CCFF00] transition-colors duration-300 outline-none focus-visible:ring-1 focus-visible:ring-[#CCFF00]/60"
+                  >
+                    Next →
+                  </button>
+                </div>
+              )}
+            </motion.div>
+          )}
+        </AnimatePresence>
       </motion.div>
     </motion.div>
   );
 };
 
 /* ------------------------------------------------------------------ *
- * Group card — four quiet cards instead of fifteen tiles. Every question
- * still renders inside its card (so the visible text stays indexable),
- * but each one is a thin line that opens the dialog rather than a block
- * the buyer has to scroll past.
+ * Group card — now a real button. Large, with a description and the
+ * question count, rather than a container printing fifteen small lines.
  * ------------------------------------------------------------------ */
 const FaqGroupCard: React.FC<{
-  label: string;
-  items: { item: FaqItem; idx: number }[];
-  onOpen: (idx: number) => void;
-}> = ({ label, items, onOpen }) => (
-  <div className="group relative bg-[#06080a] hover:bg-[#0a0e12] border border-white/[0.07] hover:border-[#CCFF00]/30 transition-[background-color,border-color] duration-500 ease-out p-6 md:p-7 rounded-2xl">
-
-    <div className="flex items-baseline justify-between gap-4 mb-5">
-      <h3 className="font-mono text-[10px] uppercase tracking-[0.32em] text-[#CCFF00]">
-        {label}
-      </h3>
-      <span className="font-mono text-[10px] tracking-[0.26em] text-zinc-500 tabular-nums">
-        {String(items.length).padStart(2, '0')}
-      </span>
+  group: GroupKey; count: number; onOpen: () => void; delay: number;
+}> = ({ group, count, onOpen, delay }) => (
+  <motion.button
+    type="button"
+    onClick={onOpen}
+    initial={{ opacity: 0, y: 20, scale: 0.98 }}
+    whileInView={{ opacity: 1, y: 0, scale: 1 }}
+    viewport={{ once: true, margin: '-50px' }}
+    transition={{ type: 'spring', stiffness: 230, damping: 27, mass: 0.9, delay }}
+    className="group relative text-left bg-[#06080a] hover:bg-[#0a0e12] border border-white/[0.07] hover:border-[#CCFF00]/30 transition-[background-color,border-color] duration-500 ease-out rounded-2xl p-8 md:p-10 min-h-[220px] md:min-h-[260px] flex flex-col justify-between outline-none focus-visible:ring-1 focus-visible:ring-[#CCFF00]/60"
+  >
+    <div>
+      <div className="flex items-baseline justify-between gap-4 mb-5">
+        <span className="font-mono text-[10px] uppercase tracking-[0.3em] text-[#CCFF00]">
+          {GROUP_LABEL[group]}
+        </span>
+        <span className="font-mono text-[10px] tracking-[0.24em] text-zinc-600 tabular-nums flex-shrink-0">
+          {String(count).padStart(2, '0')}
+        </span>
+      </div>
+      <p className="text-[16px] md:text-[19px] font-light text-zinc-200 leading-snug max-w-sm">
+        {GROUP_BLURB[group]}
+      </p>
     </div>
 
-    <ul className="space-y-0.5">
-      {items.map(({ item, idx }) => (
-        <li key={idx}>
-          <button
-            onClick={() => onOpen(idx)}
-            className="w-full text-left min-h-[44px] py-3 flex items-start gap-3 text-zinc-300 hover:text-white transition-colors duration-300 outline-none focus-visible:ring-1 focus-visible:ring-[#CCFF00]/60"
-          >
-            <span
-              aria-hidden="true"
-              className="mt-[11px] block w-3 h-px bg-zinc-600 flex-shrink-0 transition-all duration-300 group-hover:bg-[#CCFF00]/50"
-            />
-            <span className="text-[14px] leading-snug font-light">{item.question}</span>
-          </button>
-        </li>
-      ))}
-    </ul>
-  </div>
+    <span className="mt-8 inline-flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.28em] text-zinc-500 group-hover:text-[#CCFF00] transition-colors duration-300">
+      {count} question{count === 1 ? '' : 's'}
+      <span aria-hidden="true" className="text-sm translate-y-[-1px] group-hover:translate-x-1 transition-transform duration-300">→</span>
+    </span>
+  </motion.button>
 );
 
 export const FAQ: React.FC = () => {
-  const [openIdx, setOpenIdx] = useState<number | null>(null);
+  const [openGroup, setOpenGroup] = useState<GroupKey | null>(null);
+
+  const itemsFor = (g: GroupKey) =>
+    faqs.map((item, idx) => ({ item, idx })).filter(({ item }) => item.group === g);
 
   return (
     <>
-      <script type="application/ld+json">{JSON.stringify({ '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: faqs.map(item => ({ '@type': 'Question', name: item.question, acceptedAnswer: { '@type': 'Answer', text: item.answer } })) }).replace(/</g, '\\u003c')}</script>
-
       <section id="faq" className="relative py-20 md:py-28 bg-[#030305] border-t border-white/[0.05] scroll-mt-10">
         <div className="container mx-auto px-6 max-w-5xl">
 
@@ -205,7 +254,7 @@ export const FAQ: React.FC = () => {
             <div className="flex items-center justify-center gap-3 mb-5">
               <span className="block w-8 h-px bg-[#CCFF00]" />
               <span className="font-mono text-[10px] uppercase tracking-[0.4em] text-[#CCFF00]">
-                ※ Common Questions
+                Common Questions
               </span>
               <span className="block w-8 h-px bg-[#CCFF00]" />
             </div>
@@ -220,25 +269,21 @@ export const FAQ: React.FC = () => {
               </span>
             </h2>
             <p className="text-sm md:text-base text-zinc-300 font-light leading-relaxed max-w-2xl mx-auto">
-              Select a question — the answer opens here.
+              Pick a topic to see its questions.
             </p>
           </div>
 
-          {/* Four cards, not fifteen tiles. Every question is still in the DOM
-              (indexable, and one click from an answer) but the section now
-              occupies about a third of the height it used to. */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {GROUP_ORDER.map((group) => {
-              const items = faqs
-                .map((item, idx) => ({ item, idx }))
-                .filter(({ item }) => item.group === group);
-              if (!items.length) return null;
+            {GROUP_ORDER.map((group, i) => {
+              const count = itemsFor(group).length;
+              if (!count) return null;
               return (
                 <FaqGroupCard
                   key={group}
-                  label={GROUP_LABEL[group]}
-                  items={items}
-                  onOpen={(idx) => setOpenIdx(idx)}
+                  group={group}
+                  count={count}
+                  delay={i * 0.06}
+                  onOpen={() => setOpenGroup(group)}
                 />
               );
             })}
@@ -264,11 +309,11 @@ export const FAQ: React.FC = () => {
       </section>
 
       <AnimatePresence>
-        {openIdx !== null && (
-          <FaqModal
-            index={openIdx}
-            onClose={() => setOpenIdx(null)}
-            onNav={(n) => setOpenIdx(n)}
+        {openGroup !== null && (
+          <FaqDialog
+            group={openGroup}
+            items={itemsFor(openGroup)}
+            onClose={() => setOpenGroup(null)}
           />
         )}
       </AnimatePresence>
