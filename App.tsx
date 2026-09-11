@@ -10,7 +10,7 @@ import { ManualSection } from './components/ManualSection';
 import { BlendingSection } from './components/BlendingSection';
 import { ServicesIntro } from './components/ServicesIntro';
 import { AlsoOffered } from './components/AlsoOffered';
-import { PrecisionCTA } from './components/PrecisionCTA';
+import { ServiceArea } from './components/ServiceArea';
 import { DataProvider } from './components/DataContext';
 import { ErrorBoundary } from './components/ErrorBoundary';
 
@@ -168,11 +168,14 @@ function App() {
                 <BlendingSection />
               </div>
 
+
               {/* Secondary capabilities — marking, final inspection, local pickup & delivery */}
               <AlsoOffered />
 
-              {/* Call to Action Strip */}
-              <PrecisionCTA />
+              {/* Local service area — answers "do you cover me?" and carries the
+                  local search signal the schema claims but the body never backed */}
+              <ServiceArea />
+
 
               {/* Contact Section (anchor id on the section inside Contact) */}
               <div>

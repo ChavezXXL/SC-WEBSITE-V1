@@ -21,7 +21,6 @@ export const Contact: React.FC = () => {
     phone: '',
     service: 'Microscope Deburring',
     quantity: '',
-    partNumber: '',
     material: '',
     needBy: '',
     details: ''
@@ -102,7 +101,7 @@ export const Contact: React.FC = () => {
     setSubmitStatus('idle');
 
     const resetForm = () => {
-      setFormData({ name: '', company: '', email: '', phone: '', service: 'Microscope Deburring', quantity: '', partNumber: '', material: '', needBy: '', details: '' });
+      setFormData({ name: '', company: '', email: '', phone: '', service: 'Microscope Deburring', quantity: '', material: '', needBy: '', details: '' });
       setFileName(null);
       clearPreview();
       if (fileInputRef.current) fileInputRef.current.value = '';
@@ -394,19 +393,7 @@ export const Contact: React.FC = () => {
 
                 {/* Print-level detail — what a real RFQ needs to be quoted without
                     a follow-up phone call. */}
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                  <div className="space-y-2">
-                    <label htmlFor="contact-partno" className="text-xs font-semibold text-zinc-400 uppercase tracking-wider">Part No. / Rev</label>
-                    <input
-                      id="contact-partno"
-                      name="partNumber"
-                      value={formData.partNumber}
-                      onChange={handleChange}
-                      type="text"
-                      className="w-full bg-zinc-900/50 border border-zinc-700 rounded-lg px-4 py-3 text-white focus:border-[#CCFF00]/70 focus:outline-none focus:ring-1 focus:ring-[#CCFF00]/50 transition-all placeholder-zinc-600"
-                      placeholder="e.g. AS5406T03 Rev B"
-                    />
-                  </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="space-y-2">
                     <label htmlFor="contact-material" className="text-xs font-semibold text-zinc-400 uppercase tracking-wider">Material</label>
                     <input
