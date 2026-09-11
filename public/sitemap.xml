@@ -3,7 +3,7 @@
         xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
   <url>
     <loc>https://scprecisiondeburring.com/</loc>
-    <lastmod>2026-08-04</lastmod>
+    <lastmod>2026-09-10</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
     <image:image>
@@ -36,5 +36,29 @@
       <image:title>Before and After Deburring Comparison</image:title>
       <image:caption>Machined part edges before and after precision deburring.</image:caption>
     </image:image>
+  </url>
+  <url>
+    <loc>https://scprecisiondeburring.com/microscope-deburring/</loc>
+    <lastmod>2026-09-11</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://scprecisiondeburring.com/aerospace-deburring/</loc>
+    <lastmod>2026-09-11</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://scprecisiondeburring.com/precision-deburring-los-angeles/</loc>
+    <lastmod>2026-09-11</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://scprecisiondeburring.com/cross-drilled-hole-deburring/</loc>
+    <lastmod>2026-09-11</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
   </url>
 </urlset>
