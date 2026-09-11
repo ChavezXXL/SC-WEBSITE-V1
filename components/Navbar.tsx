@@ -1,8 +1,9 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Menu, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { trackPhoneClick } from '../services/analytics';
+import { useFocusTrap } from './useFocusTrap';
 import { scrollToSection } from './scrollToSection';
 
 interface NavbarProps {
@@ -13,6 +14,8 @@ interface NavbarProps {
 export const Navbar: React.FC<NavbarProps> = ({ currentView, onChangeView }) => {
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const menuRef = useRef<HTMLDivElement>(null);
+  useFocusTrap(menuRef, mobileMenuOpen, () => setMobileMenuOpen(false));
   const [logoError, setLogoError] = useState(false);
 
   useEffect(() => {
@@ -48,13 +51,12 @@ export const Navbar: React.FC<NavbarProps> = ({ currentView, onChangeView }) => 
     if (currentView !== targetView) {
       onChangeView(targetView);
       if (targetView === 'home' && id) {
-        setTimeout(() => {
-          if (document.getElementById(id)) {
-            scrollToSection(id);
-          } else {
-             window.scrollTo({ top: 0, behavior: 'smooth' });
-          }
-        }, 100);
+        let attempts = 0;
+        const scrollWhenReady = () => {
+          if (document.getElementById(id)) scrollToSection(id);
+          else if (++attempts < 120) requestAnimationFrame(scrollWhenReady);
+        };
+        requestAnimationFrame(scrollWhenReady);
       } else if (targetView === 'home') {
          window.scrollTo({ top: 0, behavior: 'smooth' });
       }
@@ -82,7 +84,7 @@ export const Navbar: React.FC<NavbarProps> = ({ currentView, onChangeView }) => 
         >
           <div className="flex items-center justify-between">
             {/* Logo Section */}
-            <div 
+            <button type="button" aria-label="SC Deburring home"
               onClick={() => handleNavClick(undefined, 'home')}
               className="flex items-center gap-3 cursor-pointer group relative z-50"
             >
@@ -98,7 +100,7 @@ export const Navbar: React.FC<NavbarProps> = ({ currentView, onChangeView }) => 
                   SC<span className="text-[#CCFF00]">DEBURRING</span>
                 </span>
               )}
-            </div>
+            </button>
 
             {/* Desktop Links - Centered if possible, but kept right for standard nav feel */}
             <div className={`hidden md:flex items-center gap-1 transition-all duration-300 ${scrolled ? 'bg-transparent' : 'bg-black/20 backdrop-blur-md rounded-full px-2 py-1 border border-white/5'}`}>
@@ -157,7 +159,7 @@ export const Navbar: React.FC<NavbarProps> = ({ currentView, onChangeView }) => 
       {/* Mobile Menu Overlay */}
       <AnimatePresence>
         {mobileMenuOpen && (
-          <motion.div 
+          <motion.div ref={menuRef} role="dialog" aria-modal="true" aria-label="Navigation"
             initial={{ opacity: 0, backdropFilter: "blur(0px)" }}
             animate={{ opacity: 1, backdropFilter: "blur(20px)" }}
             exit={{ opacity: 0, backdropFilter: "blur(0px)" }}

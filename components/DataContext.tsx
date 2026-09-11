@@ -98,6 +98,7 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   // Load from local storage on mount
   useEffect(() => {
+    try {
     const GALLERY_VERSION = '7'; // bumped: images moved from remote hotlinks to local /img/
     const storedVersion = localStorage.getItem('sc_gallery_version');
     if (storedVersion !== GALLERY_VERSION) {
@@ -114,7 +115,14 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
     if (savedGallery) {
       try {
-        setGalleryItems(JSON.parse(savedGallery));
+        const parsed: unknown = JSON.parse(savedGallery);
+        if (Array.isArray(parsed)) {
+          const valid = parsed.filter((item): item is GalleryItem =>
+            !!item && typeof item.id === 'number' && typeof item.title === 'string' &&
+            typeof item.url === 'string' && /^(\/|https?:\/\/|data:image\/)/i.test(item.url)
+          );
+          if (valid.length === parsed.length) setGalleryItems(valid);
+        }
       } catch (e) {
         console.error("Failed to parse gallery items");
       }
@@ -122,19 +130,20 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
     if (savedLeft) setComparisonLeft(savedLeft);
     if (savedRight) setComparisonRight(savedRight);
+    } catch {
+      // Storage may be disabled by the browser; the public site still works.
+    }
   }, []);
 
   const addGalleryItem = (item: Omit<GalleryItem, 'id'>) => {
     const newItem = { ...item, id: Date.now() };
     const updated = [newItem, ...galleryItems];
-    setGalleryItems(updated);
-    safeSetItem('sc_gallery', JSON.stringify(updated));
+    if (safeSetItem('sc_gallery', JSON.stringify(updated))) setGalleryItems(updated);
   };
 
   const removeGalleryItem = (id: number) => {
     const updated = galleryItems.filter(item => item.id !== id);
-    setGalleryItems(updated);
-    safeSetItem('sc_gallery', JSON.stringify(updated));
+    if (safeSetItem('sc_gallery', JSON.stringify(updated))) setGalleryItems(updated);
   };
 
   const updateComparisonImages = (left: string, right: string) => {

@@ -2,6 +2,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowLeft, X, Loader2, Maximize2 } from 'lucide-react';
+import { useFocusTrap } from './useFocusTrap';
 import { useData } from './DataContext';
 import { GalleryItem } from '../types';
 
@@ -26,6 +27,10 @@ const GalleryCard: React.FC<{ item: GalleryItem; index: number; total: number; o
       viewport={{ once: true, margin: '-50px' }}
       transition={{ type: 'spring', stiffness: 220, damping: 26, mass: 0.9, delay:(index % 9) * 0.05 }}
       onClick={onClick}
+      role="button"
+      tabIndex={0}
+      aria-label={'View ' + item.title}
+      onKeyDown={event => { if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); onClick(); } }}
       className="group relative bg-[#06080a] border border-white/[0.08] hover:border-[#CCFF00]/40 transition-colors duration-500 overflow-hidden cursor-pointer"
     >
       {/* Drafting corner ticks */}
@@ -106,6 +111,15 @@ export const Gallery: React.FC<GalleryProps> = ({ onBack }) => {
   }, []);
 
   const close = () => setSelectedIdx(null);
+  const modalRef = useRef<HTMLDivElement>(null);
+  useFocusTrap(modalRef, selectedIdx !== null, close);
+  const showing = selectedIdx !== null;
+  useEffect(() => {
+    if (!showing) return;
+    const previous = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    return () => { document.body.style.overflow = previous; };
+  }, [showing]);
   const prev = () => setSelectedIdx((i) => (i === null ? null : (i - 1 + galleryItems.length) % galleryItems.length));
   const next = () => setSelectedIdx((i) => (i === null ? null : (i + 1) % galleryItems.length));
 
@@ -138,7 +152,7 @@ export const Gallery: React.FC<GalleryProps> = ({ onBack }) => {
       </div>
 
       {/* Top status / nav */}
-      <div className="sticky top-0 z-40 bg-[#030305]/80 backdrop-blur-xl border-b border-white/[0.06]">
+      <div className="relative pt-28 z-30 bg-[#030305]/80 backdrop-blur-xl border-b border-white/[0.06]">
         <div className="container mx-auto px-6 py-5 flex items-center justify-between">
           <button
             onClick={onBack}
@@ -219,7 +233,7 @@ export const Gallery: React.FC<GalleryProps> = ({ onBack }) => {
       {/* Lightbox */}
       <AnimatePresence>
         {selected && (
-          <motion.div
+          <motion.div ref={modalRef} role="dialog" aria-modal="true" aria-label={selected.title}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -236,7 +250,7 @@ export const Gallery: React.FC<GalleryProps> = ({ onBack }) => {
                 </span>
                 <span>REF-{pad3((selectedIdx ?? 0) + 1)} / {pad3(galleryItems.length)}</span>
               </div>
-              <button
+              <button aria-label="Close image"
                 onClick={(e) => { e.stopPropagation(); close(); }}
                 className="text-zinc-300 hover:text-[#CCFF00] transition-colors"
               >

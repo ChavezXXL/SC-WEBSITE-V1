@@ -11,7 +11,7 @@ export const Contact: React.FC = () => {
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [isDragging, setIsDragging] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle');
+  const [submitStatus, setSubmitStatus] = useState<'idle' | 'preview' | 'success' | 'error'>('idle');
 
   // Form State
   const [formData, setFormData] = useState({
@@ -26,11 +26,14 @@ export const Contact: React.FC = () => {
     details: ''
   });
 
+  const [fileError, setFileError] = useState('');
+  const submittingRef = useRef(false);
+
   const fileInputRef = useRef<HTMLInputElement>(null);
   const formRef = useRef<HTMLFormElement>(null);
 
-  const handleCopy = (text: string, type: 'phone' | 'email') => {
-    navigator.clipboard.writeText(text);
+  const handleCopy = async (text: string, type: 'phone' | 'email') => {
+    try { await navigator.clipboard.writeText(text); } catch { return; }
     if (type === 'phone') {
       setCopiedPhone(true);
       setTimeout(() => setCopiedPhone(false), 2000);
@@ -45,29 +48,22 @@ export const Contact: React.FC = () => {
     setPreviewUrl(null);
   };
 
-  // Shared validation/handling for both click-to-pick and drag-and-drop.
-  const processFile = (file: File) => {
-    // Netlify Forms hard-caps attachments at ~8MB on the free tier.
-    // Warn clearly so the user knows to compress before submitting
-    // (silent server-side rejection was losing customer files).
-    const MAX_BYTES = 7.5 * 1024 * 1024; // 7.5MB — safe margin under the 8MB limit
-    if (file.size > MAX_BYTES) {
-      const sizeMB = (file.size / 1024 / 1024).toFixed(1);
-      alert(
-        `That file is ${sizeMB}MB — our upload limit is 7.5MB.\n\n` +
-          `Quick options:\n` +
-          `• Phone photo: use the email/text option to send it instead.\n` +
-          `• PDF/drawing: try compressing at smallpdf.com or ilovepdf.com.\n` +
-          `• Or email it directly to quotes@scprecisiondeburring.com after you submit the form.`,
-      );
-      if (fileInputRef.current) fileInputRef.current.value = '';
-      clearPreview();
-      setFileName(null);
-      return;
-    }
+  const processFile = (file: File): boolean => {
+    const allowed = /\.(pdf|dxf|dwg|step|stp|igs|iges|png|jpe?g|webp|gif|heic|heif|tiff?|bmp)$/i;
+    const error = file.size > 7.5 * 1024 * 1024
+      ? 'This file exceeds 7.5 MB. Choose a smaller file or email the drawing to our team.'
+      : !allowed.test(file.name) ? 'Please choose a PDF, CAD drawing, or image file.' : '';
+    setFileError(error);
+    setSubmitStatus('idle');
     clearPreview();
+    if (error) {
+      if (fileInputRef.current) fileInputRef.current.value = '';
+      setFileName(null);
+      return false;
+    }
     setPreviewUrl(file.type.startsWith('image/') ? URL.createObjectURL(file) : null);
     setFileName(file.name);
+    return true;
   };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -79,7 +75,7 @@ export const Contact: React.FC = () => {
     setIsDragging(false);
     const file = e.dataTransfer.files?.[0];
     if (!file) return;
-    processFile(file);
+    if (!processFile(file)) return;
     // Mirror the dropped file into the real <input> so FormData picks it up on submit.
     if (fileInputRef.current) {
       const dt = new DataTransfer();
@@ -92,11 +88,18 @@ export const Contact: React.FC = () => {
   useEffect(() => () => { if (previewUrl) URL.revokeObjectURL(previewUrl); }, [previewUrl]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    setFormData(previous => ({ ...previous, [e.target.name]: e.target.value }));
+    setSubmitStatus('idle');
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    if (submittingRef.current) return;
+    if (import.meta.env.DEV || ['localhost', '127.0.0.1', '[::1]'].includes(window.location.hostname)) {
+      setSubmitStatus('preview');
+      return;
+    }
+    submittingRef.current = true;
     setIsSubmitting(true);
     setSubmitStatus('idle');
 
@@ -119,30 +122,17 @@ export const Contact: React.FC = () => {
         body: data,
       });
 
-      // In production (Netlify), a successful submission returns 200
-      // In local dev, Vite may return an error status — that's expected
-      const isLocalDev = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
-
-      if (response.ok || isLocalDev) {
+      if (response.ok) {
         setSubmitStatus('success');
-        // Fire Google Ads conversion event on successful submit
-        if (!isLocalDev) trackFormSubmit();
+        trackFormSubmit();
         resetForm();
-        setTimeout(() => setSubmitStatus('idle'), 5000);
       } else {
         setSubmitStatus('error');
       }
     } catch {
-      // Network error — show success in dev, error in prod
-      const isLocalDev = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
-      if (isLocalDev) {
-        setSubmitStatus('success');
-        resetForm();
-        setTimeout(() => setSubmitStatus('idle'), 5000);
-      } else {
-        setSubmitStatus('error');
-      }
+      setSubmitStatus('error');
     } finally {
+      submittingRef.current = false;
       setIsSubmitting(false);
     }
   };
@@ -186,13 +176,9 @@ export const Contact: React.FC = () => {
                 onClick={(e) => {
                   // Fire Google Ads conversion for phone-click intent (mobile call OR desktop copy)
                   trackPhoneClick();
-                  // On desktop, copy instead of calling
-                  if (window.innerWidth > 768) {
-                    e.preventDefault();
-                    handleCopy('(818) 389-4234', 'phone');
-                  }
+
                 }}
-                title="Tap to call or click to copy"
+                title="Call SC Deburring"
               >
                 <div className="w-12 h-12 md:w-14 md:h-14 flex-shrink-0 rounded-full bg-zinc-900 flex items-center justify-center border border-zinc-800 group-hover:border-[#CCFF00]/60 transition-colors">
                   <img src="/img/icons/phone.png" alt="" aria-hidden="true" width={256} height={256} loading="lazy" decoding="async" className="w-7 h-7 md:w-8 md:h-8" />
@@ -217,12 +203,12 @@ export const Contact: React.FC = () => {
                 <div className="w-12 h-12 md:w-14 md:h-14 flex-shrink-0 rounded-full bg-zinc-900 flex items-center justify-center border border-zinc-800 group-hover:border-[#CCFF00]/60 transition-colors">
                   <img src="/img/icons/email.png" alt="" aria-hidden="true" width={256} height={256} loading="lazy" decoding="async" className="w-7 h-7 md:w-8 md:h-8" />
                 </div>
-                <div>
+                <div className="min-w-0">
                   <h4 className="text-white font-medium text-[15px] md:text-base flex items-center gap-2">
                     Email Us
                     {copiedEmail && <span className="text-xs text-green-400 font-normal flex items-center animate-in fade-in slide-in-from-left-2"><Check className="w-3 h-3 mr-1"/> Copied</span>}
                   </h4>
-                  <p className="mt-1 text-base md:text-xl font-light tracking-tight text-zinc-100 group-hover:text-[#CCFF00] transition-colors break-words">quotes@scprecisiondeburring.com</p>
+                  <p className="mt-1 text-base md:text-xl font-light tracking-tight text-zinc-100 group-hover:text-[#CCFF00] transition-colors [overflow-wrap:anywhere]">quotes@scprecisiondeburring.com</p>
                 </div>
               </a>
 
@@ -275,7 +261,7 @@ export const Contact: React.FC = () => {
           </div>
 
           {/* Right Column - Form */}
-          <div className="glass-panel p-8 rounded-2xl border border-white/5">
+          <div className="glass-panel p-5 sm:p-8 rounded-2xl border border-white/5">
               <form
                 ref={formRef}
                 name="contact"
@@ -454,16 +440,18 @@ export const Contact: React.FC = () => {
                             ref={fileInputRef}
                             className="hidden"
                             accept="image/*,.pdf,.dxf,.dwg,.step,.stp,.igs,.iges"
+                            aria-invalid={!!fileError}
+                            aria-describedby={fileError ? "attachment-error" : undefined}
                             onChange={handleFileChange}
                         />
                         {fileName ? (
-                            <div className="flex items-center gap-3 bg-[#CCFF00]/10 px-4 py-2 rounded-full border border-[#CCFF00]/20">
+                            <div className="flex items-center gap-3 min-w-0 max-w-full bg-[#CCFF00]/10 px-4 py-2 rounded-full border border-[#CCFF00]/20">
                                 {previewUrl ? (
                                     <img src={previewUrl} alt="Attachment preview" className="w-8 h-8 rounded object-cover border border-[#CCFF00]/30" />
                                 ) : (
                                     <FileText className="w-4 h-4 text-[#CCFF00]" />
                                 )}
-                                <span className="text-sm text-[#CCFF00] font-medium max-w-[12rem] truncate">{fileName}</span>
+                                <span className="text-sm text-[#CCFF00] font-medium min-w-0 flex-1 truncate">{fileName}</span>
                                 <button
                                     type="button"
                                     aria-label="Remove attachment"
@@ -490,6 +478,8 @@ export const Contact: React.FC = () => {
                     </div>
                 </div>
 
+                {fileError && <p id="attachment-error" role="alert" className="text-sm text-red-300">{fileError}</p>}
+                {submitStatus === 'preview' && <p role="status" className="rounded-lg border border-[#CCFF00]/30 bg-[#CCFF00]/10 px-4 py-3 text-sm text-[#E4FF7A]">Local preview: your form is valid. Nothing was sent, and your details are still here.</p>}
                 {/* Success Message */}
                 <AnimatePresence>
                   {submitStatus === 'success' && (

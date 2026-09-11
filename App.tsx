@@ -18,7 +18,7 @@ import { ErrorBoundary } from './components/ErrorBoundary';
 const Contact = lazy(() => import('./components/Contact').then(m => ({ default: m.Contact })));
 const FAQ = lazy(() => import('./components/FAQ').then(m => ({ default: m.FAQ })));
 const Gallery = lazy(() => import('./components/Gallery').then(m => ({ default: m.Gallery })));
-const AdminDashboard = lazy(() => import('./components/AdminDashboard').then(m => ({ default: m.AdminDashboard })));
+const AdminDashboard = import.meta.env.DEV ? lazy(() => import('./components/AdminDashboard').then(m => ({ default: m.AdminDashboard }))) : () => null;
 import { Facebook, Instagram, Youtube } from 'lucide-react';
 import { motion, useInView, animate } from 'framer-motion';
 
@@ -42,7 +42,7 @@ const Counter = ({ from, to, duration = 2, suffix = "" }: { from: number; to: nu
     return () => controls.stop();
   }, [from, to, duration, isInView, suffix]);
 
-  return <div ref={nodeRef} className="text-4xl md:text-5xl font-bold text-white tracking-tighter tabular-nums" />;
+  return <div ref={nodeRef} className="text-4xl md:text-5xl font-bold text-white tracking-tighter tabular-nums">{from.toLocaleString() + suffix}</div>;
 };
 
 // Visual breath between scroll-driven service sections
@@ -77,18 +77,7 @@ function App() {
   }, []);
 
   const handleAdminAccess = () => {
-    // Cosmetic, owner-only gate (all admin data is per-browser localStorage, so
-    // this is not real security). The password comes from a build-time env var
-    // (VITE_ADMIN_PASSWORD) so it isn't committed in the source; set it in
-    // Netlify → Site configuration → Environment variables. Falls back to a
-    // default only if unset.
-    const expected = ((import.meta as any).env?.VITE_ADMIN_PASSWORD as string | undefined) || 'sc-admin';
-    const password = prompt("Enter Admin Password:");
-    if (password === expected) {
-        setView('admin');
-    } else if (password) {
-        alert("Incorrect password.");
-    }
+    if (import.meta.env.DEV) setView('admin');
   };
 
   if (view === 'admin') {

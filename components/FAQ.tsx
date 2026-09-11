@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
+import { useFocusTrap } from './useFocusTrap';
 import { scrollToSection } from './scrollToSection';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -9,98 +10,7 @@ type FaqItem = {
   answer: string;
 };
 
-const faqs: FaqItem[] = [
-  {
-    group: 'CAPABILITIES',
-    category: 'BASICS',
-    question: 'What is deburring, and why does my part need it?',
-    answer: "Deburring removes the sharp edges and raised material left by machining, stamping, or cutting. Burrs cause stress fractures, become FOD inside fluid systems, and ruin coatings. It's the final step that turns a machined part into one that's ready to fly.",
-  },
-  {
-    group: 'CAPABILITIES',
-    category: 'CAPABILITY',
-    question: 'What kinds of parts do you specialize in?',
-    answer: "Complex geometry — manifolds, valve bodies, hydraulic fittings, and anything with cross-drilled or intersecting bores. Built for parts where burrs hide inside and tolerances are tight. Aerospace and medical mainly.",
-  },
-  {
-    group: 'CAPABILITIES',
-    category: 'MATERIALS',
-    question: 'What materials can you deburr?',
-    answer: "Stainless, aluminum, titanium, Inconel, brass, copper, Invar, carbon steel — plus most plastics. We match the technique to the material so dimensions stay exact.",
-  },
-  {
-    group: 'QUALITY',
-    category: 'PRECISION',
-    question: 'Can you hold tight tolerances on critical parts?',
-    answer: "Yes. We remove the burr only. Surrounding edges stay exactly as drawn — we don't round what should stay sharp.",
-  },
-  {
-    group: 'CAPABILITIES',
-    category: 'COMPLEXITY',
-    question: 'Can you handle cross-drilled holes and internal passages?',
-    answer: "It's our specialty. Intersections where bores meet are where most shops miss burrs that turn into FOD. We use microscope inspection and the right tooling to clean every one.",
-  },
-  {
-    group: 'LOGISTICS',
-    category: 'VOLUME',
-    question: 'Do you handle prototypes and production runs?',
-    answer: "Both — one-off prototypes to thousands per batch. The process scales to match the volume.",
-  },
-  {
-    group: 'LOGISTICS',
-    category: 'LEAD TIME',
-    question: "What's your typical turnaround?",
-    answer: "Quotes back in 24 hours. Most jobs run 3–5 business days. Faster if your timeline calls for it.",
-  },
-  {
-    group: 'QUALITY',
-    category: 'QUALITY',
-    question: 'How do you ensure quality?',
-    answer: "Every part is inspected under magnification before pass-off, with documented sign-off on every batch — a repeatable, written quality process on every job.",
-  },
-  {
-    group: 'LOGISTICS',
-    category: 'LOGISTICS',
-    question: 'Do you offer pickup and delivery?',
-    answer: "Local pickup and delivery for regular customers in LA and the San Fernando Valley. Standard freight everywhere else — pickup arranged for larger jobs.",
-  },
-  {
-    group: 'QUOTING',
-    category: 'QUOTING',
-    question: "What do you need to send a quote?",
-    answer: "A drawing or photo, an approximate quantity, and any spec callouts. Quote back in 24 hours.",
-  },
-  {
-    group: 'LOGISTICS',
-    category: 'LOCATION',
-    question: 'Where is SC Precision Deburring located?',
-    answer: "Pacoima, California — 12734 Branford Street, Unit 17, in the San Fernando Valley. We serve all of Southern California: Los Angeles, Orange, Ventura, San Bernardino, Riverside, San Diego, and Kern counties.",
-  },
-  {
-    group: 'QUALITY',
-    category: 'CERTIFICATIONS',
-    question: 'Are you ISO 9001 or AS9100 certified?',
-    answer: "We're not currently ISO 9001 or AS9100 certified. We run a documented, repeatable quality process — every part inspected under magnification, with written sign-off on every batch. Many of our customers are themselves ISO/AS9100-certified shops that trust us with their deburring and finishing.",
-  },
-  {
-    group: 'CAPABILITIES',
-    category: 'TECHNIQUE',
-    question: 'What is microscope deburring?',
-    answer: "Deburring performed under magnification — typically 10x to 40x — for parts where burrs hide inside cross-drilled holes, internal passages, or tight features the naked eye can't catch. Standard for aerospace manifolds, valve bodies, and high-tolerance medical devices.",
-  },
-  {
-    group: 'CAPABILITIES',
-    category: 'INDUSTRIES',
-    question: 'Do you work with aerospace, defense, and medical OEMs?',
-    answer: "Our customers are precision machine shops, and what comes off their CNC machines goes into aerospace, defense, medical and industrial programs. We deburr to the print — the end market is our customer's to know. If it was machined, we can finish it. Much of our work ships into our customers' AS9100-controlled supply chains; we are not ourselves certified.",
-  },
-  {
-    group: 'QUOTING',
-    category: 'PRICING',
-    question: 'How much does deburring cost?',
-    answer: "Depends on part complexity, material, and quantity — but quotes come back in 24 hours, free, with no minimum order. Small simple batches start at a few dollars per part; complex aerospace work prices per print and spec callout.",
-  },
-];
+import { faqs } from './faqData';
 
 /** Display order and headings for the four groups. */
 const GROUP_ORDER = ['QUALITY', 'CAPABILITIES', 'LOGISTICS', 'QUOTING'] as const;
@@ -122,6 +32,8 @@ const FaqModal: React.FC<{
 }> = ({ index, onClose, onNav }) => {
   const item = faqs[index];
   const closeRef = useRef<HTMLButtonElement>(null);
+  const modalRef = useRef<HTMLDivElement>(null);
+  useFocusTrap(modalRef, true, onClose);
 
   const prev = useCallback(() => onNav((index - 1 + faqs.length) % faqs.length), [index, onNav]);
   const next = useCallback(() => onNav((index + 1) % faqs.length), [index, onNav]);
@@ -165,6 +77,7 @@ const FaqModal: React.FC<{
       />
 
       <motion.div
+        ref={modalRef}
         role="dialog"
         aria-modal="true"
         aria-labelledby="faq-modal-q"
@@ -283,8 +196,7 @@ export const FAQ: React.FC = () => {
 
   return (
     <>
-      {/* FAQ JSON-LD lives in index.html — single source of truth, no duplicate schema.
-          Answers here must stay in sync with that block. */}
+      <script type="application/ld+json">{JSON.stringify({ '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: faqs.map(item => ({ '@type': 'Question', name: item.question, acceptedAnswer: { '@type': 'Answer', text: item.answer } })) }).replace(/</g, '\\u003c')}</script>
 
       <section id="faq" className="relative py-20 md:py-28 bg-[#030305] border-t border-white/[0.05] scroll-mt-10">
         <div className="container mx-auto px-6 max-w-5xl">
