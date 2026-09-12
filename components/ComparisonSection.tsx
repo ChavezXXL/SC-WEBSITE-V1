@@ -9,6 +9,8 @@ export const ComparisonSection: React.FC = () => {
   const [isDragging, setIsDragging] = useState(false);
   const [containerWidth, setContainerWidth] = useState(0);
   const containerRef = useRef<HTMLDivElement>(null);
+  // Where a touch started, so a gesture can be identified before it is acted on.
+  const touchIntent = useRef<{ x: number; y: number } | null>(null);
 
   // Get images from Admin Context
   const { comparisonLeft, comparisonRight } = useData();
@@ -52,8 +54,32 @@ export const ComparisonSection: React.FC = () => {
     if (isDragging) handleMove(e.clientX);
   };
 
+  // Touch gestures have to declare themselves first. touchAction:'pan-y' lets
+  // the browser keep vertical scrolling, but isDragging was being set on
+  // touchstart — so a finger that began a page scroll on top of the image
+  // dragged the divider along with it the whole way down. Commit only once the
+  // movement is clearly horizontal; if it is vertical, hand it back to the page
+  // and leave the divider alone.
   const handleTouchMove = (e: React.TouchEvent) => {
-    if (isDragging) handleMove(e.touches[0].clientX);
+    const touch = e.touches[0];
+    if (!touch) return;
+    if (isDragging) { handleMove(touch.clientX); return; }
+
+    const intent = touchIntent.current;
+    if (!intent) return;
+    const dx = Math.abs(touch.clientX - intent.x);
+    const dy = Math.abs(touch.clientY - intent.y);
+    if (dx < 6 && dy < 6) return;   // too early to tell
+    if (dy > dx) { touchIntent.current = null; return; }   // a scroll, not a drag
+
+    setIsDragging(true);
+    handleMove(touch.clientX);
+  };
+
+  // A touch that never turned into a drag was a tap: send the divider there.
+  const handleTouchEnd = () => {
+    if (!isDragging && touchIntent.current) handleMove(touchIntent.current.x);
+    touchIntent.current = null;
   };
 
   // Jump the divider straight to the pointer on press, then track it.
@@ -62,8 +88,8 @@ export const ComparisonSection: React.FC = () => {
     handleMove(e.clientX);
   };
   const handleTouchStart = (e: React.TouchEvent) => {
-    setIsDragging(true);
-    handleMove(e.touches[0].clientX);
+    const touch = e.touches[0];
+    if (touch) touchIntent.current = { x: touch.clientX, y: touch.clientY };
   };
 
   // Global event listeners for dragging outside the container
@@ -73,7 +99,8 @@ export const ComparisonSection: React.FC = () => {
     };
     const handleGlobalMouseUp = () => setIsDragging(false);
     const handleGlobalTouchMove = (e: TouchEvent) => {
-      if (isDragging) handleMove(e.touches[0].clientX);
+      const touch = e.touches[0];
+      if (isDragging && touch) handleMove(touch.clientX);
     };
 
     if (isDragging) {
@@ -114,6 +141,8 @@ export const ComparisonSection: React.FC = () => {
               onTouchStart={handleTouchStart}
               onMouseMove={handleMouseMove}
               onTouchMove={handleTouchMove}
+              onTouchEnd={handleTouchEnd}
+              onTouchCancel={handleTouchEnd}
             >
               {/* IMAGE: BACKGROUND (RIGHT SIDE - MACHINED/RAW) */}
               <div className="absolute inset-0">
