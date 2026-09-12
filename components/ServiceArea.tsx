@@ -1,14 +1,23 @@
-import React, { useRef } from 'react';
-import { motion, useScroll, useTransform, useReducedMotion, MotionValue } from 'framer-motion';
+import React, { useEffect, useRef, useState } from 'react';
+import { motion, useScroll, useTransform, useInView, useReducedMotion, MotionValue } from 'framer-motion';
 import { scrollToSection } from './scrollToSection';
+import { useFocusPeak } from './useFocusPeak';
 
 /* ------------------------------------------------------------------ *
  * Service area.
  *
  * Pinned horizontal scroll: the section sticks while the route track pans
- * sideways, then releases. Each card also scales and brightens as it crosses
- * the middle of the viewport — a flat linear pan reads mechanical, and the
- * focus falloff gives the row depth and tells the eye where to look.
+ * sideways, then releases. Each card scales and brightens as it crosses the
+ * middle of the viewport (see useFocusPeak).
+ *
+ * The pan distance and the runway length are both MEASURED, not guessed.
+ * They used to be hardcoded percentages, and a percentage translate is a
+ * share of the track's own width — so the correct value changes with card
+ * size, gap, card count and viewport. At the phone breakpoint -58% covered
+ * 1424px of a 2456px track: Santa Clarita and Valencia could not be reached
+ * by scrolling at all. Desktop clipped the last card by 64px. Measuring the
+ * track also lets the runway be sized so the row moves at a sane rate
+ * against the scroll instead of 2.1x faster than the reader's thumb.
  *
  * Kern County was dropped — Central Valley, not Southern California.
  * ------------------------------------------------------------------ */
@@ -20,24 +29,20 @@ const ROUTE = [
 
 const COUNTIES = ['Los Angeles', 'Orange', 'Ventura', 'San Bernardino', 'Riverside', 'San Diego'];
 
+/** How far the row travels per pixel of scroll. Above 1 the row outruns the
+ *  thumb, which is what made the pan feel like it was skipping frames. */
+const PAN_RATE = 1.25;
+
 /** One card. Peaks as it passes the centre of the viewport. */
 const RouteCard: React.FC<{
-  city: string; i: number; total: number; progress: MotionValue<number>; reduce: boolean;
-}> = ({ city, i, total, progress, reduce }) => {
-  // Roughly where in the pan this card sits under the viewport centre.
-  // Computed as a function of progress rather than an offset array: the first
-  // and last cards would need offsets of -0.16 and 1.16, which framer rejects
-  // (offsets must sit inside [0,1] and increase) and which crashed the section.
-  const at = i / (total - 1);
-  const falloff = (p: number, span: number, min: number) =>
-    min + (1 - min) * (1 - Math.min(Math.abs(p - at) / span, 1));
-  const scale   = useTransform(progress, (p: number) => falloff(p, 0.16, 0.9));
-  const opacity = useTransform(progress, (p: number) => falloff(p, 0.2, 0.4));
+  city: string; i: number; at: number; progress: MotionValue<number>; still: boolean; active: boolean;
+}> = ({ city, i, at, progress, still, active }) => {
+  const { scale, opacity } = useFocusPeak(progress, at);
 
   return (
     <motion.div
-      style={reduce ? undefined : { scale, opacity }}
-      className="flex-none w-[190px] md:w-[280px] h-[200px] md:h-[280px] rounded-2xl bg-[#06080a] border border-white/[0.07] p-6 md:p-8 flex flex-col justify-between will-change-transform"
+      style={still ? undefined : { scale, opacity, willChange: active ? 'transform, opacity' : 'auto' }}
+      className="flex-none w-[190px] md:w-[280px] h-[200px] md:h-[280px] rounded-2xl bg-[#06080a] border border-white/[0.07] p-6 md:p-8 flex flex-col justify-between"
     >
       <span className="font-mono text-[10px] tracking-[0.24em] text-[#CCFF00]/70 tabular-nums">
         {String(i + 1).padStart(2, '0')}
@@ -51,9 +56,55 @@ const RouteCard: React.FC<{
 
 export const ServiceArea: React.FC = () => {
   const runway = useRef<HTMLDivElement>(null);
+  const stage = useRef<HTMLDivElement>(null);
+  const track = useRef<HTMLDivElement>(null);
   const reduce = !!useReducedMotion();
+  const active = useInView(runway, { margin: '20% 0px 20% 0px' });
+
+  // Measured pan: how far the track must travel for its right edge to land on
+  // the viewport's right edge, and where in that travel each card is centred.
+  const [pan, setPan] = useState<{ max: number; at: number[] }>({ max: 0, at: [] });
+
+  useEffect(() => {
+    const measure = () => {
+      const t = track.current, s = stage.current;
+      if (!t || !s) return;
+      const vw = s.clientWidth;
+      const max = Math.max(0, t.scrollWidth - vw);
+      // Deliberately unclamped — a card that cannot reach the centre peaks
+      // just off the end of the range instead of pinning at full brightness
+      // while sitting visibly off to one side.
+      const at = Array.from(t.children).map((el) => {
+        const c = el as HTMLElement;
+        return max > 0 ? (c.offsetLeft + c.offsetWidth / 2 - vw / 2) / max : 0;
+      });
+      setPan((prev) =>
+        prev.max === max && prev.at.length === at.length && prev.at.every((v, i) => v === at[i])
+          ? prev
+          : { max, at },
+      );
+    };
+
+    measure();
+    window.addEventListener('resize', measure);
+    // Card widths move once the webfont swaps in, which lands after the first
+    // measurement — remeasure rather than pan to a stale number.
+    if (document.fonts?.ready) document.fonts.ready.then(measure).catch(() => {});
+    return () => window.removeEventListener('resize', measure);
+  }, []);
+
   const { scrollYProgress } = useScroll({ target: runway, offset: ['start start', 'end end'] });
-  const x = useTransform(scrollYProgress, [0, 1], ['2%', '-58%']);
+
+  // The pan distance is read from a ref at transform time, NOT passed as a
+  // useTransform output range. framer captures the output array from the render
+  // that created the transform and does not pick up a later one, so the first
+  // measurement was permanent: resize the window, or let the webfont swap in,
+  // and the runway height updated to the new measurement while the translate
+  // kept using the old distance — under-panning by exactly the difference and
+  // pushing the last card back off the right edge.
+  const panMax = useRef(0);
+  panMax.current = pan.max;
+  const x = useTransform(scrollYProgress, (p: number) => -p * panMax.current);
 
   return (
     <section id="service-area" className="relative bg-[#030305] border-t border-white/[0.05]">
@@ -80,25 +131,33 @@ export const ServiceArea: React.FC = () => {
       </div>
 
       {/* ── pinned horizontal scroll ─────────────────────────────── */}
-      <div ref={runway} className="relative h-[220vh] md:h-[260vh]">
-        <div className="sticky top-0 h-screen flex flex-col justify-center overflow-hidden">
+      {/* Runway = one stage plus the scroll needed to walk the whole track.
+          Falls back to the old fixed heights until the measurement lands. */}
+      <div
+        ref={runway}
+        className={pan.max ? 'relative' : 'relative h-[220vh] md:h-[260vh]'}
+        style={pan.max ? { height: `calc(100vh + ${Math.round(pan.max / PAN_RATE)}px)` } : undefined}
+      >
+        <div ref={stage} className="sticky top-0 h-screen flex flex-col justify-center overflow-hidden">
 
           <span className="block text-center font-mono text-[10px] uppercase tracking-[0.34em] text-zinc-500 mb-10">
             Shops we deliver to
           </span>
 
           <motion.div
-            style={{ x: reduce ? '-28%' : x }}
-            className="flex gap-4 md:gap-5 w-max items-center will-change-transform"
+            ref={track}
+            style={{ x: reduce ? 0 : x, willChange: active && !reduce ? 'transform' : 'auto' }}
+            className="flex gap-4 md:gap-5 w-max items-center px-6 md:px-16"
           >
             {ROUTE.map((city, i) => (
               <RouteCard
                 key={city}
                 city={city}
                 i={i}
-                total={ROUTE.length}
+                at={pan.at[i] ?? 0}
                 progress={scrollYProgress}
-                reduce={reduce}
+                still={reduce || !pan.max}
+                active={active}
               />
             ))}
           </motion.div>

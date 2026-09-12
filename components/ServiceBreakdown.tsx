@@ -65,6 +65,7 @@ export const ServiceBreakdown: React.FC<ServiceBreakdownProps> = ({
 }) => {
   const sectionRef = useRef<HTMLElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const stageRef = useRef<HTMLDivElement>(null);
   const imagesRef = useRef<(HTMLImageElement | undefined)[]>([]);
   const paintedRef = useRef(false);
   const [painted, setPainted] = useState(false);
@@ -180,11 +181,21 @@ export const ServiceBreakdown: React.FC<ServiceBreakdownProps> = ({
     let lastDrawn = -1;
 
     const resize = () => {
-      // Cap DPR at 2: on a 5K iMac an uncapped canvas would be 5120x2880 —
-      // enormous fill cost for no visible gain on video-derived frames.
-      const dpr = Math.min(window.devicePixelRatio || 1, 2);
-      canvas.width = Math.round(canvas.clientWidth * dpr);
-      canvas.height = Math.round(canvas.clientHeight * dpr);
+      // Cap DPR: on a 5K iMac an uncapped canvas would be 5120x2880 — enormous
+      // fill cost for no visible gain on video-derived frames. Phones get a
+      // tighter cap again. A current phone is DPR 3, so a full-bleed portrait
+      // canvas is 1170x2532 and the cross-fade pays TWO fills of that every
+      // frame; at 1.5 the fill is a quarter of the work, on footage that is
+      // already sitting behind a vignette.
+      const dpr = Math.min(window.devicePixelRatio || 1, isMobile ? 1.5 : 2);
+      const w = Math.round(canvas.clientWidth * dpr);
+      const h = Math.round(canvas.clientHeight * dpr);
+      // Assigning canvas.width CLEARS the canvas, so only touch it on a real
+      // change. Mobile fires resize every time the URL bar collapses — which
+      // happens mid-scroll — and this was blanking the stage each time.
+      if (w === canvas.width && h === canvas.height) return;
+      canvas.width = w;
+      canvas.height = h;
       lastDrawn = -1; // force redraw at new size
     };
 
@@ -242,11 +253,22 @@ export const ServiceBreakdown: React.FC<ServiceBreakdownProps> = ({
       if (!paintedRef.current) { paintedRef.current = true; setPainted(true); }
     };
 
+    // Decode BEFORE publishing the frame. onload only means the bytes
+    // arrived — the JPEG is still compressed, and the first drawImage of it
+    // decodes synchronously on the main thread: 5-15ms, mid-scroll, for every
+    // new frame. That is the biggest single source of chop on a phone, where a
+    // fast flick asks for dozens of new frames a second. img.decode() moves
+    // that work off the scroll path, and a frame is simply not eligible to be
+    // drawn until it can be drawn cheaply.
     const loadFrame = (i: number) =>
       new Promise<void>((resolve) => {
         const img = new Image();
         img.decoding = 'async';
-        img.onload = () => { if (!disposed) images[i] = img; resolve(); };
+        const publish = () => { if (!disposed) images[i] = img; resolve(); };
+        img.onload = () => {
+          if (typeof img.decode === 'function') img.decode().then(publish, publish);
+          else publish();
+        };
         img.onerror = () => resolve();
         img.src = frameSrc(i);
       });
@@ -261,7 +283,12 @@ export const ServiceBreakdown: React.FC<ServiceBreakdownProps> = ({
 
     const computeTarget = () => {
       const rect = section.getBoundingClientRect();
-      const vh = window.innerHeight;
+      // The pinned stage's own height, not window.innerHeight. On mobile
+      // innerHeight shrinks and grows as the URL bar collapses while the
+      // section height does not, so the two disagree mid-scroll and progress
+      // steps. The stage is the thing actually pinned, so it is the correct
+      // denominator.
+      const vh = stageRef.current?.clientHeight || window.innerHeight;
       const total = rect.height - vh;
       const scrolled = -rect.top;
       let p = total > 0 ? scrolled / total : 0;
@@ -275,13 +302,20 @@ export const ServiceBreakdown: React.FC<ServiceBreakdownProps> = ({
     // The loop runs ONLY while the section is near the viewport — otherwise
     // three of these would each do a layout read (getBoundingClientRect)
     // every frame for the life of the page.
+    // The lerp exists to swallow mouse-wheel steps: a wheel notch moves the
+    // scroll position discontinuously, and easing toward it hides the jump.
+    // Touch scrolling is already continuous and already carries momentum, so on
+    // a phone the same easing only adds lag — the image chases the thumb and
+    // then snaps when it stops, which is exactly what reads as chop. Track the
+    // scroll directly there.
+    const EASE = isMobile ? 1 : 0.22;
     let current = 0;
     let raf = 0;
     let running = false;
     const tick = () => {
       const target = computeTarget();
       progress.set(target);
-      current += (target - current) * 0.22;
+      current += (target - current) * EASE;
       if (Math.abs(target - current) < 0.0005) current = target;
       draw(current * (frameCount - 1));
       raf = requestAnimationFrame(tick);
@@ -323,6 +357,7 @@ export const ServiceBreakdown: React.FC<ServiceBreakdownProps> = ({
       style={{ height: `${effectiveVH * 100}vh` }}
     >
       <div
+        ref={stageRef}
         className="sticky top-0 h-stage w-full overflow-hidden bg-black"
         style={{ backgroundImage: `url(${poster})`, backgroundSize: 'cover', backgroundPosition: 'center' }}
       >

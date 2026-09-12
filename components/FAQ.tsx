@@ -296,7 +296,7 @@ export const FAQ: React.FC = () => {
             <a
               href="#contact"
               onClick={(e) => { e.preventDefault(); scrollToSection('contact'); }}
-              className="inline-flex items-center gap-2 text-[#CCFF00] font-mono text-xs uppercase tracking-[0.3em] hover:text-white transition-colors duration-300 group"
+              className="inline-flex min-h-[44px] items-center gap-2 py-3 text-[#CCFF00] font-mono text-xs uppercase tracking-[0.3em] hover:text-white transition-colors duration-300 group"
             >
               <span className="relative">
                 Send Us A Message
