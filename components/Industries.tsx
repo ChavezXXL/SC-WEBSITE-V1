@@ -1,6 +1,22 @@
 
-import React, { useEffect, useRef, useState } from 'react';
-import { motion, useScroll, useTransform, useInView, MotionValue } from 'framer-motion';
+import React, { useEffect, useState } from 'react';
+import { motion, useTransform, MotionValue } from 'framer-motion';
+import { usePannedTrack } from './usePannedTrack';
+import { useFocusPeak } from './useFocusPeak';
+
+/* ------------------------------------------------------------------ *
+ * Industries.
+ *
+ * Pinned horizontal scroll with the same focus falloff as the service area:
+ * the section sticks, the row pans sideways as you scroll down, and each card
+ * comes up to full scale and brightness as it crosses the middle.
+ *
+ * This used to be two different sections wearing one name — a pinned pan on
+ * desktop and a swipe carousel on mobile — so the effect existed only on a
+ * desktop. Both breakpoints now run the same track. The pan distance is
+ * measured (see usePannedTrack); the old hardcoded -75% over-panned and left
+ * roughly a third of a screen of empty space past the last card.
+ * ------------------------------------------------------------------ */
 
 const Dot: React.FC<{ index: number; active: MotionValue<number> }> = ({ index, active }) => {
   const [on, setOn] = useState(false);
@@ -121,59 +137,78 @@ const IndustriesIntro: React.FC<{ activeDot?: MotionValue<number> }> = ({ active
   </>
 );
 
+/** One panel in the track. Peaks as it passes the centre of the viewport. */
+const Panel: React.FC<{
+  at: number; spacing: number; progress: MotionValue<number>; still: boolean; active: boolean;
+  className: string; children: React.ReactNode;
+}> = ({ at, spacing, progress, still, active, className, children }) => {
+  const { scale, opacity } = useFocusPeak(progress, at, { spacing });
+  return (
+    <motion.div
+      style={still ? undefined : { scale, opacity, willChange: active ? 'transform, opacity' : 'auto' }}
+      className={className}
+    >
+      {children}
+    </motion.div>
+  );
+};
+
 export const Industries: React.FC = () => {
-  const targetRef = useRef<HTMLDivElement>(null);
-  const inView = useInView(targetRef, { margin: "0px 0px -10% 0px" });
-  const { scrollYProgress } = useScroll({
-    target: targetRef,
-  });
+  const pan = usePannedTrack();
+  const still = pan.reduce || !pan.panMax;
 
-  // Map vertical scroll to horizontal scroll
-  const x = useTransform(scrollYProgress, [0, 1], ["0%", "-75%"]);
-
-  // Animated dot indicator
-  const activeDot = useTransform(scrollYProgress, (v) => Math.min(industries.length - 1, Math.floor(v * industries.length)));
+  // Dot indicator, driven by the same progress as the pan.
+  const activeDot = useTransform(pan.progress, (v) =>
+    Math.min(industries.length - 1, Math.floor(v * industries.length)),
+  );
 
   return (
     <section id="industries" className="relative bg-[#030305]">
 
-      {/* Mobile: native swipe carousel — no scroll hijacking on touch */}
-      <div className="md:hidden py-16">
-        <div className="px-6">
-          <IndustriesIntro />
-        </div>
-        <div
-          className="mt-10 flex gap-4 overflow-x-auto snap-x snap-mandatory px-6 pb-4"
-          style={{ WebkitOverflowScrolling: 'touch' }}
-        >
-          {industries.map((industry, idx) => (
-            <div key={industry.id} className="snap-center flex-shrink-0 w-[85vw]">
-              <IndustryCard industry={industry} idx={idx} />
-            </div>
-          ))}
-        </div>
-        <p className="px-6 mt-2 font-mono text-[9px] uppercase tracking-[0.3em] text-zinc-500 text-center">
-          Swipe to explore →
-        </p>
+      {/* On a phone the intro sits above the pinned row rather than being the
+          first panel inside it — a 40vw text column does not survive the drop
+          to a narrow screen, and this mirrors the service area's layout. */}
+      <div className="md:hidden px-6 pt-16 pb-10">
+        <IndustriesIntro activeDot={activeDot} />
       </div>
 
-      {/* Desktop: pinned horizontal scroll-scrub */}
-      <div ref={targetRef} className="relative h-[400vh] hidden md:block">
-        <div className="sticky top-0 flex h-screen items-center overflow-hidden">
-          <motion.div style={{ x, willChange: inView ? 'transform' : 'auto' }} className="flex gap-6 md:gap-10 pl-6 md:pl-24 pr-24">
-
-            {/* Intro Card */}
-            <div className="flex-shrink-0 w-[80vw] md:w-[40vw] h-[60vh] md:h-[70vh] flex flex-col justify-center">
+      <div ref={pan.runway} className={pan.panMax ? 'relative' : 'relative h-[400vh]'} style={pan.runwayStyle}>
+        <div ref={pan.stage} className="sticky top-0 flex h-screen items-center overflow-hidden">
+          <motion.div
+            ref={pan.track}
+            style={{ x: pan.reduce ? 0 : pan.x, willChange: pan.active && !pan.reduce ? 'transform' : 'auto' }}
+            className="flex gap-6 md:gap-10 w-max items-center px-6 md:px-24"
+          >
+            {/* Intro panel — desktop only. A display:none child measures as
+                zero width, so the pan maths simply does not see it on a phone. */}
+            <Panel
+              at={pan.at[0] ?? 0}
+              spacing={pan.spacing}
+              progress={pan.progress}
+              still={still}
+              active={pan.active}
+              className="hidden md:flex flex-shrink-0 w-[40vw] h-[70vh] flex-col justify-center"
+            >
               <IndustriesIntro activeDot={activeDot} />
-            </div>
+            </Panel>
 
-            {/* Industry Cards */}
             {industries.map((industry, idx) => (
-              <div key={industry.id} className="w-[85vw] md:w-[60vw] flex-shrink-0">
+              <Panel
+                key={industry.id}
+                at={pan.at[idx + 1] ?? 0}
+                spacing={pan.spacing}
+                progress={pan.progress}
+                still={still}
+                active={pan.active}
+                className="w-[85vw] md:w-[60vw] flex-shrink-0"
+              >
                 <IndustryCard industry={industry} idx={idx} />
-              </div>
+              </Panel>
             ))}
           </motion.div>
+
+          <div aria-hidden className="pointer-events-none absolute inset-y-0 left-0 w-16 md:w-40 bg-gradient-to-r from-[#030305] via-[#030305]/60 to-transparent" />
+          <div aria-hidden className="pointer-events-none absolute inset-y-0 right-0 w-16 md:w-40 bg-gradient-to-l from-[#030305] via-[#030305]/60 to-transparent" />
         </div>
       </div>
     </section>

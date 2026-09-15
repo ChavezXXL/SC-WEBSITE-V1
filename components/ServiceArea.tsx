@@ -1,6 +1,7 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { motion, useScroll, useTransform, useInView, useReducedMotion, MotionValue } from 'framer-motion';
+import React from 'react';
+import { motion, MotionValue } from 'framer-motion';
 import { scrollToSection } from './scrollToSection';
+import { usePannedTrack } from './usePannedTrack';
 import { useFocusPeak } from './useFocusPeak';
 
 /* ------------------------------------------------------------------ *
@@ -10,14 +11,10 @@ import { useFocusPeak } from './useFocusPeak';
  * sideways, then releases. Each card scales and brightens as it crosses the
  * middle of the viewport (see useFocusPeak).
  *
- * The pan distance and the runway length are both MEASURED, not guessed.
- * They used to be hardcoded percentages, and a percentage translate is a
- * share of the track's own width — so the correct value changes with card
- * size, gap, card count and viewport. At the phone breakpoint -58% covered
- * 1424px of a 2456px track: Santa Clarita and Valencia could not be reached
- * by scrolling at all. Desktop clipped the last card by 64px. Measuring the
- * track also lets the runway be sized so the row moves at a sane rate
- * against the scroll instead of 2.1x faster than the reader's thumb.
+ * The pan distance and runway length are measured by usePannedTrack, shared
+ * with the industries section. They used to be a hardcoded -58%, which at the
+ * phone breakpoint covered 1424px of a 2456px track: Santa Clarita and
+ * Valencia could not be reached by scrolling at all.
  *
  * Kern County was dropped — Central Valley, not Southern California.
  * ------------------------------------------------------------------ */
@@ -29,15 +26,11 @@ const ROUTE = [
 
 const COUNTIES = ['Los Angeles', 'Orange', 'Ventura', 'San Bernardino', 'Riverside', 'San Diego'];
 
-/** How far the row travels per pixel of scroll. Above 1 the row outruns the
- *  thumb, which is what made the pan feel like it was skipping frames. */
-const PAN_RATE = 1.25;
-
 /** One card. Peaks as it passes the centre of the viewport. */
 const RouteCard: React.FC<{
-  city: string; i: number; at: number; progress: MotionValue<number>; still: boolean; active: boolean;
-}> = ({ city, i, at, progress, still, active }) => {
-  const { scale, opacity } = useFocusPeak(progress, at);
+  city: string; i: number; at: number; spacing: number; progress: MotionValue<number>; still: boolean; active: boolean;
+}> = ({ city, i, at, spacing, progress, still, active }) => {
+  const { scale, opacity } = useFocusPeak(progress, at, { spacing });
 
   return (
     <motion.div
@@ -55,56 +48,7 @@ const RouteCard: React.FC<{
 };
 
 export const ServiceArea: React.FC = () => {
-  const runway = useRef<HTMLDivElement>(null);
-  const stage = useRef<HTMLDivElement>(null);
-  const track = useRef<HTMLDivElement>(null);
-  const reduce = !!useReducedMotion();
-  const active = useInView(runway, { margin: '20% 0px 20% 0px' });
-
-  // Measured pan: how far the track must travel for its right edge to land on
-  // the viewport's right edge, and where in that travel each card is centred.
-  const [pan, setPan] = useState<{ max: number; at: number[] }>({ max: 0, at: [] });
-
-  useEffect(() => {
-    const measure = () => {
-      const t = track.current, s = stage.current;
-      if (!t || !s) return;
-      const vw = s.clientWidth;
-      const max = Math.max(0, t.scrollWidth - vw);
-      // Deliberately unclamped — a card that cannot reach the centre peaks
-      // just off the end of the range instead of pinning at full brightness
-      // while sitting visibly off to one side.
-      const at = Array.from(t.children).map((el) => {
-        const c = el as HTMLElement;
-        return max > 0 ? (c.offsetLeft + c.offsetWidth / 2 - vw / 2) / max : 0;
-      });
-      setPan((prev) =>
-        prev.max === max && prev.at.length === at.length && prev.at.every((v, i) => v === at[i])
-          ? prev
-          : { max, at },
-      );
-    };
-
-    measure();
-    window.addEventListener('resize', measure);
-    // Card widths move once the webfont swaps in, which lands after the first
-    // measurement — remeasure rather than pan to a stale number.
-    if (document.fonts?.ready) document.fonts.ready.then(measure).catch(() => {});
-    return () => window.removeEventListener('resize', measure);
-  }, []);
-
-  const { scrollYProgress } = useScroll({ target: runway, offset: ['start start', 'end end'] });
-
-  // The pan distance is read from a ref at transform time, NOT passed as a
-  // useTransform output range. framer captures the output array from the render
-  // that created the transform and does not pick up a later one, so the first
-  // measurement was permanent: resize the window, or let the webfont swap in,
-  // and the runway height updated to the new measurement while the translate
-  // kept using the old distance — under-panning by exactly the difference and
-  // pushing the last card back off the right edge.
-  const panMax = useRef(0);
-  panMax.current = pan.max;
-  const x = useTransform(scrollYProgress, (p: number) => -p * panMax.current);
+  const pan = usePannedTrack();
 
   return (
     <section id="service-area" className="relative bg-[#030305] border-t border-white/[0.05]">
@@ -134,19 +78,19 @@ export const ServiceArea: React.FC = () => {
       {/* Runway = one stage plus the scroll needed to walk the whole track.
           Falls back to the old fixed heights until the measurement lands. */}
       <div
-        ref={runway}
-        className={pan.max ? 'relative' : 'relative h-[220vh] md:h-[260vh]'}
-        style={pan.max ? { height: `calc(100vh + ${Math.round(pan.max / PAN_RATE)}px)` } : undefined}
+        ref={pan.runway}
+        className={pan.panMax ? 'relative' : 'relative h-[220vh] md:h-[260vh]'}
+        style={pan.runwayStyle}
       >
-        <div ref={stage} className="sticky top-0 h-screen flex flex-col justify-center overflow-hidden">
+        <div ref={pan.stage} className="sticky top-0 h-screen flex flex-col justify-center overflow-hidden">
 
           <span className="block text-center font-mono text-[10px] uppercase tracking-[0.34em] text-zinc-500 mb-10">
             Shops we deliver to
           </span>
 
           <motion.div
-            ref={track}
-            style={{ x: reduce ? 0 : x, willChange: active && !reduce ? 'transform' : 'auto' }}
+            ref={pan.track}
+            style={{ x: pan.reduce ? 0 : pan.x, willChange: pan.active && !pan.reduce ? 'transform' : 'auto' }}
             className="flex gap-4 md:gap-5 w-max items-center px-6 md:px-16"
           >
             {ROUTE.map((city, i) => (
@@ -155,9 +99,10 @@ export const ServiceArea: React.FC = () => {
                 city={city}
                 i={i}
                 at={pan.at[i] ?? 0}
-                progress={scrollYProgress}
-                still={reduce || !pan.max}
-                active={active}
+                spacing={pan.spacing}
+                progress={pan.progress}
+                still={pan.reduce || !pan.panMax}
+                active={pan.active}
               />
             ))}
           </motion.div>
