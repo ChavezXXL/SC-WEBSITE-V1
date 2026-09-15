@@ -101,3 +101,38 @@ h1, h2, h3, h4, h5, h6 {
 .video-neutral {
   filter: saturate(0.12) contrast(1.08) brightness(0.94);
 }
+
+/* Swipe strips: the native scrollbar is noise under a row of cards, and on
+   mobile it overlays the last few pixels of the card. Scrolling still works
+   exactly as before — this only hides the indicator. */
+.no-scrollbar::-webkit-scrollbar { display: none; width: 0; height: 0; }
+.no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+/* ------------------------------------------------------------------
+   Focus falloff on the mobile swipe strips.
+
+   Same look as the desktop pinned pan — a card comes up to full scale and
+   brightness as it reaches the middle — but driven by CSS scroll-driven
+   animation instead of JavaScript. view(inline) ties each card's own
+   position inside the scroller to the animation, so the compositor runs it:
+   it cannot lag behind the finger, and no scroll listener is involved.
+
+   Where it is unsupported the @supports block simply does not apply and the
+   cards render at full scale and opacity — no effect, nothing broken.
+   ------------------------------------------------------------------ */
+@keyframes swipe-focus-peak {
+  0%   { opacity: 0.45; transform: scale(0.92); }
+  50%  { opacity: 1;    transform: scale(1);    }
+  100% { opacity: 0.45; transform: scale(0.92); }
+}
+
+@supports (animation-timeline: view(inline)) {
+  .swipe-focus > * {
+    animation: swipe-focus-peak linear both;
+    animation-timeline: view(inline);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .swipe-focus > * { animation: none; }
+}

@@ -28,14 +28,18 @@ const COUNTIES = ['Los Angeles', 'Orange', 'Ventura', 'San Bernardino', 'Riversi
 
 /** One card. Peaks as it passes the centre of the viewport. */
 const RouteCard: React.FC<{
-  city: string; i: number; at: number; spacing: number; progress: MotionValue<number>; still: boolean; active: boolean;
-}> = ({ city, i, at, spacing, progress, still, active }) => {
+  city: string; i: number; at: number; spacing: number; progress: MotionValue<number>;
+  still: boolean; active: boolean; snap?: boolean;
+}> = ({ city, i, at, spacing, progress, still, active, snap }) => {
   const { scale, opacity } = useFocusPeak(progress, at, { spacing });
 
   return (
     <motion.div
-      style={still ? undefined : { scale, opacity, willChange: active ? 'transform, opacity' : 'auto' }}
-      className="flex-none w-[190px] md:w-[280px] h-[200px] md:h-[280px] rounded-2xl bg-[#06080a] border border-white/[0.07] p-6 md:p-8 flex flex-col justify-between"
+      // On the swipe strip the falloff is CSS (.swipe-focus, scroll-driven), so
+      // no inline style, no motion values and no promoted layers — the
+      // compositor runs it and it cannot lag behind the finger.
+      style={(still || snap) ? undefined : { scale, opacity, willChange: active ? 'transform, opacity' : 'auto' }}
+      className={`flex-none w-[190px] md:w-[280px] h-[200px] md:h-[280px] rounded-2xl bg-[#06080a] border border-white/[0.07] p-6 md:p-8 flex flex-col justify-between ${snap ? 'snap-center' : ''}`}
     >
       <span className="font-mono text-[10px] tracking-[0.24em] text-[#CCFF00]/70 tabular-nums">
         {String(i + 1).padStart(2, '0')}
@@ -74,43 +78,82 @@ export const ServiceArea: React.FC = () => {
         </p>
       </div>
 
-      {/* ── pinned horizontal scroll ─────────────────────────────── */}
-      {/* Runway = one stage plus the scroll needed to walk the whole track.
-          Falls back to the old fixed heights until the measurement lands. */}
-      <div
-        ref={pan.runway}
-        className={pan.panMax ? 'relative' : 'relative h-[220vh] md:h-[260vh]'}
-        style={pan.runwayStyle}
-      >
-        <div ref={pan.stage} className="sticky top-0 h-screen flex flex-col justify-center overflow-hidden">
-
-          <span className="block text-center font-mono text-[10px] uppercase tracking-[0.34em] text-zinc-500 mb-10">
+      {/* ── the route row ────────────────────────────────────────── */}
+      {/* Mobile swipes a native scroller; desktop pins and pans. See
+          usePannedTrack for why the two modes are not the same code. */}
+      {pan.mobile ? (
+        <div className="pt-14 pb-16">
+          <span className="block text-center font-mono text-[10px] uppercase tracking-[0.34em] text-zinc-500 mb-8">
             Shops we deliver to
           </span>
 
-          <motion.div
-            ref={pan.track}
-            style={{ x: pan.reduce ? 0 : pan.x, willChange: pan.active && !pan.reduce ? 'transform' : 'auto' }}
-            className="flex gap-4 md:gap-5 w-max items-center px-6 md:px-16"
-          >
-            {ROUTE.map((city, i) => (
-              <RouteCard
-                key={city}
-                city={city}
-                i={i}
-                at={pan.at[i] ?? 0}
-                spacing={pan.spacing}
-                progress={pan.progress}
-                still={pan.reduce || !pan.panMax}
-                active={pan.active}
-              />
-            ))}
-          </motion.div>
+          <div className="relative">
+            <div
+              ref={pan.scroller}
+              style={pan.scrollerStyle}
+              className="no-scrollbar overflow-x-auto overscroll-x-contain snap-x snap-mandatory"
+            >
+              <div ref={pan.track} className="swipe-focus flex gap-4 w-max items-center px-6 pb-2">
+                {ROUTE.map((city, i) => (
+                  <RouteCard
+                    key={city}
+                    city={city}
+                    i={i}
+                    at={pan.at[i] ?? 0}
+                    spacing={pan.spacing}
+                    progress={pan.progress}
+                    still={pan.reduce || !pan.panMax}
+                    active={pan.active}
+                    snap
+                  />
+                ))}
+              </div>
+            </div>
 
-          <div aria-hidden className="pointer-events-none absolute inset-y-0 left-0 w-20 md:w-48 bg-gradient-to-r from-[#030305] via-[#030305]/70 to-transparent" />
-          <div aria-hidden className="pointer-events-none absolute inset-y-0 right-0 w-20 md:w-48 bg-gradient-to-l from-[#030305] via-[#030305]/70 to-transparent" />
+            <div aria-hidden className="pointer-events-none absolute inset-y-0 left-0 w-10 bg-gradient-to-r from-[#030305] to-transparent" />
+            <div aria-hidden className="pointer-events-none absolute inset-y-0 right-0 w-10 bg-gradient-to-l from-[#030305] to-transparent" />
+          </div>
+
+          <p className="px-6 mt-5 font-mono text-[9px] uppercase tracking-[0.3em] text-zinc-500 text-center">
+            Swipe to explore →
+          </p>
         </div>
-      </div>
+      ) : (
+        <div
+          ref={pan.runway}
+          className={pan.panMax ? 'relative' : 'relative h-[260vh]'}
+          style={pan.runwayStyle}
+        >
+          <div ref={pan.stage} className="sticky top-0 h-screen flex flex-col justify-center overflow-hidden">
+
+            <span className="block text-center font-mono text-[10px] uppercase tracking-[0.34em] text-zinc-500 mb-10">
+              Shops we deliver to
+            </span>
+
+            <motion.div
+              ref={pan.track}
+              style={{ x: pan.reduce ? 0 : pan.x, willChange: pan.active && !pan.reduce ? 'transform' : 'auto' }}
+              className="flex gap-5 w-max items-center px-16"
+            >
+              {ROUTE.map((city, i) => (
+                <RouteCard
+                  key={city}
+                  city={city}
+                  i={i}
+                  at={pan.at[i] ?? 0}
+                  spacing={pan.spacing}
+                  progress={pan.progress}
+                  still={pan.reduce || !pan.panMax}
+                  active={pan.active}
+                />
+              ))}
+            </motion.div>
+
+            <div aria-hidden className="pointer-events-none absolute inset-y-0 left-0 w-48 bg-gradient-to-r from-[#030305] via-[#030305]/70 to-transparent" />
+            <div aria-hidden className="pointer-events-none absolute inset-y-0 right-0 w-48 bg-gradient-to-l from-[#030305] via-[#030305]/70 to-transparent" />
+          </div>
+        </div>
+      )}
 
       {/* ── counties ─────────────────────────────────────────────── */}
       <div className="container mx-auto px-6 max-w-4xl pb-24 md:pb-32 text-center">

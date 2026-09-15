@@ -7,15 +7,13 @@ import { useFocusPeak } from './useFocusPeak';
 /* ------------------------------------------------------------------ *
  * Industries.
  *
- * Pinned horizontal scroll with the same focus falloff as the service area:
- * the section sticks, the row pans sideways as you scroll down, and each card
- * comes up to full scale and brightness as it crosses the middle.
+ * Same focus falloff as the service area — each card comes up to full scale
+ * and brightness as it crosses the middle — and the same two modes: a pinned
+ * scroll-scrub on desktop, a native swipe strip on a phone. usePannedTrack
+ * explains why those are deliberately not the same code.
  *
- * This used to be two different sections wearing one name — a pinned pan on
- * desktop and a swipe carousel on mobile — so the effect existed only on a
- * desktop. Both breakpoints now run the same track. The pan distance is
- * measured (see usePannedTrack); the old hardcoded -75% over-panned and left
- * roughly a third of a screen of empty space past the last card.
+ * The pan distance is measured rather than hardcoded; the old -75% over-panned
+ * and left roughly a third of a screen of dead space past the last card.
  * ------------------------------------------------------------------ */
 
 const Dot: React.FC<{ index: number; active: MotionValue<number> }> = ({ index, active }) => {
@@ -140,12 +138,14 @@ const IndustriesIntro: React.FC<{ activeDot?: MotionValue<number> }> = ({ active
 /** One panel in the track. Peaks as it passes the centre of the viewport. */
 const Panel: React.FC<{
   at: number; spacing: number; progress: MotionValue<number>; still: boolean; active: boolean;
-  className: string; children: React.ReactNode;
-}> = ({ at, spacing, progress, still, active, className, children }) => {
+  snap?: boolean; className: string; children: React.ReactNode;
+}> = ({ at, spacing, progress, still, active, snap, className, children }) => {
   const { scale, opacity } = useFocusPeak(progress, at, { spacing });
   return (
     <motion.div
-      style={still ? undefined : { scale, opacity, willChange: active ? 'transform, opacity' : 'auto' }}
+      // On the swipe strip the falloff is CSS (.swipe-focus, scroll-driven), so
+      // no inline style, no motion values and no promoted layers.
+      style={(still || snap) ? undefined : { scale, opacity, willChange: active ? 'transform, opacity' : 'auto' }}
       className={className}
     >
       {children}
@@ -165,52 +165,83 @@ export const Industries: React.FC = () => {
   return (
     <section id="industries" className="relative bg-[#030305]">
 
-      {/* On a phone the intro sits above the pinned row rather than being the
-          first panel inside it — a 40vw text column does not survive the drop
-          to a narrow screen, and this mirrors the service area's layout. */}
-      <div className="md:hidden px-6 pt-16 pb-10">
-        <IndustriesIntro activeDot={activeDot} />
-      </div>
+      {pan.mobile ? (
+        /* Phone: heading above, then a native swipe strip. The pinned pan is
+           scroll-linked JavaScript and stutters on a fling; this is compositor
+           scrolling and matches the sideways swipe the row invites anyway. */
+        <div className="py-16">
+          <div className="px-6">
+            <IndustriesIntro />
+          </div>
 
-      <div ref={pan.runway} className={pan.panMax ? 'relative' : 'relative h-[400vh]'} style={pan.runwayStyle}>
-        <div ref={pan.stage} className="sticky top-0 flex h-screen items-center overflow-hidden">
-          <motion.div
-            ref={pan.track}
-            style={{ x: pan.reduce ? 0 : pan.x, willChange: pan.active && !pan.reduce ? 'transform' : 'auto' }}
-            className="flex gap-6 md:gap-10 w-max items-center px-6 md:px-24"
-          >
-            {/* Intro panel — desktop only. A display:none child measures as
-                zero width, so the pan maths simply does not see it on a phone. */}
-            <Panel
-              at={pan.at[0] ?? 0}
-              spacing={pan.spacing}
-              progress={pan.progress}
-              still={still}
-              active={pan.active}
-              className="hidden md:flex flex-shrink-0 w-[40vw] h-[70vh] flex-col justify-center"
+          <div className="relative mt-10">
+            <div
+              ref={pan.scroller}
+              style={pan.scrollerStyle}
+              className="no-scrollbar overflow-x-auto overscroll-x-contain snap-x snap-mandatory"
             >
-              <IndustriesIntro activeDot={activeDot} />
-            </Panel>
+              <div ref={pan.track} className="swipe-focus flex gap-4 w-max px-6 pb-2">
+                {industries.map((industry, idx) => (
+                  <Panel
+                    key={industry.id}
+                    at={pan.at[idx] ?? 0}
+                    spacing={pan.spacing}
+                    progress={pan.progress}
+                    still={still}
+                    active={pan.active}
+                    snap
+                    className="w-[85vw] flex-shrink-0 snap-center"
+                  >
+                    <IndustryCard industry={industry} idx={idx} />
+                  </Panel>
+                ))}
+              </div>
+            </div>
+          </div>
 
-            {industries.map((industry, idx) => (
+          <p className="px-6 mt-4 font-mono text-[9px] uppercase tracking-[0.3em] text-zinc-500 text-center">
+            Swipe to explore →
+          </p>
+        </div>
+      ) : (
+        <div ref={pan.runway} className={pan.panMax ? 'relative' : 'relative h-[400vh]'} style={pan.runwayStyle}>
+          <div ref={pan.stage} className="sticky top-0 flex h-screen items-center overflow-hidden">
+            <motion.div
+              ref={pan.track}
+              style={{ x: pan.reduce ? 0 : pan.x, willChange: pan.active && !pan.reduce ? 'transform' : 'auto' }}
+              className="flex gap-10 w-max items-center px-24"
+            >
               <Panel
-                key={industry.id}
-                at={pan.at[idx + 1] ?? 0}
+                at={pan.at[0] ?? 0}
                 spacing={pan.spacing}
                 progress={pan.progress}
                 still={still}
                 active={pan.active}
-                className="w-[85vw] md:w-[60vw] flex-shrink-0"
+                className="flex flex-shrink-0 w-[40vw] h-[70vh] flex-col justify-center"
               >
-                <IndustryCard industry={industry} idx={idx} />
+                <IndustriesIntro activeDot={activeDot} />
               </Panel>
-            ))}
-          </motion.div>
 
-          <div aria-hidden className="pointer-events-none absolute inset-y-0 left-0 w-16 md:w-40 bg-gradient-to-r from-[#030305] via-[#030305]/60 to-transparent" />
-          <div aria-hidden className="pointer-events-none absolute inset-y-0 right-0 w-16 md:w-40 bg-gradient-to-l from-[#030305] via-[#030305]/60 to-transparent" />
+              {industries.map((industry, idx) => (
+                <Panel
+                  key={industry.id}
+                  at={pan.at[idx + 1] ?? 0}
+                  spacing={pan.spacing}
+                  progress={pan.progress}
+                  still={still}
+                  active={pan.active}
+                  className="w-[60vw] flex-shrink-0"
+                >
+                  <IndustryCard industry={industry} idx={idx} />
+                </Panel>
+              ))}
+            </motion.div>
+
+            <div aria-hidden className="pointer-events-none absolute inset-y-0 left-0 w-40 bg-gradient-to-r from-[#030305] via-[#030305]/60 to-transparent" />
+            <div aria-hidden className="pointer-events-none absolute inset-y-0 right-0 w-40 bg-gradient-to-l from-[#030305] via-[#030305]/60 to-transparent" />
+          </div>
         </div>
-      </div>
+      )}
     </section>
   );
 };

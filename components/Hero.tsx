@@ -108,7 +108,7 @@ export const Hero: React.FC = () => {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.7, delay: 0.62 }}
-          className="text-[13.5px] md:text-[17px] font-light tracking-[0.02em] text-zinc-200 max-w-lg leading-snug mb-9 md:mb-12 px-1"
+          className="text-[12px] md:text-[15px] font-light uppercase tracking-[0.16em] md:tracking-[0.2em] text-zinc-200 max-w-lg leading-relaxed mb-9 md:mb-12 px-1"
           style={{ textShadow: '0 2px 20px rgba(0,0,0,0.6)' }}
         >
           Precision deburring and micro-finishing for aerospace parts.
@@ -126,7 +126,7 @@ export const Hero: React.FC = () => {
             className="group w-full sm:w-auto text-center px-8 py-4 bg-[#CCFF00] border border-[#CCFF00] text-black font-medium rounded-full transition-all hover:bg-transparent hover:text-[#CCFF00] md:hover:scale-105 shadow-[0_0_40px_rgba(204,255,0,0.25)]"
             onClick={(e) => { e.preventDefault(); scrollToSection('contact'); }}
           >
-            <span className="text-[15px] font-medium flex items-center gap-2">
+            <span className="text-[13.5px] font-medium uppercase tracking-[0.12em] flex items-center justify-center gap-2">
               Send us your print
             </span>
           </a>
@@ -135,7 +135,7 @@ export const Hero: React.FC = () => {
             className="group relative w-full sm:w-auto text-center px-8 py-4 bg-white/5 border border-white/10 backdrop-blur-md text-white font-medium rounded-full overflow-hidden transition-all hover:bg-white/10 hover:border-[#CCFF00]/40 md:hover:scale-105"
             onClick={scrollToServices}
           >
-            <span className="relative z-10 text-[15px] font-medium flex items-center gap-2">
+            <span className="relative z-10 text-[13.5px] font-medium uppercase tracking-[0.12em] flex items-center justify-center gap-2">
               Explore our standard
             </span>
           </a>
