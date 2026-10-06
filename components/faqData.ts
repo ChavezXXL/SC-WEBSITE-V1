@@ -46,7 +46,7 @@ export const faqs: FaqItem[] = [
     group: 'LOGISTICS',
     category: 'LEAD TIME',
     question: "What's your typical turnaround?",
-    answer: "Quotes back in 24 hours. Most jobs run 3–5 business days. Faster if your timeline calls for it.",
+    answer: "Quotes back within one business day. Most jobs run 3–5 business days. Faster if your timeline calls for it.",
   },
   {
     group: 'QUALITY',
@@ -64,7 +64,7 @@ export const faqs: FaqItem[] = [
     group: 'QUOTING',
     category: 'QUOTING',
     question: "What do you need to send a quote?",
-    answer: "A drawing or photo, an approximate quantity, and any spec callouts. Quote back in 24 hours.",
+    answer: "A drawing or photo, an approximate quantity, and any spec callouts. Quote back within one business day.",
   },
   {
     group: 'LOGISTICS',
@@ -94,6 +94,6 @@ export const faqs: FaqItem[] = [
     group: 'QUOTING',
     category: 'PRICING',
     question: 'How much does deburring cost?',
-    answer: "Depends on part complexity, material, and quantity — but quotes come back in 24 hours, free, with no minimum order. Small simple batches start at a few dollars per part; complex aerospace work prices per print and spec callout.",
+    answer: "Depends on part complexity, material, and quantity — but quotes come back within one business day, free, with no minimum order. Small simple batches start at a few dollars per part; complex aerospace work prices per print and spec callout.",
   },
 ];

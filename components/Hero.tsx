@@ -66,7 +66,7 @@ export const Hero: React.FC = () => {
             from scale, letterspacing and the single gold rule under it. */}
         <h1 className="mb-8 md:mb-10 flex flex-col items-center">
           <span className="sr-only">
-            Precision deburring in Los Angeles — aerospace micro-finishing and cross-drilled deburring by SC Deburring, Pacoima, California.
+            Precision deburring in Los Angeles — aerospace micro-finishing and cross-drilled deburring by SC Precision Deburring, Pacoima, California.
           </span>
 
           <span

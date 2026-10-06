@@ -24,7 +24,7 @@ const SITE = 'https://scprecisiondeburring.com';
 const PAGES = [
   {
     slug: 'microscope-deburring',
-    title: 'Microscope Deburring | Cross-Drilled & Internal Passages | SC Deburring',
+    title: 'Microscope Deburring | Cross-Drilled & Internal Passages | SC Precision Deburring',
     desc: 'Microscope deburring for machined parts where burrs hide inside cross-drilled holes and internal passages. Pacoima, CA. Quote within one business day.',
     h1: 'Microscope deburring',
     lede: 'For the burrs you cannot see, on the features that matter most.',
@@ -48,7 +48,7 @@ const PAGES = [
   },
   {
     slug: 'aerospace-deburring',
-    title: 'Aerospace Deburring Services | FOD Control & Traceability | SC Deburring',
+    title: 'Aerospace Deburring Services | FOD Control & Traceability | SC Precision Deburring',
     desc: 'Aerospace deburring for Tier 1 and Tier 2 machine shops. FOD prevention, job traveler sign-off, Certificate of Conformance on every shipment. Pacoima, CA.',
     h1: 'Aerospace deburring',
     lede: 'Outside processing for machine shops whose parts have somewhere serious to go.',
@@ -75,7 +75,7 @@ const PAGES = [
   },
   {
     slug: 'precision-deburring-los-angeles',
-    title: 'Precision Deburring Los Angeles | Pickup & Delivery | SC Deburring',
+    title: 'Precision Deburring Los Angeles | Pickup & Delivery | SC Precision Deburring',
     desc: 'Precision deburring in Los Angeles. We pick up and deliver across the San Fernando Valley, Santa Clarita and Valencia. Quote within one business day.',
     h1: 'Precision deburring in Los Angeles',
     lede: 'We collect the lot and bring it back — parts are not sitting on a freight dock.',
@@ -99,7 +99,7 @@ const PAGES = [
   },
   {
     slug: 'cross-drilled-hole-deburring',
-    title: 'Cross-Drilled Hole Deburring | Manifolds & Valve Bodies | SC Deburring',
+    title: 'Cross-Drilled Hole Deburring | Manifolds & Valve Bodies | SC Precision Deburring',
     desc: 'Deburring cross-drilled and intersecting bores in manifolds, valve bodies and hydraulic fittings. Burrs removed at the intersection without touching the bore.',
     h1: 'Cross-drilled hole deburring',
     lede: 'Where two bores meet is where the burr hides, and where it matters most.',
@@ -139,7 +139,7 @@ const page = (p) => {
     name: p.service, serviceType: p.service,
     description: p.desc,
     provider: { '@type': 'LocalBusiness', name: 'SC Precision Deburring', '@id': `${SITE}/#business`,
-      address: { '@type': 'PostalAddress', streetAddress: '12734 Branford Street Unit #17',
+      address: { '@type': 'PostalAddress', streetAddress: '12734 Branford Street, Unit 17',
         addressLocality: 'Pacoima', addressRegion: 'CA', postalCode: '91331', addressCountry: 'US' },
       telephone: '+1-818-389-4234' },
     areaServed: [
@@ -223,7 +223,7 @@ footer{margin-top:70px;border-top:1px solid var(--line);padding:34px 0 70px;colo
 </head>
 <body>
 <header><div class="bar">
-  <a class="brand" href="/">SC Deburring</a><span class="sp"></span>
+  <a class="brand" href="/">SC Precision Deburring</a><span class="sp"></span>
   <a class="btn" href="/#contact">Send a print</a>
 </div></header>
 
