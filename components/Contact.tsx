@@ -160,7 +160,7 @@ export const Contact: React.FC = () => {
             </span>
           </h2>
           <p className="text-lg md:text-xl text-zinc-300 max-w-2xl mx-auto font-light leading-relaxed">
-            Reach out to our team for technical specs, lead times, or a custom quote. Most quotes back within 24 hours.
+            Reach out to our team for technical specs, lead times, or a custom quote. Most quotes back within one business day.
           </p>
         </div>
 
@@ -178,7 +178,7 @@ export const Contact: React.FC = () => {
                   trackPhoneClick();
 
                 }}
-                title="Call SC Deburring"
+                title="Call SC Precision Deburring"
               >
                 <div className="w-12 h-12 md:w-14 md:h-14 flex-shrink-0 rounded-full bg-zinc-900 flex items-center justify-center border border-zinc-800 group-hover:border-[#CCFF00]/60 transition-colors">
                   <img src="/img/icons/phone.png" alt="" aria-hidden="true" width={256} height={256} loading="lazy" decoding="async" className="w-7 h-7 md:w-8 md:h-8" />
@@ -490,7 +490,7 @@ export const Contact: React.FC = () => {
                       className="flex items-center gap-3 bg-green-500/10 border border-green-500/20 rounded-lg px-4 py-3"
                     >
                       <CheckCircle className="w-5 h-5 text-green-400 flex-shrink-0" />
-                      <p className="text-sm text-green-300">Your inquiry has been sent successfully! We'll get back to you within 24 hours. For large or additional CAD/STEP files, email them to quotes@scprecisiondeburring.com.</p>
+                      <p className="text-sm text-green-300">Your inquiry has been sent successfully! We'll get back to you within one business day. For large or additional CAD/STEP files, email them to quotes@scprecisiondeburring.com.</p>
                     </motion.div>
                   )}
                   {submitStatus === 'error' && (
@@ -526,7 +526,7 @@ export const Contact: React.FC = () => {
                   )}
                 </button>
                 <p className="text-center text-xs text-zinc-300">
-                    Quotes back within 24 hours. Prints and drawings are kept confidential and shared only with the team quoting your job — NDA available on request.
+                    Quotes back within one business day. Prints and drawings are kept confidential and shared only with the team quoting your job — NDA available on request.
                 </p>
               </form>
           </div>
